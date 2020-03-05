@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "657128804829",
+    "firebase_url": "https://clubapp-surf.firebaseio.com",
+    "project_id": "clubapp-surf",
+    "storage_bucket": "clubapp-surf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:657128804829:android:8c4bc91e9be0ea668ba634",
+        "android_client_info": {
+          "package_name": "com.example.clubapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "657128804829-g4khi9rg7j9bfskb6fg986t18ddjuiec.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.clubapp",
+            "certificate_hash": "f6057b40a0998fc83a68b4031c10a30ef006d2b4"
+          }
+        },
+        {
+          "client_id": "657128804829-hdvncoi8p1nss0eu9dm3cpcj16ata7hd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDyKaBBvRLUvDMCpzxrddhoqeGhWCPEzT0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "657128804829-hdvncoi8p1nss0eu9dm3cpcj16ata7hd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
