@@ -6,17 +6,19 @@ public class Equipment {
     private String description;
     private String size;
     private boolean rented;
+    private String imageUrl;
 
     public Equipment(){
         //blank constructor
     }
 
-    public Equipment(int equipmentId,String equipmentName, String description, String size, boolean rented){
+    public Equipment(int equipmentId,String equipmentName, String description, String size, boolean rented, String imageUrl){
         this.equipmentId = equipmentId;
         this.equipmentName = equipmentName;
         this.description = description;
         this.size = size;
         this.rented = rented;
+        this.imageUrl = imageUrl;
     }
 
     public int getEquipmentId() {
@@ -58,4 +60,13 @@ public class Equipment {
     public void setRented(boolean rented) {
         this.rented = rented;
     }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
 }

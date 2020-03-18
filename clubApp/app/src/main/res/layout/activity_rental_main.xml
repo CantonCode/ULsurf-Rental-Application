@@ -28,6 +28,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerEquipment"
+        android:scrollbars="horizontal"
         android:layout_width="341dp"
         android:layout_height="419dp"
         android:layout_marginTop="52dp"
