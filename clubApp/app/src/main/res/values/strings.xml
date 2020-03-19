@@ -111,4 +111,7 @@
     <string name="userProfile">Welcome to user profile</string>
     <string name="goBavc">Button</string>
     <string name="goBack">goBack</string>
+    <string name="textViewEquipmentName">board</string>
+    <string name="textviewEquipmentDescription">board description</string>
+    <string name="textviewEquipmentSize">6 foot</string>
 </resources>
