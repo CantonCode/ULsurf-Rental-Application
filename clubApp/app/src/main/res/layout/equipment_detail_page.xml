@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center">
+
+    <LinearLayout
+        android:layout_marginTop="140dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#232323"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+
+        <TextView
+            android:id="@+id/equipmentName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="equipemnt name"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            android:textSize="24sp"
+            android:layout_marginTop="120dp"
+            />
+
+        <Button
+            android:id="@+id/rentThisBoard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Rent Board"
+            android:background="@color/cardview_light_background"
+            android:layout_marginTop="10dp"
+            />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/equipmentImage"
+        android:layout_width="231dp"
+        android:layout_height="241dp"
+        tools:srcCompat="@tools:sample/avatars"
+        android:padding = "10dp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"/>
+
+</RelativeLayout>
