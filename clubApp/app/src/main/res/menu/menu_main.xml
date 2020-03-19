@@ -2,9 +2,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.clubapp.MainActivity">
+
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/user_members"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:title="All Members" />
+    <item
+        android:id="@+id/goBack"
+        android:orderInCategory="101"
+        android:title="Previous Page"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/signOutButton"
+        android:orderInCategory="101"
+        android:title="Log Out"
+        app:showAsAction="never" />
+
 </menu>
