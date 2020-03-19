@@ -16,6 +16,9 @@
         <activity android:name=".RentalMainActivity" />
         <activity android:name=".homeActivity" />
         <activity android:name=".Login" />
+        <activity android:name=".all_Members_Activity" />
+        <activity android:name=".messageActivity" />
+        
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
