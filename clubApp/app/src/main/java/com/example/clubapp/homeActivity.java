@@ -25,6 +25,8 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.goToRental).setOnClickListener(this);
         findViewById(R.id.goToSupport).setOnClickListener(this);
         findViewById(R.id.userProfile).setOnClickListener(this);
+        findViewById(R.id.goToMessage).setOnClickListener(this);
+
     }
 
     @Override
@@ -66,6 +68,10 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
 
         if(i == R.id.goToSupport){
             Intent intent = new Intent(this,SupportActivity.class);
+            startActivity(intent);
+        }
+        if(i==R.id.goToMessage){
+            Intent intent = new Intent(this,messageActivity.class);
             startActivity(intent);
         }
 
