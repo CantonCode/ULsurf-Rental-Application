@@ -35,7 +35,6 @@ public class EquipmentAdapter extends FirestoreRecyclerAdapter<Equipment,Equipme
     @Override
     protected void onBindViewHolder(@NonNull EquipmentHolder holder, final int position, @NonNull final Equipment model){
         holder.textViewEquipmentName.setText(model.getEquipmentName());
-        holder.textViewEquipmentDescription.setText(model.getDescription());
         holder.textViewEquipmentSize.setText(model.getSize());
         Picasso.get().load(model.getImageUrl()).fit().centerCrop().into(holder.imageViewEquipmentPic);
 
@@ -45,14 +44,15 @@ public class EquipmentAdapter extends FirestoreRecyclerAdapter<Equipment,Equipme
         holder.cardViewEquipment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(v.getContext(), "test"+String.valueOf(position), Toast.LENGTH_SHORT).show();
                 TextView textViewEquipmentName = equipmentDialog.findViewById(R.id.equipmentName);
                 ImageView imageViewEquipmentImage = equipmentDialog.findViewById(R.id.equipmentImage);
                 textViewEquipmentName.setText(model.getEquipmentName());
                 Picasso.get().load(model.getImageUrl()).fit().centerCrop().into(imageViewEquipmentImage);
 
                 equipmentDialog.show();
+
             }
+
         });
     }
 
@@ -78,7 +78,6 @@ public class EquipmentAdapter extends FirestoreRecyclerAdapter<Equipment,Equipme
             super(itemView);
 
             textViewEquipmentName = itemView.findViewById(R.id.equipmentName);
-            textViewEquipmentDescription = itemView.findViewById(R.id.equipmentDescription);
             textViewEquipmentSize = itemView.findViewById(R.id.equipmentSize);
             imageViewEquipmentPic = itemView.findViewById(R.id.boardImageView);
             cardViewEquipment = itemView.findViewById(R.id.equipmentCard);
