@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +39,7 @@ public class EquipmentAdapter extends FirestoreRecyclerAdapter<Equipment,Equipme
         holder.textViewEquipmentDescription.setText(model.getDescription());
         holder.textViewEquipmentSize.setText(model.getSize());
         Picasso.get().load(model.getImageUrl()).fit().centerCrop().into(holder.imageViewEquipmentPic);
+        Log.d("USERIDbbbbb", model.getEquipmentName());
 
         equipmentDialog.setContentView(R.layout.equipment_detail_page);
         equipmentDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));

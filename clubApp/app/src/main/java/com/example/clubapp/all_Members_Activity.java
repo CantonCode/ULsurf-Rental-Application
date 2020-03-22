@@ -2,6 +2,7 @@ package com.example.clubapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,18 +41,21 @@ public class all_Members_Activity extends AppCompatActivity implements View.OnCl
     }
 
     public void setUpRecyclerView(){
-        Query query = notebookRef.orderBy("user", Query.Direction.DESCENDING);
+        Log.d("USER", "setUpRecyclerView: ");
+        Query query = notebookRef.orderBy("userId", Query.Direction.DESCENDING);
         FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>()
                 .setQuery(query, User.class)
                 .build();
 
         userAdapter= new userAdapter(options);
 
-        mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false);
+        mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false);
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(userAdapter);
+
+        Log.d("USER", "setUpRecyclerView: 2 ");
 
     }
     @Override
