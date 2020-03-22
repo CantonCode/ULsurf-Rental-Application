@@ -16,7 +16,6 @@
         android:layout_height="match_parent"
         android:layout_gravity="center">
 
-
         <ImageView
             android:id="@+id/list_photo"
             android:layout_width="125dp"

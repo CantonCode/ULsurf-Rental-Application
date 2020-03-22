@@ -41,7 +41,6 @@ public class all_Members_Activity extends AppCompatActivity implements View.OnCl
     }
 
     public void setUpRecyclerView(){
-        Log.d("USER", "setUpRecyclerView: ");
         Query query = notebookRef.orderBy("userId", Query.Direction.DESCENDING);
         FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>()
                 .setQuery(query, User.class)
@@ -54,8 +53,6 @@ public class all_Members_Activity extends AppCompatActivity implements View.OnCl
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(userAdapter);
-
-        Log.d("USER", "setUpRecyclerView: 2 ");
 
     }
     @Override
