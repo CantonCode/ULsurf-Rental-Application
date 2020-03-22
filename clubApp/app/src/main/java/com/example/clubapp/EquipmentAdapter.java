@@ -50,7 +50,9 @@ public class EquipmentAdapter extends FirestoreRecyclerAdapter<Equipment,Equipme
                 Picasso.get().load(model.getImageUrl()).fit().centerCrop().into(imageViewEquipmentImage);
 
                 equipmentDialog.show();
+
             }
+
         });
     }
 

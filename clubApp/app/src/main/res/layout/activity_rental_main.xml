@@ -2,14 +2,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:gravity="center_horizontal"
+    android:gravity="center"
     android:orientation="vertical"
     tools:context=".RentalMainActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:orientation="vertical"
@@ -20,21 +20,42 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            app:cardCornerRadius="15dp"
-            android:layout_marginBottom="20dp"
-            android:layout_marginTop="20dp">
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="5dp"
+            app:cardCornerRadius="15dp">
 
             <TextView
                 android:id="@+id/textView"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/welcomeRental"
                 android:layout_margin="25dp"
+                android:gravity="center"
+                android:text="@string/welcomeRental"
                 android:textColor="@android:color/black"
                 android:textSize="24sp"
-                android:textStyle="bold"
-                android:gravity="center_horizontal"/>
+                android:textStyle="bold" />
         </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/sortBy"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="20dp"
+            app:cardCornerRadius="10dp">
+
+            <TextView
+                android:id="@+id/SortByText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:gravity="center"
+                android:text="Sort By ..."
+                android:textColor="@android:color/black"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+    </androidx.cardview.widget.CardView>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerEquipment"
@@ -58,4 +79,5 @@
         </RelativeLayout>
 
     </LinearLayout>
+
 </RelativeLayout>
