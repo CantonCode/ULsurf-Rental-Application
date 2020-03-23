@@ -95,7 +95,12 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
         if (TextUtils.isEmpty(password)) {
             passwordField.setError("Required.");
             valid = false;
-        } else {
+        }else if(password.length()< 4){
+            passwordField.setError("Must be greater than 4 characters");
+            valid = false;
+        }
+
+        else {
             passwordField.setError(null);
         }
 
