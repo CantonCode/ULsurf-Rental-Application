@@ -5,15 +5,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.squareup.picasso.Picasso;
 
 public class homeActivity extends AppCompatActivity implements View.OnClickListener {
 
     private FirebaseAuth mAuth;
     private TextView userTextView;
+    private ImageView userPic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +25,7 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
 
         findViewById(R.id.signOutButton).setOnClickListener(this);
         userTextView = findViewById(R.id.currentUser);
+        userPic = findViewById(R.id.userProfile);
         findViewById(R.id.goToRental).setOnClickListener(this);
         findViewById(R.id.goToSupport).setOnClickListener(this);
         findViewById(R.id.userProfile).setOnClickListener(this);
@@ -34,6 +38,7 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         setCurrentUserText(currentUser);
+        setProfilePic(currentUser);
     }
 
     private void setCurrentUserText(FirebaseUser user){
@@ -41,6 +46,12 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
             userTextView.setText(user.getEmail());
         }else{
             userTextView.setText(user.getDisplayName());
+        }
+    }
+
+    private void setProfilePic(FirebaseUser user){
+        if(user.getPhotoUrl() != null){
+            Picasso.get().load(user.getPhotoUrl()).fit().centerCrop().into(userPic);
         }
     }
 

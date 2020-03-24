@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -18,6 +19,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
 public class signUpActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -42,7 +44,7 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
         mAuth = FirebaseAuth.getInstance();
     }
 
-    private void createAccount(String email, String password, String number, String username) {
+    private void createAccount(final String email, final String password, String number, final String username) {
         if (!validateForm(email, password, number, username)) {
             return;
         }
@@ -51,10 +53,13 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
+
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("USER", "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            setProfile(user,username);
+
                             Toast.makeText(signUpActivity.this, "Account Created Successfully", Toast.LENGTH_SHORT).show();
                             success();
                         } else {
@@ -70,11 +75,38 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
                         // [END_EXCLUDE]
                     }
                 });
+
     }
 
     private void success(){
+        mAuth.signOut();
         Intent intent = new Intent(this, Login.class);
         startActivity(intent);
+    }
+
+    private void setProfile(final FirebaseUser user, String username){
+
+        Log.d("USER", "User profile updated." + user );
+        if( user != null) {
+            final String email = user.getEmail();
+
+            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                    .setDisplayName(username)
+                    .setPhotoUri(Uri.parse("https://www.freepngimg.com/thumb/youtube/63841-profile-twitch-youtube-avatar-discord-free-download-image.png"))
+                    .build();
+
+            user.updateProfile(profileUpdates)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            final Uri display = user.getPhotoUrl();
+                            if (task.isSuccessful()) {
+                                Log.d("USER", "User profile updated." + email + display);
+                            }
+                        }
+                    });
+        }
+
     }
 
 
