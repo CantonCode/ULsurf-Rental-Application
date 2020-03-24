@@ -4,8 +4,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
@@ -19,6 +23,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class CalendarActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
 
+    private TextView confirm;
+    private Button btn;
     //FirestoreRecyclerOptions<Equipment> model;
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -27,6 +33,7 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
         showDatePicker();
+        confirm= findViewById(R.id.date_confirmed);
     }
 
     private void showDatePicker() {
@@ -44,6 +51,8 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth){
 
         String text= dayOfMonth + "/" + month +"/" + year;
+        String confirmDate= "You have booked this piece of equipment for: " + text;
+        confirm.setText(confirmDate);
         //int equipID  =
         //int userID =
         Map<String, Object> rent = new HashMap<>();
@@ -53,6 +62,15 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
 
         db.collection("rented").add(rent);
         Toast.makeText(CalendarActivity.this, text, Toast.LENGTH_SHORT).show();
+
+        btn= findViewById(R.id.back);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                Intent intent = new Intent(CalendarActivity.this, RentalMainActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
 }
