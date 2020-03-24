@@ -1,6 +1,7 @@
 package com.example.clubapp;
 
 
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +30,7 @@ public class userAdapter extends FirestoreRecyclerAdapter<User,userAdapter.UserV
         holder.list_admin.setText(String.valueOf(model.isAdmin()));
         Picasso.get().load(model.getPhotoUrl()).fit().centerCrop().into(holder.list_photo);
         Log.d("USERIDaaaaa", model.getUserName());
+
     }
 
 
@@ -47,13 +49,21 @@ public class userAdapter extends FirestoreRecyclerAdapter<User,userAdapter.UserV
         TextView list_studentNumber;
         TextView list_userName;
 
-        public UserViewHolder(View itemView) {
+        public UserViewHolder(final View itemView) {
             super(itemView);
 
             list_admin = itemView.findViewById(R.id.list_admin);
             list_photo = itemView.findViewById(R.id.list_photo);
             list_studentNumber = itemView.findViewById(R.id.list_studentNumber);
             list_userName = itemView.findViewById(R.id.list_userName);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(itemView.getContext(), message_between_users.class);
+                    itemView.getContext().startActivity(intent);
+                }
+            });
         }
     }
 }
