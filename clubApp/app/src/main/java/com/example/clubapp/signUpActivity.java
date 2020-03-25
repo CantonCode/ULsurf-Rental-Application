@@ -3,6 +3,7 @@ package com.example.clubapp;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,15 +12,25 @@ import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
+
+import java.io.IOException;
 
 public class signUpActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -27,7 +38,13 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
     private EditText passwordField;
     private EditText studentNumField;
     private EditText userNameField;
+    private TextView uploadText;
+    private ImageView userPicture;
     private FirebaseAuth mAuth;
+    private final int PICK_IMAGE_REQUEST = 22;
+    FirebaseStorage storage;
+    StorageReference storageReference;
+    private Uri filePath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,17 +52,22 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
         findViewById(R.id.signUpButton).setOnClickListener(this);
+        findViewById(R.id.uploadPicture).setOnClickListener(this);
 
         emailField = findViewById(R.id.signUpEmailField);
         passwordField = findViewById(R.id.signUpPasswordField);
         studentNumField = findViewById(R.id.signUpStudentNumber);
         userNameField = findViewById(R.id.signUpUserName);
+        userPicture = findViewById(R.id.signUpPicture);
+        uploadText = findViewById(R.id.uploadText);
 
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference();
         mAuth = FirebaseAuth.getInstance();
     }
 
-    private void createAccount(final String email, final String password, String number, final String username) {
-        if (!validateForm(email, password, number, username)) {
+    private void createAccount(final String email, final String password, String number, final String username, Uri filePath) {
+        if (!validateForm(email, password, number, username,filePath)) {
             return;
         }
 
@@ -58,8 +80,8 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("USER", "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            setProfile(user,username);
-
+                            uploadPic(user);
+                            setProfileUserName(user,username);
                             Toast.makeText(signUpActivity.this, "Account Created Successfully", Toast.LENGTH_SHORT).show();
                             success();
                         } else {
@@ -84,33 +106,84 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
         startActivity(intent);
     }
 
-    private void setProfile(final FirebaseUser user, String username){
+    private void setProfileUserName(final FirebaseUser user, final String username){
+
 
         Log.d("USER", "User profile updated." + user );
         if( user != null) {
             final String email = user.getEmail();
 
-            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                    .setDisplayName(username)
-                    .setPhotoUri(Uri.parse("https://www.freepngimg.com/thumb/youtube/63841-profile-twitch-youtube-avatar-discord-free-download-image.png"))
-                    .build();
+                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                            .setDisplayName(username)
+                            .build();
 
-            user.updateProfile(profileUpdates)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    user.updateProfile(profileUpdates)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Log.d("USER", "User profile updated." + email);
+                                    }
+                                }
+                            });
+                }
+
+
+
+        }
+
+    private void selectImage(){
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+    }
+
+    private void uploadPic(FirebaseUser user){
+        if(filePath != null){
+            final ProgressDialog progressDialog = new ProgressDialog(this);
+            progressDialog.setTitle("Uploading...");
+            progressDialog.show();
+
+            StorageReference ref = storageReference.child("images/" + user.getUid());
+            ref.putFile(filePath).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    progressDialog.dismiss();
+                    Toast.makeText(signUpActivity.this, "Uploaded", Toast.LENGTH_LONG).show();
+                }
+            })
+                    .addOnFailureListener(new OnFailureListener() {
                         @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            final Uri display = user.getPhotoUrl();
-                            if (task.isSuccessful()) {
-                                Log.d("USER", "User profile updated." + email + display);
-                            }
+                        public void onFailure(@NonNull Exception e) {
+                            progressDialog.dismiss();
+                            Toast.makeText(signUpActivity.this, "Failed "+e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                            double progress = (100.0*taskSnapshot.getBytesTransferred()/taskSnapshot
+                                    .getTotalByteCount());
+                            progressDialog.setMessage("Uploaded "+(int)progress+"%");
                         }
                     });
         }
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
+                && data != null && data.getData() != null )
+        {
+            filePath = data.getData();
+            Picasso.get().load(filePath).centerCrop().fit().into(userPicture);
+        }
+    }
 
-    private boolean validateForm(String email,String password, String number, String username){
+    private boolean validateForm(String email,String password, String number, String username,Uri filePath){
         boolean valid = true;
 
 
@@ -158,6 +231,11 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
             studentNumField.setError(null);
         }
 
+        if(filePath == null){
+            valid = false;
+            uploadText.setError("required");
+        }
+
         return valid;
     }
 
@@ -167,7 +245,11 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
 
         if(i==R.id.signUpButton){
             createAccount(emailField.getText().toString(),passwordField.getText().toString(),
-                    studentNumField.getText().toString(),userNameField.getText().toString());
+                    studentNumField.getText().toString(),userNameField.getText().toString(),filePath);
+        }
+
+        if(i == R.id.uploadPicture){
+            selectImage();
         }
     }
 }
