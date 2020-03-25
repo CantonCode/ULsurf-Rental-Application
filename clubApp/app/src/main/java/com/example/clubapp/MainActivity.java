@@ -13,7 +13,7 @@ import com.google.firebase.auth.FirebaseUser;
 import androidx.annotation.VisibleForTesting;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     private FirebaseAuth mAuth;
 
@@ -23,7 +23,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.content_main);
+        findViewById(R.id.loginButton).setOnClickListener(this);
+        findViewById(R.id.signUp).setOnClickListener(this);
 
         isUserLoggedIn();
     }
@@ -74,6 +76,11 @@ public class MainActivity extends AppCompatActivity {
         if (i == R.id.loginButton){
             Intent intent = new Intent(MainActivity.this, Login.class);
             startActivity(intent);
+        }
+
+        if(i == R.id.signUp){
+            Intent intent1 = new Intent(MainActivity.this, signUpActivity.class);
+            startActivity(intent1);
         }
     }
 
