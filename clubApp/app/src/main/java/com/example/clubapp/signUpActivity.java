@@ -60,6 +60,7 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
         userNameField = findViewById(R.id.signUpUserName);
         userPicture = findViewById(R.id.signUpPicture);
         uploadText = findViewById(R.id.uploadText);
+        Picasso.get().load("http://s3.amazonaws.com/37assets/svn/765-default-avatar.png").fit().centerCrop().into(userPicture);
 
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
