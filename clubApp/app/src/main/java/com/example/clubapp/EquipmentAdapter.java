@@ -59,10 +59,20 @@ public class EquipmentAdapter extends FirestoreRecyclerAdapter<Equipment,Equipme
 
                 equipmentDialog.show();
 
+                Button btn = (Button) equipmentDialog.findViewById(R.id.rentThisBoard);
+                btn.setOnClickListener( new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(v.getContext(), CalendarActivity.class);
+                        v.getContext().startActivity(intent);
+                    }
+                });
+
             }
 
         });
     }
+
 
     @NonNull
     @Override

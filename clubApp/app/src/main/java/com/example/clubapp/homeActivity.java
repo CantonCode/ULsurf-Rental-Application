@@ -65,7 +65,7 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         if(i == R.id.goToSupport){
-            Intent intent = new Intent(this,CalendarActivity.class);
+            Intent intent = new Intent(this,SupportActivity.class);
             startActivity(intent);
         }
 
