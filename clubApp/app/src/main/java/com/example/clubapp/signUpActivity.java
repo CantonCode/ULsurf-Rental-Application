@@ -258,18 +258,13 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
             @Override
             public void onComplete(@NonNull Task<Void> task) {
 
-                Toast.makeText(signUpActivity.this,
-                        "User created",
-                        Toast.LENGTH_SHORT).show();
-
+                Log.d("USER", "User added to data base");
 
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(signUpActivity.this,
-                        "Failed TO User",
-                        Toast.LENGTH_LONG).show();
+                Log.d("USER", "User failed to add to data base");
             }
         });
 
