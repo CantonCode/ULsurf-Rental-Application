@@ -2,7 +2,7 @@ package com.example.clubapp;
 
 public class User {
 
-    private int userId;
+    private String userId;
     private String userName;
     private String studentNumber;
     private String photoUrl;
@@ -13,7 +13,7 @@ public class User {
         //empty constructor needed
     }
 
-    public User(String userName, int userId, String studentNumber, String photoUrl, boolean admin){
+    public User(String userName, String userId, String studentNumber, String photoUrl, boolean admin){
         this.userName = userName;
         this.userId = userId;
         this.studentNumber = studentNumber;
@@ -29,11 +29,11 @@ public class User {
         this.userName = userName;
     }
 
-    public int getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 

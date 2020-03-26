@@ -24,6 +24,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -31,6 +33,8 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class signUpActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -40,11 +44,12 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
     private EditText userNameField;
     private TextView uploadText;
     private ImageView userPicture;
-    private FirebaseAuth mAuth;
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private final int PICK_IMAGE_REQUEST = 22;
     FirebaseStorage storage;
     StorageReference storageReference;
     private Uri filePath;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,10 +69,11 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
 
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
-        mAuth = FirebaseAuth.getInstance();
+
+
     }
 
-    private void createAccount(final String email, final String password, String number, final String username, Uri filePath) {
+    private void createAccount(final String email, final String password,final String number, final String username, Uri filePath) {
         if (!validateForm(email, password, number, username,filePath)) {
             return;
         }
@@ -81,10 +87,10 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("USER", "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            createUserInDataBase(number,username,user);
                             uploadPic(user);
                             setProfileUserName(user,username);
                             Toast.makeText(signUpActivity.this, "Account Created Successfully", Toast.LENGTH_SHORT).show();
-                            success();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w("USER", "createUserWithEmail:failure", task.getException());
@@ -102,7 +108,6 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void success(){
-        mAuth.signOut();
         Intent intent = new Intent(this, Login.class);
         startActivity(intent);
     }
@@ -152,6 +157,7 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     progressDialog.dismiss();
                     Toast.makeText(signUpActivity.this, "Uploaded", Toast.LENGTH_LONG).show();
+                    success();
                 }
             })
                     .addOnFailureListener(new OnFailureListener() {
@@ -238,6 +244,30 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
         }
 
         return valid;
+    }
+
+    private void createUserInDataBase(String number,String username,FirebaseUser user){
+        Log.d("USER", "enterdatabase");
+        String id = user.getUid();
+        User newUser = new User(username,id,number,"",false);
+
+        Log.d("USER","this is a new user" + newUser.toString());
+
+        db.collection("users").document(id).set(newUser)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+
+                Log.d("USER", "User added to data base");
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("USER", "User failed to add to data base");
+            }
+        });
+
     }
 
     @Override
