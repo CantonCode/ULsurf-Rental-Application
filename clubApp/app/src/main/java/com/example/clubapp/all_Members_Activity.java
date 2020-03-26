@@ -22,7 +22,7 @@ import com.google.firebase.firestore.Query;
 public class all_Members_Activity extends AppCompatActivity implements View.OnClickListener {
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private CollectionReference notebookRef = db.collection("user");
+    private CollectionReference notebookRef = db.collection("users");
     private userAdapter userAdapter;
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager mLayoutManager;

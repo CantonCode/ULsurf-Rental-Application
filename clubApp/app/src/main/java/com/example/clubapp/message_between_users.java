@@ -72,8 +72,6 @@ public class message_between_users extends AppCompatActivity {
         recyclerView = (RecyclerView)findViewById(R.id.message_Recycler);
         mChat = new ArrayList<>();
 
-
-
         userName = findViewById(R.id.list_userName);
         send_btn = findViewById(R.id.send_btn);
         text_msg = findViewById(R.id.text_msg);
@@ -197,6 +195,8 @@ public class message_between_users extends AppCompatActivity {
     }
 
     private void send_Message(String sender,String receiver, String message){
+
+
 
         notebookRef = db.collection("chats");
 
