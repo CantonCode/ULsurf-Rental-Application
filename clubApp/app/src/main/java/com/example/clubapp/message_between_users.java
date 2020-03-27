@@ -85,12 +85,13 @@ public class message_between_users extends AppCompatActivity implements View.OnC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.show_messages);
         findViewById(R.id.sendMessage).setOnClickListener(this);
-        found = false;
+        setValue(false);
         text_msg = findViewById(R.id.newMessage);
         selectedUserId = getIntent().getStringExtra("selected_user");
 //        chatId = "1";
 //        setUpRecyclerView();
     }
+
 
     public void onStart(){
         super.onStart();
@@ -98,7 +99,6 @@ public class message_between_users extends AppCompatActivity implements View.OnC
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         currentUserId = currentUser.getUid();
-        chatId = "";
         Log.d("MESSAGE", "Init   currentUser: " + currentUserId + "    receiverID:"+ selectedUserId);
         chatId = currentUserId + selectedUserId;
         findChat(currentUserId,selectedUserId);
@@ -148,6 +148,7 @@ public class message_between_users extends AppCompatActivity implements View.OnC
                         Log.d("MESSAGE", "DocumentSnapshot data: " + document.getData());
                         Log.d("MESSAGE", "chatId: chat id one " + chatIdOne );
                         chatId = chatIdOne;
+                        setValue(true);
                     } else {
                         Log.d("MESSAGE", "No such document");
                     }
@@ -167,6 +168,7 @@ public class message_between_users extends AppCompatActivity implements View.OnC
                         Log.d("MESSAGE", "DocumentSnapshot data: " + document.getData());
                         Log.d("MESSAGE", "chatId: id two " + chatIdTwo );
                         chatId = chatIdTwo;
+                        setValue(true);
                     } else {
                         Log.d("MESSAGE", "No such document");
                     }
@@ -242,7 +244,12 @@ public class message_between_users extends AppCompatActivity implements View.OnC
         Log.d("MESSAGE", "send_message:currentUser: " + currentUserId + "    receiverID:"+ selectedUserId);
         Log.d("MESSAGE", "chatID:"+ chatId);
 
-        create_chat(sender,receiver);
+        Boolean createChat = getValue();
+        Log.d("MESSAGE", "Is chat already created?:  " + createChat);
+
+        if(!createChat) {
+            create_chat(sender, receiver);
+        }
 
 
 
@@ -272,6 +279,14 @@ public class message_between_users extends AppCompatActivity implements View.OnC
             }
             text_msg.setText("");
         }
+    }
+
+    public void setValue(boolean value) {
+        this.found = value;
+    }
+
+    public boolean getValue() {
+        return found;
     }
 }
 
