@@ -8,46 +8,65 @@ import android.view.View;
 import android.widget.Toolbar;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
-
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
 
 public class messageActivity extends AppCompatActivity implements View.OnClickListener {
 
 
     private FirebaseAuth mAuth;
-    private Toolbar mToolbar;
-
-    private ViewPager mViewPager;
-    private pageSections mSectionsPagerAdapter;
-    private TabLayout mTabLayout;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private CollectionReference notebookRef = db.collection("chats");
+    private ChatAdapter chatAdapter;
+    private RecyclerView recyclerView;
+    private RecyclerView.LayoutManager mLayoutManager;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message);
-
         mAuth = FirebaseAuth.getInstance();
+        findViewById(R.id.newChatButton).setOnClickListener(this);
+        setUpRecyclerView();
+    }
 
-        mToolbar = (Toolbar) findViewById(R.id.main_appBar);
-        getSupportActionBar().setTitle("Chat Room");
+    public void setUpRecyclerView(){
+        Query query = notebookRef;
+        FirestoreRecyclerOptions<Chat> options = new FirestoreRecyclerOptions.Builder<Chat>()
+                .setQuery(query, Chat.class)
+                .build();
 
-        findViewById(R.id.goBack).setOnClickListener(this);
+        chatAdapter = new ChatAdapter(options);
 
-        //Tabs
-        mViewPager = (ViewPager) findViewById(R.id.mainView);
-        mSectionsPagerAdapter = new pageSections(getSupportFragmentManager());
+        mLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
+        recyclerView = findViewById(R.id.currentChatView);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setAdapter(chatAdapter);
 
-        mViewPager.setAdapter(mSectionsPagerAdapter);
+    }
 
-        mTabLayout = (TabLayout) findViewById(R.id.messageParts);
-        mTabLayout.setupWithViewPager(mViewPager);
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
 
+        chatAdapter.startListening();
+    }
+    protected void onStop(){
+        super.onStop();
 
+        chatAdapter.stopListening();
     }
 
     private void goBack() {
@@ -60,45 +79,11 @@ public class messageActivity extends AppCompatActivity implements View.OnClickLi
         if (i == R.id.goBack) {
             goBack();
         }
-    }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-
-
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        super.onOptionsItemSelected(item);
-
-        if (item.getItemId() == R.id.signOutButton) {
-
-            //mUserRef.child("online").setValue(ServerValue.TIMESTAMP);
-
-            mAuth.signOut();
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-            //sendToStart();
-
-        }
-
-        if (item.getItemId() == R.id.goBack) {
-            Intent intent = new Intent(this, homeActivity.class);
-            startActivity(intent);
-        }
-
-        if (item.getItemId() == R.id.user_members) {
-
+        if(i == R.id.newChatButton){
             Intent intent = new Intent(this, all_Members_Activity.class);
             startActivity(intent);
-
         }
-
-        return true;
     }
+
 }

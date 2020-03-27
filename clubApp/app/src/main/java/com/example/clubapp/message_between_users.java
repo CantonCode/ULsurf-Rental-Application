@@ -20,6 +20,7 @@ import android.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -37,6 +38,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -53,6 +55,9 @@ public class message_between_users extends AppCompatActivity implements View.OnC
     private MessageAdapter messageAdapter;
     private FirebaseUser firebaseUser;
     private CollectionReference notebookRef;
+    private CollectionReference newMessageRef;
+    private DocumentReference chatRef;
+
 
     private ImageButton send_btn;
     private EditText text_msg;
@@ -61,32 +66,30 @@ public class message_between_users extends AppCompatActivity implements View.OnC
 
     private RecyclerView recyclerView;
 
-    private  List<Chat> mChat;
     private String getTitle;
     private String getDate;
     private String getMessage;
     String selectedUserId;
     String currentUserId;
     String chatId;
+    String chatIdOne;
+    String msg;
+    Boolean found;
+    String chatIdTwo;
+    CollectionReference chats;
     DocumentReference messageRef;
-    Boolean found = false;
+    private RecyclerView.LayoutManager mLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_message_between_users);
-        mToolbar = (Toolbar) findViewById(R.id.main_appBar);
-        getSupportActionBar().setTitle("Messenger");
-
-        userName = findViewById(R.id.list_userName);
-        text_msg = findViewById(R.id.text_msg);
-
-        findViewById(R.id.send_btn).setOnClickListener(this);
-
-        recyclerView = findViewById(R.id.recyclerEquipment);
-
+        setContentView(R.layout.show_messages);
+        findViewById(R.id.sendMessage).setOnClickListener(this);
+        found = false;
+        text_msg = findViewById(R.id.newMessage);
         selectedUserId = getIntent().getStringExtra("selected_user");
-
+//        chatId = "1";
+//        setUpRecyclerView();
     }
 
     public void onStart(){
@@ -95,8 +98,14 @@ public class message_between_users extends AppCompatActivity implements View.OnC
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         currentUserId = currentUser.getUid();
-        setDate();
+        chatId = "";
+        Log.d("MESSAGE", "Init   currentUser: " + currentUserId + "    receiverID:"+ selectedUserId);
+        chatId = currentUserId + selectedUserId;
         findChat(currentUserId,selectedUserId);
+        setDate();
+        Log.d("MESSAGE", "chatID new one:" + chatId);
+
+//        findChat(currentUserId,selectedUserId);
 
     }
 
@@ -107,86 +116,84 @@ public class message_between_users extends AppCompatActivity implements View.OnC
         getDate=getCurrentDate+getCurrentMonth+getCurrentYear+"";
     }
 
+    private void create_chat(String sender,String receiver){
 
+            HashMap<String, Object> chat = new HashMap<>();
+            chat.put("chatId", chatId);
+            chat.put("user1", sender);
+            chat.put("user2", receiver);
 
+            chatRef = db.collection("chats").document(chatId);
+            chatRef.set(chat);
 
-    private void findChat(final String currentUserId, final String selectedUserId){
-        CollectionReference chats = db.collection("chats");
+            Log.d("MESSAGE", "create_chat: " + chat);
 
-        chats.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+    }
+
+    private void findChat(final String cUserId, final String sUserId){
+        chats = db.collection("chats");
+        chatIdOne = cUserId + sUserId;
+        chatIdTwo = sUserId + cUserId;
+
+        DocumentReference one = chats.document(chatIdOne);
+        DocumentReference two = chats.document(chatIdTwo);
+
+        one.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        Log.d("USER", document.getId() + " => " + document.getData());
-
-                        if((document.getId().contains(currentUserId)) && document.getId().contains(selectedUserId)){
-                            Log.d("USER", "SUCCESS MATCH FOUND");
-                            found = true;
-                            chatId = document.getId();
-                            setUpRecyclerView();
-                            break;
-                        }else {
-                            Log.d("USER", "NO MATCH FOUND: "+ found);
-                        }
-
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.d("MESSAGE", "DocumentSnapshot data: " + document.getData());
+                        Log.d("MESSAGE", "chatId: chat id one " + chatIdOne );
+                        chatId = chatIdOne;
+                    } else {
+                        Log.d("MESSAGE", "No such document");
                     }
                 } else {
-                    Log.d("USER", "Error getting documents: ", task.getException());
+                    Log.d("MESSAGE", "get failed with ", task.getException());
+                }
+            }
+        }
+        );
+
+        two.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.d("MESSAGE", "DocumentSnapshot data: " + document.getData());
+                        Log.d("MESSAGE", "chatId: id two " + chatIdTwo );
+                        chatId = chatIdTwo;
+                    } else {
+                        Log.d("MESSAGE", "No such document");
+                    }
+                } else {
+                    Log.d("MESSAGE", "get failed with ", task.getException());
                 }
             }
         });
 
 
+        Log.d("MESSAGE", "chatId: " + chatId );
     }
 
 
     public void setUpRecyclerView(){
-        messageAdapter = new MessageAdapter(mChat,getTitle,currentUserId);
         notebookRef = db.collection("chats").document(chatId).collection("messages");
         Query first = notebookRef;
-        first.addSnapshotListener(message_between_users.this, new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
-                if(!documentSnapshots.isEmpty())
-                {
-                    for(DocumentChange doc:documentSnapshots.getDocumentChanges())
-                    {
-                        if(doc.getType()==DocumentChange.Type.ADDED)
-                        {
-                            Chat obj = doc.getDocument().toObject(Chat.class);
-                            mChat.add(obj);
-                            DocumentSnapshot lastVisible = documentSnapshots.getDocuments()
-                                    .get(documentSnapshots.size() -1);
-                            Query next = notebookRef.startAfter(lastVisible);
 
-                            messageAdapter.notifyDataSetChanged();
-                        }
-                        if(doc.getType()==DocumentChange.Type.MODIFIED)
-                        {
-                            String docID = doc.getDocument().getId();
-                            Chat obj = doc.getDocument().toObject(Chat.class);
-                            if(doc.getOldIndex() == doc.getNewIndex())
-                            {
-                                mChat.set(doc.getOldIndex(),obj);
-                            }
-                            else
-                            {
-                                mChat.remove(doc.getOldIndex());
-                                mChat.add(doc.getNewIndex(),obj);
-                                messageAdapter.notifyItemMoved(doc.getOldIndex(),doc.getNewIndex());
-                            }
-                            messageAdapter.notifyDataSetChanged();
-                        }
-                    }
-                }
-            }
-        });
+        FirestoreRecyclerOptions<Message> options = new FirestoreRecyclerOptions.Builder<Message>()
+                .setQuery(first , Message.class)
+                .build();
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(message_between_users.this);
-        layoutManager.setReverseLayout(false);
-        layoutManager.setStackFromEnd(false);
-        recyclerView.setLayoutManager(layoutManager);
+        messageAdapter = new MessageAdapter(options);
+
+        mLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
+        recyclerView = findViewById(R.id.messageRecyclerCon);
+        recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(messageAdapter);
     }
 
@@ -232,10 +239,14 @@ public class message_between_users extends AppCompatActivity implements View.OnC
     }
 
     private void send_Message(String sender,String receiver, String message){
+        Log.d("MESSAGE", "send_message:currentUser: " + currentUserId + "    receiverID:"+ selectedUserId);
+        Log.d("MESSAGE", "chatID:"+ chatId);
 
-        chatId = sender+receiver;
+        create_chat(sender,receiver);
 
-        notebookRef = db.collection("chats").document(chatId).collection("messages");;
+
+
+        newMessageRef = db.collection("chats").document(chatId).collection("messages");;
 
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("sender", sender);
@@ -243,16 +254,18 @@ public class message_between_users extends AppCompatActivity implements View.OnC
         hashMap.put("message", message);
         hashMap.put("Time", FieldValue.serverTimestamp());
 
-        notebookRef.add(hashMap);
+        newMessageRef.add(hashMap);
     }
+
 
     public void onClick(View v){
         int i = v.getId();
 
-        if(i == R.id.send_btn){
-            String msg = text_msg.getText().toString();
+        if(i == R.id.sendMessage){
+             msg = text_msg.getText().toString();
 
             if(!msg.equals("")) {
+                Log.d("MESSAGE", "Sending Message:currentUser: " + currentUserId + "    receiverID:"+ selectedUserId);
                 send_Message(currentUserId,selectedUserId, msg);
             } else {
                 Toast.makeText(message_between_users.this, "Can't do text", Toast.LENGTH_SHORT).show();

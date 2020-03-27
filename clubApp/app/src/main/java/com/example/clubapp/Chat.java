@@ -1,60 +1,43 @@
 package com.example.clubapp;
 
-import java.io.Serializable;
-import java.util.Date;
-
-public class Chat implements Serializable {
-
-        private String sender;
-        private String receiver;
-        private String message;
-        private String Type;
-        private Date Time;
+public class Chat {
+    private String chatId;
+    private String user1;
+    private String user2;
 
 
+    public Chat(){
 
-
-    public Chat() {
-            //empty constructor needed
-        }
-
-        public Chat(String sender, String receiver, String message, Date Time, String Type ) {
-            this.sender = sender;
-            this.receiver = receiver;
-            this.message = message;
-            this.Time = Time;
-        }
-
-        public String getSender() {
-            return sender;
-        }
-
-        public void setSender(String sender) {
-            this.sender = sender;
-        }
-
-        public String getReceiver() {
-            return receiver;
-        }
-
-        public void setReceiver(String receiver) {
-            this.receiver = receiver;
-        }
-
-        public String getType() { return Type; }
-
-        public void setType(String type) { Type = type; }
-
-        public Date getTime() { return Time; }
-
-        public void setTime(Date time) { Time = time; }
-
-        public String getMessage() {
-            return message;
-        }
-
-        public void setMessage(String message) {
-            this.message = message;
-        }
     }
 
+    public Chat(String chatId, String user1, String user2){
+        this.chatId = chatId;
+        this.user1 = user1;
+        this.user2 = user2;
+    }
+
+    public String getChatId() {
+        return chatId;
+    }
+
+    public void setChatId(String chatId) {
+        this.chatId = chatId;
+    }
+
+    public String getUser1() {
+        return user1;
+    }
+
+    public void setUser1(String user1) {
+        this.user1 = user1;
+    }
+
+    public String getUser2() {
+        return user2;
+    }
+
+    public void setUser2(String user2) {
+        this.user2 = user2;
+    }
+
+}

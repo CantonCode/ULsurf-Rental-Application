@@ -42,7 +42,7 @@
         android:layout_width="match_parent"
         android:layout_height="518dp"
         android:layout_above="@+id/bottom"
-        android:layout_below="@+id/main_appBar" />
+        android:layout_below="@+id/main_appBar"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
