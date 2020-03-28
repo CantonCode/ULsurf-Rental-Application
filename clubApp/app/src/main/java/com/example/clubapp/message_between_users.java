@@ -45,7 +45,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class message_between_users extends AppCompatActivity implements View.OnClickListener{
+public class message_between_users extends AppCompatActivity implements View.OnClickListener {
 
     private ListenerRegistration listenerRegistration;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -88,49 +88,49 @@ public class message_between_users extends AppCompatActivity implements View.OnC
         setValue(false);
         text_msg = findViewById(R.id.newMessage);
         selectedUserId = getIntent().getStringExtra("selected_user");
-//        chatId = "1";
-//        setUpRecyclerView();
-    }
 
-
-    public void onStart(){
-        super.onStart();
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         currentUserId = currentUser.getUid();
-        Log.d("MESSAGE", "Init   currentUser: " + currentUserId + "    receiverID:"+ selectedUserId);
+
         chatId = currentUserId + selectedUserId;
-        findChat(currentUserId,selectedUserId);
+
+        findChat(currentUserId, selectedUserId);
+    }
+
+
+    public void onStart() {
+        super.onStart();
+        Log.d("MESSAGE", "Init   currentUser: " + currentUserId + "    receiverID:" + selectedUserId);
         setDate();
         Log.d("MESSAGE", "chatID new one:" + chatId);
 
 //        findChat(currentUserId,selectedUserId);
-
     }
 
-    public void setDate(){
+    public void setDate() {
         int getCurrentYear = Calendar.getInstance().get(Calendar.YEAR);
         int getCurrentMonth = Calendar.getInstance().get(Calendar.MONTH);
         int getCurrentDate = Calendar.getInstance().get(Calendar.DATE);
-        getDate=getCurrentDate+getCurrentMonth+getCurrentYear+"";
+        getDate = getCurrentDate + getCurrentMonth + getCurrentYear + "";
     }
 
-    private void create_chat(String sender,String receiver){
+    private void create_chat(String sender, String receiver) {
 
-            HashMap<String, Object> chat = new HashMap<>();
-            chat.put("chatId", chatId);
-            chat.put("user1", sender);
-            chat.put("user2", receiver);
+        HashMap<String, Object> chat = new HashMap<>();
+        chat.put("chatId", chatId);
+        chat.put("user1", sender);
+        chat.put("user2", receiver);
 
-            chatRef = db.collection("chats").document(chatId);
-            chatRef.set(chat);
+        chatRef = db.collection("chats").document(chatId);
+        chatRef.set(chat);
 
-            Log.d("MESSAGE", "create_chat: " + chat);
+        Log.d("MESSAGE", "create_chat: " + chat);
 
     }
 
-    private void findChat(final String cUserId, final String sUserId){
+    private void findChat(final String cUserId, final String sUserId) {
         chats = db.collection("chats");
         chatIdOne = cUserId + sUserId;
         chatIdTwo = sUserId + cUserId;
@@ -140,23 +140,24 @@ public class message_between_users extends AppCompatActivity implements View.OnC
 
         one.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
 
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        Log.d("MESSAGE", "DocumentSnapshot data: " + document.getData());
-                        Log.d("MESSAGE", "chatId: chat id one " + chatIdOne );
-                        chatId = chatIdOne;
-                        setValue(true);
-                    } else {
-                        Log.d("MESSAGE", "No such document");
-                    }
-                } else {
-                    Log.d("MESSAGE", "get failed with ", task.getException());
-                }
-            }
-        }
+                                            @Override
+                                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                if (task.isSuccessful()) {
+                                                    DocumentSnapshot document = task.getResult();
+                                                    if (document.exists()) {
+                                                        Log.d("MESSAGE", "DocumentSnapshot data: " + document.getData());
+                                                        Log.d("MESSAGE", "chatId: chat id one " + chatIdOne);
+                                                        setId(chatIdOne);
+                                                        setValue(true);
+                                                        setUpRecyclerView();
+                                                    } else {
+                                                        Log.d("MESSAGE", "No such document");
+                                                    }
+                                                } else {
+                                                    Log.d("MESSAGE", "get failed with ", task.getException());
+                                                }
+                                            }
+                                        }
         );
 
         two.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -166,9 +167,10 @@ public class message_between_users extends AppCompatActivity implements View.OnC
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         Log.d("MESSAGE", "DocumentSnapshot data: " + document.getData());
-                        Log.d("MESSAGE", "chatId: id two " + chatIdTwo );
-                        chatId = chatIdTwo;
+                        Log.d("MESSAGE", "chatId: id two " + chatIdTwo);
+                        setId(chatIdTwo);
                         setValue(true);
+                        setUpRecyclerView();
                     } else {
                         Log.d("MESSAGE", "No such document");
                     }
@@ -179,24 +181,44 @@ public class message_between_users extends AppCompatActivity implements View.OnC
         });
 
 
-        Log.d("MESSAGE", "chatId: " + chatId );
+        Log.d("MESSAGE", "chatId: " + chatId);
     }
 
 
-    public void setUpRecyclerView(){
-        notebookRef = db.collection("chats").document(chatId).collection("messages");
-        Query first = notebookRef;
+    public void setUpRecyclerView() {
+
+        String id = getId();
+        Log.d("MESSAGE", "setUpRecyclerView: #" + id);
+        notebookRef = db.collection("chats").document(id).collection("messages");
+
+        Query first = notebookRef.orderBy("Time", Query.Direction.DESCENDING);
+        db.collection("chats").document(chatId).collection("messages").get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d("MESSAGE info", document.getId() + " => " + document.getData());
+                            }
+                        } else {
+                            Log.d("MESSAGE", "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
 
         FirestoreRecyclerOptions<Message> options = new FirestoreRecyclerOptions.Builder<Message>()
-                .setQuery(first , Message.class)
+                .setQuery(first, Message.class)
                 .build();
+
+        Log.d("MESSAGE", "setUpRecyclerView: option " + options);
 
         messageAdapter = new MessageAdapter(options);
 
-        mLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
+        mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true);
         recyclerView = findViewById(R.id.messageRecyclerCon);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(messageAdapter);
+        messageAdapter.startListening();
     }
 
 
@@ -240,20 +262,21 @@ public class message_between_users extends AppCompatActivity implements View.OnC
         return true;
     }
 
-    private void send_Message(String sender,String receiver, String message){
-        Log.d("MESSAGE", "send_message:currentUser: " + currentUserId + "    receiverID:"+ selectedUserId);
-        Log.d("MESSAGE", "chatID:"+ chatId);
+    private void send_Message(String sender, String receiver, String message) {
+        Log.d("MESSAGE", "send_message:currentUser: " + currentUserId + "    receiverID:" + selectedUserId);
+        Log.d("MESSAGE", "chatID:" + chatId);
 
         Boolean createChat = getValue();
         Log.d("MESSAGE", "Is chat already created?:  " + createChat);
 
-        if(!createChat) {
+        if (!createChat) {
             create_chat(sender, receiver);
+            setUpRecyclerView();
         }
 
 
-
-        newMessageRef = db.collection("chats").document(chatId).collection("messages");;
+        newMessageRef = db.collection("chats").document(chatId).collection("messages");
+        ;
 
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("sender", sender);
@@ -265,15 +288,15 @@ public class message_between_users extends AppCompatActivity implements View.OnC
     }
 
 
-    public void onClick(View v){
+    public void onClick(View v) {
         int i = v.getId();
 
-        if(i == R.id.sendMessage){
-             msg = text_msg.getText().toString();
+        if (i == R.id.sendMessage) {
+            msg = text_msg.getText().toString();
 
-            if(!msg.equals("")) {
-                Log.d("MESSAGE", "Sending Message:currentUser: " + currentUserId + "    receiverID:"+ selectedUserId);
-                send_Message(currentUserId,selectedUserId, msg);
+            if (!msg.equals("")) {
+                Log.d("MESSAGE", "Sending Message:currentUser: " + currentUserId + "    receiverID:" + selectedUserId);
+                send_Message(currentUserId, selectedUserId, msg);
             } else {
                 Toast.makeText(message_between_users.this, "Can't do text", Toast.LENGTH_SHORT).show();
             }
@@ -288,5 +311,20 @@ public class message_between_users extends AppCompatActivity implements View.OnC
     public boolean getValue() {
         return found;
     }
+
+    public void setId(String value) {
+        this.chatId = value;
+    }
+
+    public String getId() {
+        return chatId;
+    }
+
+    protected void onStop() {
+        super.onStop();
+
+
+    }
 }
+
 

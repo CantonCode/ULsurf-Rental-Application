@@ -4,6 +4,7 @@ package com.example.clubapp;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,37 +29,40 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class MessageAdapter extends FirestoreRecyclerAdapter<Message,MessageAdapter.MessageViewHolder> {
+public class MessageAdapter extends FirestoreRecyclerAdapter<Message,MessageAdapter.MessageHolder> {
 
-
-    private FirebaseFirestore mFirestore;
-    private Context mContext;
-    private FirebaseUser firebaseUser;
-    private String title;
-    private String userID;
-//    Message message;
 
     private static final int SENT = 0;
     private static final int RECEIVED = 1;
+
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    FirebaseUser user = mAuth.getCurrentUser();
 
     public MessageAdapter( FirestoreRecyclerOptions<Message> options){
         super(options);
     }
 
-    @Override
-    protected void onBindViewHolder(@NonNull final MessageViewHolder holder, int position,@NonNull Message model) {
+
+    protected void onBindViewHolder(final MessageHolder holder, int position,Message model) {
 //        message = model;
         holder.mContent.setText(model.getMessage());
 
-        Log.d("USER", model.getMessage());
+        Log.d("MessageAdapter", model.getMessage());
+
+        if(user.getUid().equals(model.getSender())){
+            holder.mContent.setTextColor(Color.RED);
+        }else{
+            holder.mContent.setTextColor(Color.BLUE);
+        }
     }
 
 
     @NonNull
     @Override
-    public MessageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public MessageHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.message_card,parent,false);;
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.message_card,parent,false);
+        final MessageHolder holder = new MessageHolder(v);
 //        if(viewType == SENT)
 //        {
 //            view = LayoutInflater.from(mContext).inflate(R.layout.chat_item_left,parent,false);
@@ -68,7 +72,7 @@ public class MessageAdapter extends FirestoreRecyclerAdapter<Message,MessageAdap
 //            view = LayoutInflater.from(mContext).inflate(R.layout.chat_item_right,parent,false);
 //        }
 
-        return new MessageViewHolder(view);
+        return holder;
 
     }
 
@@ -83,14 +87,14 @@ public class MessageAdapter extends FirestoreRecyclerAdapter<Message,MessageAdap
 //            return RECEIVED;
 //    }
 
-    class MessageViewHolder extends RecyclerView.ViewHolder {
+    class MessageHolder extends RecyclerView.ViewHolder {
 
 
         //Variables for my chat lists...
-        TextView mName, mContent;
+        TextView mContent;
 
 
-        public MessageViewHolder(final View itemView) {
+        public MessageHolder(View itemView) {
             super(itemView);
 
             //My variable initialization
@@ -100,4 +104,3 @@ public class MessageAdapter extends FirestoreRecyclerAdapter<Message,MessageAdap
         }
     }
 }
-
