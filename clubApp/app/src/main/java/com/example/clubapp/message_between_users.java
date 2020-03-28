@@ -53,6 +53,7 @@ public class message_between_users extends AppCompatActivity implements View.OnC
     private Toolbar mToolbar;
     private userAdapter userAdapter;
     private MessageAdapter messageAdapter;
+    private ChatAdapter chatAdapter;
     private FirebaseUser firebaseUser;
     private CollectionReference notebookRef;
     private CollectionReference newMessageRef;
@@ -65,6 +66,7 @@ public class message_between_users extends AppCompatActivity implements View.OnC
 
 
     private RecyclerView recyclerView;
+
 
     private String getTitle;
     private String getDate;
@@ -97,11 +99,16 @@ public class message_between_users extends AppCompatActivity implements View.OnC
         chatId = currentUserId + selectedUserId;
 
         findChat(currentUserId, selectedUserId);
+
+
+
+
     }
 
 
     public void onStart() {
         super.onStart();
+
         Log.d("MESSAGE", "Init   currentUser: " + currentUserId + "    receiverID:" + selectedUserId);
         setDate();
         Log.d("MESSAGE", "chatID new one:" + chatId);
@@ -131,12 +138,16 @@ public class message_between_users extends AppCompatActivity implements View.OnC
     }
 
     private void findChat(final String cUserId, final String sUserId) {
+
+
         chats = db.collection("chats");
         chatIdOne = cUserId + sUserId;
         chatIdTwo = sUserId + cUserId;
 
         DocumentReference one = chats.document(chatIdOne);
         DocumentReference two = chats.document(chatIdTwo);
+
+
 
         one.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
 

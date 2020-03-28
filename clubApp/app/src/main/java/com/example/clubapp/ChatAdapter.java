@@ -1,5 +1,6 @@
 package com.example.clubapp;
 
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
@@ -27,20 +29,32 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<Chat,ChatAdapter.ChatH
     }
 
 
-    protected void onBindViewHolder(ChatHolder holder,int position,Chat model){
+    protected void onBindViewHolder(ChatHolder holder,int position,final Chat model){
+
 
         currentUserId = user.getUid();
 
         if(currentUserId.equals(model.getUser1())){
             holder.chatUserName.setText(model.getUser2());
+
         }else{
             holder.chatUserName.setText(model.getUser1());
         }
+
+        holder.chat_selected.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent( v.getContext(), message_between_users.class);
+                intent.putExtra("selected_user",model.getChatId());
+                v.getContext().startActivity(intent);
+            }
+        });;
 
         Picasso.get().load("https://firebasestorage.googleapis.com/v0/b/clubapp-surf.appspot.com/o/images%2FxcDaQgFDEaQKlyExvaV9THLFPaj1?alt=media&token=bc45f854-58f8-40b4-8dc4-ac4db2c4528e").fit().centerCrop().into(holder.chatUserImage);
         Log.d("CHAT", "user1:" + model.getUser1());
         Log.d("CHAT", "user2:" + model.getUser2());
         Log.d("CHAT", "userChatId:" + model.getChatId());
+
 
     }
 
@@ -57,12 +71,14 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<Chat,ChatAdapter.ChatH
 
         TextView chatUserName;
         ImageView chatUserImage;
+        CardView chat_selected;
 
         public ChatHolder(final View itemView){
             super(itemView);
 
             chatUserName = itemView.findViewById(R.id.chatUserName);
             chatUserImage = itemView.findViewById(R.id.chatUserImage);
+            chat_selected = itemView.findViewById(R.id.chat_card);
         }
     }
 }
