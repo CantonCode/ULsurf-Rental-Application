@@ -39,7 +39,9 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -127,8 +129,7 @@ public class message_between_users extends AppCompatActivity implements View.OnC
 
         HashMap<String, Object> chat = new HashMap<>();
         chat.put("chatId", chatId);
-        chat.put("user1", sender);
-        chat.put("user2", receiver);
+        chat.put("users", Arrays.asList(sender,receiver));
 
         chatRef = db.collection("chats").document(chatId);
         chatRef.set(chat);

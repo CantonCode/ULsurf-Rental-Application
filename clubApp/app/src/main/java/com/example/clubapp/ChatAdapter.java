@@ -18,6 +18,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+
 
 public class ChatAdapter extends FirestoreRecyclerAdapter<Chat,ChatAdapter.ChatHolder> {
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -32,14 +34,16 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<Chat,ChatAdapter.ChatH
     protected void onBindViewHolder(ChatHolder holder,int position,final Chat model){
 
         final String selectedUser;
+        ArrayList<String> users = model.getUsers();
 
         currentUserId = user.getUid();
 
-        if(currentUserId.equals(model.getUser1())){
-           selectedUser = model.getUser2();
+
+        if(currentUserId.equals(users.get(0))){
+           selectedUser = users.get(1);
 
         }else{
-            selectedUser = model.getUser1();
+            selectedUser = users.get(0);
         }
 
         holder.chatUserName.setText(selectedUser);
@@ -54,8 +58,8 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<Chat,ChatAdapter.ChatH
         });;
 
         Picasso.get().load("https://firebasestorage.googleapis.com/v0/b/clubapp-surf.appspot.com/o/images%2FxcDaQgFDEaQKlyExvaV9THLFPaj1?alt=media&token=bc45f854-58f8-40b4-8dc4-ac4db2c4528e").fit().centerCrop().into(holder.chatUserImage);
-        Log.d("CHAT", "user1:" + model.getUser1());
-        Log.d("CHAT", "user2:" + model.getUser2());
+        Log.d("CHAT", "user1:" + users.get(0));
+        Log.d("CHAT", "user2:" + users.get(1));
         Log.d("CHAT", "userChatId:" + model.getChatId());
 
 

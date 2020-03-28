@@ -50,7 +50,7 @@ public class messageActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     public void setUpRecyclerView(){
-        Query query = notebookRef ;
+        Query query = notebookRef.whereArrayContains("users", user.getUid()) ;
 
 
         FirestoreRecyclerOptions<Chat> options = new FirestoreRecyclerOptions.Builder<Chat>()
