@@ -31,21 +31,24 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<Chat,ChatAdapter.ChatH
 
     protected void onBindViewHolder(ChatHolder holder,int position,final Chat model){
 
+        final String selectedUser;
 
         currentUserId = user.getUid();
 
         if(currentUserId.equals(model.getUser1())){
-            holder.chatUserName.setText(model.getUser2());
+           selectedUser = model.getUser2();
 
         }else{
-            holder.chatUserName.setText(model.getUser1());
+            selectedUser = model.getUser1();
         }
+
+        holder.chatUserName.setText(selectedUser);
 
         holder.chat_selected.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent( v.getContext(), message_between_users.class);
-                intent.putExtra("selected_user",model.getChatId());
+                intent.putExtra("selected_user",selectedUser);
                 v.getContext().startActivity(intent);
             }
         });;
