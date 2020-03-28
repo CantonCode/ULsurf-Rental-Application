@@ -105,13 +105,13 @@
     <string name="currentUser">null</string>
     <string name="Rental">Rental</string>
     <string name="Support">Support</string>
-    <string name="welcomeRental">Welcome to board rentals</string>
+    <string name="welcomeRental">Board Rentals</string>
     <string name="go_back">Go Back</string>
     <string name="support">Welcome to support</string>
     <string name="userProfile">Welcome to user profile</string>
     <string name="goBavc">Button</string>
     <string name="goBack">goBack</string>
-    <string name="textViewEquipmentName">board</string>
+    <string name="textViewEquipmentName">Model: %1$s! </string>
     <string name="textviewEquipmentDescription">board description</string>
     <string name="textviewEquipmentSize">6 foot</string>
 </resources>

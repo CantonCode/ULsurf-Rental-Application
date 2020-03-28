@@ -1,27 +1,46 @@
 package com.example.clubapp;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
+
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 public class homeActivity extends AppCompatActivity implements View.OnClickListener {
 
     private FirebaseAuth mAuth;
     private TextView userTextView;
+    private ImageView userPic;
+    FirebaseStorage storage;
+    StorageReference storageReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference();
 
         findViewById(R.id.signOutButton).setOnClickListener(this);
         userTextView = findViewById(R.id.currentUser);
+        userPic = findViewById(R.id.userProfile);
         findViewById(R.id.goToRental).setOnClickListener(this);
         findViewById(R.id.goToSupport).setOnClickListener(this);
         findViewById(R.id.userProfile).setOnClickListener(this);
@@ -36,6 +55,7 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         setCurrentUserText(currentUser);
+        setProfilePic(currentUser);
     }
 
     private void setCurrentUserText(FirebaseUser user){
@@ -46,6 +66,41 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    private void setProfilePic(final FirebaseUser user){
+        String path ="images/" + user.getUid();
+        storageReference.child(path).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Picasso.get().load(uri).fit().centerCrop().into(userPic);
+
+
+                if(user.getPhotoUrl()==null) {
+                    setProfileDetails(uri, user);
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+            }
+        });
+    }
+
+    private void setProfileDetails(Uri uri, FirebaseUser user){
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                .setPhotoUri(uri)
+                .build();
+
+        user.updateProfile(profileUpdates)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d("USER", "User profile updated.");
+                        }
+                    }
+                });
+    }
 
     private void signOut() {
         mAuth.signOut();

@@ -12,6 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".message_between_users"></activity>
+        <activity android:name=".signUpActivity"></activity>
         <activity android:name=".userProfileActivity" />
         <activity android:name=".SupportActivity" />
         <activity android:name=".RentalMainActivity" />
