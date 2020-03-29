@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#e6e6e6"
-    tools:context=".message_between_users">
+    tools:context="com.Chats.message_between_users">
 
 
     <com.google.android.material.appbar.AppBarLayout

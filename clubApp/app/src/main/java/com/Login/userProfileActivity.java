@@ -1,4 +1,4 @@
-package com.example.clubapp;
+package com.Login;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-public class SupportActivity extends AppCompatActivity implements View.OnClickListener{
+import com.example.clubapp.R;
+
+public class userProfileActivity extends AppCompatActivity implements View.OnClickListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

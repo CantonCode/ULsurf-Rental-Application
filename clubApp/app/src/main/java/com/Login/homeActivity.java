@@ -1,4 +1,4 @@
-package com.example.clubapp;
+package com.Login;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,6 +11,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.Chats.messageActivity;
+import com.Rental.RentalMainActivity;
+import com.Support.SupportActivity;
+import com.example.clubapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -117,21 +121,21 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         if(i == R.id.goToRental){
-            Intent intent = new Intent(this,RentalMainActivity.class);
+            Intent intent = new Intent(this, RentalMainActivity.class);
             startActivity(intent);
         }
 
         if(i == R.id.goToSupport){
-            Intent intent = new Intent(this,SupportActivity.class);
+            Intent intent = new Intent(this, SupportActivity.class);
             startActivity(intent);
         }
         if(i==R.id.goToMessage){
-            Intent intent = new Intent(this,messageActivity.class);
+            Intent intent = new Intent(this, messageActivity.class);
             startActivity(intent);
         }
 
         if(i==R.id.userProfile){
-            Intent intent = new Intent(this,userProfileActivity.class);
+            Intent intent = new Intent(this, userProfileActivity.class);
             startActivity(intent);
         }
     }

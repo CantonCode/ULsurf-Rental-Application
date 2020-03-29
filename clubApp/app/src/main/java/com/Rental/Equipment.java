@@ -1,4 +1,4 @@
-package com.example.clubapp;
+package com.Rental;
 
 public class Equipment {
     private int equipmentId;

@@ -1,4 +1,4 @@
-package com.example.clubapp;
+package com.Chats;
 
 import java.io.Serializable;
 import java.util.Date;

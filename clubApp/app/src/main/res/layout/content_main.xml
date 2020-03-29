@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#A6DFE7"
     android:backgroundTint="#A9D3E6"
-    tools:context=".MainActivity">
+    tools:context="com.Login.MainActivity">
 
     <Button
         android:id="@+id/loginButton"
