@@ -42,6 +42,7 @@ public class userAdapter extends FirestoreRecyclerAdapter<User,userAdapter.UserV
             holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
         }else {
             holder.itemView.setVisibility(View.VISIBLE);
+
             holder.list_studentNumber.setText(model.getStudentNumber());
             holder.list_userName.setText(model.getUserName());
             holder.list_admin.setText(String.valueOf(model.isAdmin()));
