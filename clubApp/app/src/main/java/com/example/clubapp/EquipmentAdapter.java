@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,6 +64,10 @@ public class EquipmentAdapter extends FirestoreRecyclerAdapter<Equipment,Equipme
                 btn.setOnClickListener( new View.OnClickListener(){
                     @Override
                     public void onClick(View v) {
+                        String message = "Equipment ID = " + model.getEquipmentId();
+                        Log.d("EQUIP", message);
+                        model.setEquipmentId(model.getEquipmentId());
+
                         Intent intent = new Intent(v.getContext(), CalendarActivity.class);
                         v.getContext().startActivity(intent);
                     }
