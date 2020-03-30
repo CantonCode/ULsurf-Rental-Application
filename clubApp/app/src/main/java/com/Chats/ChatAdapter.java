@@ -12,11 +12,21 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.Login.User;
 import com.example.clubapp.R;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -27,15 +37,18 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<Chat,ChatAdapter.ChatH
     private FirebaseUser user = mAuth.getCurrentUser();
     private String currentUserId;
 
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+
     public ChatAdapter(FirestoreRecyclerOptions<Chat>options){
         super(options);
     }
 
 
-    protected void onBindViewHolder(ChatHolder holder,int position,final Chat model){
+    protected void onBindViewHolder(final ChatHolder holder, int position, final Chat model){
 
         final String selectedUser;
-        ArrayList<String> users = model.getUsers();
+        final ArrayList<String> users = model.getUsers();
+
 
         currentUserId = user.getUid();
 
@@ -47,7 +60,16 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<Chat,ChatAdapter.ChatH
             selectedUser = users.get(0);
         }
 
-        holder.chatUserName.setText(selectedUser);
+        DocumentReference docRef = db.collection("users").document(selectedUser);
+        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                User nameDetail = documentSnapshot.toObject(User.class);
+                holder.chatUserName.setText(nameDetail.getUserName());
+            }
+        });
+
+        //holder.chatUserName.setText(selectedUser);
 
         holder.chat_selected.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,6 +79,9 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<Chat,ChatAdapter.ChatH
                 v.getContext().startActivity(intent);
             }
         });;
+
+
+
 
         Picasso.get().load("https://firebasestorage.googleapis.com/v0/b/clubapp-surf.appspot.com/o/images%2FxcDaQgFDEaQKlyExvaV9THLFPaj1?alt=media&token=bc45f854-58f8-40b4-8dc4-ac4db2c4528e").fit().centerCrop().into(holder.chatUserImage);
         Log.d("CHAT", "user1:" + users.get(0));
