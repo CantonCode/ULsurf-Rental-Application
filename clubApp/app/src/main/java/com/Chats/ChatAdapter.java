@@ -66,6 +66,7 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<Chat,ChatAdapter.ChatH
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 User nameDetail = documentSnapshot.toObject(User.class);
                 holder.chatUserName.setText(nameDetail.getUserName());
+                Log.d("CHAT", "onSuccess: " + nameDetail.getPhotoUrl());
             }
         });
 
@@ -78,12 +79,10 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<Chat,ChatAdapter.ChatH
                 intent.putExtra("selected_user",selectedUser);
                 v.getContext().startActivity(intent);
             }
-        });;
+        });
 
 
 
-
-        Picasso.get().load("https://firebasestorage.googleapis.com/v0/b/clubapp-surf.appspot.com/o/images%2FxcDaQgFDEaQKlyExvaV9THLFPaj1?alt=media&token=bc45f854-58f8-40b4-8dc4-ac4db2c4528e").fit().centerCrop().into(holder.chatUserImage);
         Log.d("CHAT", "user1:" + users.get(0));
         Log.d("CHAT", "user2:" + users.get(1));
         Log.d("CHAT", "userChatId:" + model.getChatId());

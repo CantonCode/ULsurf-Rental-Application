@@ -23,6 +23,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
@@ -34,6 +36,7 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView userPic;
     FirebaseStorage storage;
     StorageReference storageReference;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +81,8 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
                 Picasso.get().load(uri).fit().centerCrop().into(userPic);
 
 
-                if(user.getPhotoUrl()==null) {
+                if(!user.getPhotoUrl().equals(uri.toString())) {
+                    updatePhotoUrl(uri,user);
                     setProfileDetails(uri, user);
                 }
             }
@@ -88,6 +92,22 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
                 // Handle any errors
             }
         });
+    }
+
+    private void updatePhotoUrl(Uri uri,FirebaseUser user){
+        DocumentReference userRef = db.collection("users").document(user.getUid());
+        userRef.update("photoUrl", uri.toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d("PHOTO", "DocumentSnapshot successfully updated!");
+            }
+        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("PHOTO", "Error updating document", e);
+                    }
+                });
     }
 
     private void setProfileDetails(Uri uri, FirebaseUser user){
