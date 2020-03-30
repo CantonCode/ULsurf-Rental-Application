@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.clubapp.R;
@@ -34,14 +35,18 @@ public class MessageAdapter extends FirestoreRecyclerAdapter<Message,MessageAdap
 
     protected void onBindViewHolder(final MessageHolder holder, int position,Message model) {
 //        message = model;
-        holder.mContent.setText(model.getMessage());
+
 
         Log.d("MessageAdapter", model.getMessage());
 
         if(user.getUid().equals(model.getSender())){
-            holder.mContent.setTextColor(Color.RED);
+            holder.mContentForReceiver.setTextColor(Color.WHITE);
+            holder.mContentForReceiver.setText(model.getMessage());
+            holder.mContentForSender.setVisibility(View.GONE);
         }else{
-            holder.mContent.setTextColor(Color.BLUE);
+            holder.mContentForSender.setTextColor(Color.WHITE);
+            holder.mContentForSender.setText(model.getMessage());
+            holder.mContentForReceiver.setVisibility(View.GONE);
         }
     }
 
@@ -80,14 +85,19 @@ public class MessageAdapter extends FirestoreRecyclerAdapter<Message,MessageAdap
 
 
         //Variables for my chat lists...
-        TextView mContent;
+        TextView mContentForSender , mContentForReceiver;
+
+        CardView display_chat;
 
 
         public MessageHolder(View itemView) {
             super(itemView);
 
             //My variable initialization
-            mContent = itemView.findViewById(R.id.messageText);
+            mContentForSender = itemView.findViewById(R.id.show_message);
+            mContentForReceiver = itemView.findViewById(R.id.show_message1);
+            //display_chat = itemView.findViewById(R.id.user_chatBox);
+
 //            mContent =itemView.findViewById(R.id.list_studentNumber);
 
         }

@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/list_photo"
         android:text="hello"
-        android:id="@+id/show_message"
+        android:id="@+id/show_message_right"
         android:layout_alignParentEnd="true"
         android:textSize="18dp"
         android:textColor="#fff"
