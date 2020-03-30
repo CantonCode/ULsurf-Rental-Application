@@ -2,6 +2,7 @@ package com.Chats;
 
 
 import android.content.Intent;
+import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,11 +19,16 @@ import com.example.clubapp.R;
 import com.Login.User;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
 
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
 public class userAdapter extends FirestoreRecyclerAdapter<User,userAdapter.UserViewHolder> {
+
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseUser user = mAuth.getCurrentUser();
 
     public userAdapter( FirestoreRecyclerOptions<User> options) {
         super(options);
@@ -30,20 +36,27 @@ public class userAdapter extends FirestoreRecyclerAdapter<User,userAdapter.UserV
 
     @Override
     protected void onBindViewHolder(@NonNull UserViewHolder holder,final int position, final @NonNull User model) {
-        holder.list_studentNumber.setText(model.getStudentNumber());
-        holder.list_userName.setText(model.getUserName());
-        holder.list_admin.setText(String.valueOf(model.isAdmin()));
-        Picasso.get().load(model.getPhotoUrl()).transform(new RoundedCornersTransformation(100,0)).fit().centerCrop().into(holder.list_photo);
-        Log.d("USERIDaaaaa", model.getUserName());
 
-        holder.selected_user.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent( v.getContext(), message_between_users.class);
-                intent.putExtra("selected_user",model.getUserId());
-                v.getContext().startActivity(intent);
-            }
-        });
+        if (user.getUid().equals(model.getUserId())) {
+            holder.itemView.setVisibility(View.GONE);
+            holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
+        }else {
+            holder.itemView.setVisibility(View.VISIBLE);
+            holder.list_studentNumber.setText(model.getStudentNumber());
+            holder.list_userName.setText(model.getUserName());
+            holder.list_admin.setText(String.valueOf(model.isAdmin()));
+            Picasso.get().load(model.getPhotoUrl()).transform(new RoundedCornersTransformation(150, 5)).fit().centerCrop().into(holder.list_photo);
+            Log.d("USERIDaaaaa", model.getUserName());
+
+            holder.selected_user.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(v.getContext(), message_between_users.class);
+                    intent.putExtra("selected_user", model.getUserId());
+                    v.getContext().startActivity(intent);
+                }
+            });
+        }
 
 
     }
