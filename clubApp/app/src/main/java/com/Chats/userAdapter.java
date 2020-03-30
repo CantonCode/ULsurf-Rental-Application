@@ -20,6 +20,8 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.squareup.picasso.Picasso;
 
+import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
+
 public class userAdapter extends FirestoreRecyclerAdapter<User,userAdapter.UserViewHolder> {
 
     public userAdapter( FirestoreRecyclerOptions<User> options) {
@@ -31,7 +33,7 @@ public class userAdapter extends FirestoreRecyclerAdapter<User,userAdapter.UserV
         holder.list_studentNumber.setText(model.getStudentNumber());
         holder.list_userName.setText(model.getUserName());
         holder.list_admin.setText(String.valueOf(model.isAdmin()));
-        Picasso.get().load("https://firebasestorage.googleapis.com/v0/b/clubapp-surf.appspot.com/o/images%2FxcDaQgFDEaQKlyExvaV9THLFPaj1?alt=media&token=bc45f854-58f8-40b4-8dc4-ac4db2c4528e").fit().centerCrop().into(holder.list_photo);
+        Picasso.get().load(model.getPhotoUrl()).transform(new RoundedCornersTransformation(100,0)).fit().centerCrop().into(holder.list_photo);
         Log.d("USERIDaaaaa", model.getUserName());
 
         holder.selected_user.setOnClickListener(new View.OnClickListener() {

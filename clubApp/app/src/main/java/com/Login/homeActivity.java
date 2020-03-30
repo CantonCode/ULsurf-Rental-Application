@@ -37,6 +37,7 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
     FirebaseStorage storage;
     StorageReference storageReference;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    FirebaseUser currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,9 +61,9 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         mAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+        currentUser = mAuth.getCurrentUser();
         setCurrentUserText(currentUser);
-        setProfilePic(currentUser);
+        setProfilePic();
     }
 
     private void setCurrentUserText(FirebaseUser user){
@@ -73,17 +74,17 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void setProfilePic(final FirebaseUser user){
-        String path ="images/" + user.getUid();
+    private void setProfilePic(){
+        String path ="images/" + currentUser.getUid();
         storageReference.child(path).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
                 Picasso.get().load(uri).fit().centerCrop().into(userPic);
 
 
-                if(!user.getPhotoUrl().equals(uri.toString())) {
-                    updatePhotoUrl(uri,user);
-                    setProfileDetails(uri, user);
+                if( currentUser.getPhotoUrl() != uri) {
+                    updatePhotoUrl(uri,currentUser);
+                    setProfileDetails(uri, currentUser);
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {

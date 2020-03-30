@@ -31,6 +31,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
+
 
 public class ChatAdapter extends FirestoreRecyclerAdapter<Chat,ChatAdapter.ChatHolder> {
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -50,6 +52,7 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<Chat,ChatAdapter.ChatH
         final ArrayList<String> users = model.getUsers();
 
 
+
         currentUserId = user.getUid();
 
 
@@ -67,6 +70,7 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<Chat,ChatAdapter.ChatH
                 User nameDetail = documentSnapshot.toObject(User.class);
                 holder.chatUserName.setText(nameDetail.getUserName());
                 Log.d("CHAT", "onSuccess: " + nameDetail.getPhotoUrl());
+                Picasso.get().load(nameDetail.getPhotoUrl()).transform(new RoundedCornersTransformation(50,0)).fit().centerCrop().into(holder.chatUserImage);
             }
         });
 
