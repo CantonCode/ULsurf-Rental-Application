@@ -65,8 +65,7 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
         FirebaseUser currentUser = mAuth.getCurrentUser();
         currentUserId = currentUser.getUid();
 
-        Equipment equip = new Equipment();
-        this.equipmentId = equip.getEquipmentId();
+        equipmentId = getIntent().getIntExtra("selected_equipment", 0);
 
         confirm= findViewById(R.id.date_confirmed);
 
@@ -86,17 +85,17 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth){
 
-        String date= dayOfMonth + "/" + month +"/" + year;
-        String confirmDate= "You have booked this piece of equipment for: " + date;
+        getDate= dayOfMonth + "/" + month +"/" + year;
+        String confirmDate= "You have booked this piece of equipment for: " + getDate;
         confirm.setText(confirmDate);
 
-        String message = "equipment id = " + this.equipmentId;
+        String message = "equipment id = " + equipmentId;
         Log.d("EQUIPID", message);
 
         findUser();
         //findEquipment("1");
 
-        Toast.makeText(CalendarActivity.this, date, Toast.LENGTH_SHORT).show();
+        Toast.makeText(CalendarActivity.this, getDate, Toast.LENGTH_SHORT).show();
 
         btn= findViewById(R.id.back);
         btn.setOnClickListener(new View.OnClickListener() {
@@ -120,6 +119,7 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
                     if (document.exists()) {
                         message = "DocumentSnapshot data: " + document.getData();
                         setValue(true);
+                        createEquipment();
                     }
                     else {
                         message = "No such document";
@@ -166,7 +166,17 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
         rentRef = db.collection("rented").document(currentUserId);
         rentRef.set(rent);
 
-        Log.d("MESSAGE", "create_chat: " + rent);
+    }
+
+    public void createEquipment() {
+        HashMap<String, Object> equipment = new HashMap<>();
+        equipment.put("equipmentId", equipmentId);
+        equipment.put("dateOfRental", getDate);
+
+        equipRef = db.collection("rented").document(currentUserId).
+                collection("equipment").document(Integer.toString(equipmentId));
+        equipRef.set(equipment);
+
     }
 
     public void setValue(boolean value) {
