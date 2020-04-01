@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -33,6 +34,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 
 public class CalendarActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
 
@@ -52,7 +54,7 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
     private int equipmentId;
     boolean found;
     CollectionReference rented;
-    DocumentReference rentalRef;
+    List<String> dateRentals;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -171,12 +173,21 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
     public void createEquipment() {
         HashMap<String, Object> equipment = new HashMap<>();
         equipment.put("equipmentId", equipmentId);
-        equipment.put("dateOfRental", getDate);
+        equipment.put("dateOfRental", Arrays.asList(getDate));
 
+        //getRentalDates();
         equipRef = db.collection("rented").document(currentUserId).
                 collection("equipment").document(Integer.toString(equipmentId));
-        equipRef.set(equipment);
+        //equipRef.set(equipment, SetOptions.merge());
 
+        //equipRef.update(equipment, SetOptions.merge());
+
+
+    }
+
+    public void getRentalDates(){
+        equipRef = db.collection("rented").document(currentUserId).
+                collection("equipment").document(Integer.toString(equipmentId));
     }
 
     public void setValue(boolean value) {
