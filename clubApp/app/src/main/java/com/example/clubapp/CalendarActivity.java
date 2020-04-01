@@ -31,6 +31,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -175,19 +176,10 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
         equipment.put("equipmentId", equipmentId);
         equipment.put("dateOfRental", Arrays.asList(getDate));
 
-        //getRentalDates();
         equipRef = db.collection("rented").document(currentUserId).
                 collection("equipment").document(Integer.toString(equipmentId));
-        //equipRef.set(equipment, SetOptions.merge());
 
-        //equipRef.update(equipment, SetOptions.merge());
-
-
-    }
-
-    public void getRentalDates(){
-        equipRef = db.collection("rented").document(currentUserId).
-                collection("equipment").document(Integer.toString(equipmentId));
+        equipRef.update("dateOfRental", FieldValue.arrayUnion(getDate));
     }
 
     public void setValue(boolean value) {
