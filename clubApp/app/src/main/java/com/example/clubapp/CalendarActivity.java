@@ -47,6 +47,7 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
     private CollectionReference newRentalRef;
     private DocumentReference equipRef;
     private DocumentReference rentRef;
+    private DocumentReference equipRentRef;
     private FirebaseAuth mAuth;
 
     private String getEquip;
@@ -172,14 +173,45 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
     }
 
     public void createEquipment() {
-        HashMap<String, Object> equipment = new HashMap<>();
+        final HashMap<String, Object> equipment = new HashMap<>();
         equipment.put("equipmentId", equipmentId);
         equipment.put("dateOfRental", Arrays.asList(getDate));
+
+        equipRentRef = db.collection("equipment").document(Integer.toString(equipmentId));
+
 
         equipRef = db.collection("rented").document(currentUserId).
                 collection("equipment").document(Integer.toString(equipmentId));
 
-        equipRef.update("dateOfRental", FieldValue.arrayUnion(getDate));
+        equipRentRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    DocumentSnapshot documentSnapshot = task.getResult();
+                    if(documentSnapshot != null && documentSnapshot.exists()) {
+                        equipRentRef.update("dateOfRental", FieldValue.arrayUnion(getDate));
+                    }else{
+                        equipRentRef.set(equipment);
+                    }
+
+                }
+            }
+        });
+
+        equipRentRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    DocumentSnapshot documentSnapshot = task.getResult();
+                    if(documentSnapshot != null && documentSnapshot.exists()) {
+                        equipRef.update("dateOfRental", FieldValue.arrayUnion(getDate));
+                    }else{
+                        equipRef.set(equipment);
+                    }
+
+                }
+            }
+        });
     }
 
     public void setValue(boolean value) {
