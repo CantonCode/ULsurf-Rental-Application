@@ -1,4 +1,4 @@
-package com.example.clubapp;
+package com.Login;
 
 public class User {
 
