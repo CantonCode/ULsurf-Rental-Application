@@ -1,51 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#A6DFE7"
-    android:backgroundTint="#A9D3E6"
-    tools:context="com.Login.MainActivity">
+    android:background="#FFFFFF"
+    tools:context="com.Login.MainActivity"
+    android:layout_gravity="center">
 
-    <Button
-        android:id="@+id/loginButton"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="187dp"
-        android:layout_marginTop="420dp"
-        android:layout_marginEnd="180dp"
-        android:backgroundTint="#9C6CC0"
-        android:text="Login"
-        android:textAlignment="center"
-        android:textColor="#FCFFFFFF"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="100dp">
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="331dp"
-        android:layout_height="46dp"
-        android:layout_marginStart="64dp"
-        android:layout_marginTop="124dp"
-        android:layout_marginEnd="64dp"
-        android:text="UL Surf Club"
-        android:textAlignment="center"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="300dp"
+            android:layout_height="200dp"
+            android:layout_margin="5dp"
+            tools:src="@drawable/ulsurfclub" />
 
-    <Button
-        android:id="@+id/signUp"
-        android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="UL Surf Club"
+            android:layout_margin="15sp"
+            android:textAlignment="center"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="160dp"
-        android:layout_marginTop="44dp"
-        android:text="Sign Up"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/loginButton" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:background="@color/cardview_light_background"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="25dp">
+
+        <Button
+            android:id="@+id/loginButton"
+            android:layout_width="200dp"
+            android:layout_height="45dp"
+            android:background="@drawable/my_button"
+            android:text="Login"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_margin="15dp"/>
+
+        <Button
+            android:id="@+id/signUp"
+            android:layout_width="200dp"
+            android:layout_height="45dp"
+            android:background="@drawable/my_button"
+            android:text="Sign Up"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_margin="15dp"/>
+
+    </LinearLayout>
+
+</RelativeLayout>
