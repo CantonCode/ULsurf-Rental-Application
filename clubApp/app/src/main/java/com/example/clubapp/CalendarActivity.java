@@ -40,6 +40,7 @@ import com.google.firebase.firestore.SetOptions;
 public class CalendarActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
 
     private TextView confirm;
+    private TextView result;
     private Button btn;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirebaseUser firebaseUser;
@@ -55,8 +56,10 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
     String currentUserId;
     private int equipmentId;
     boolean found;
+    boolean equipmentFound;
+    boolean notAvail = false;
     CollectionReference rented;
-    List<String> dateRentals;
+    ArrayList<String> dateRentals = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,13 +68,15 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
         showDatePicker();
         this.found = false;
 
+        equipmentId = getIntent().getIntExtra("selected_equipment", 0);
+        getDates();
+
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         currentUserId = currentUser.getUid();
 
-        equipmentId = getIntent().getIntExtra("selected_equipment", 0);
-
         confirm= findViewById(R.id.date_confirmed);
+        result = findViewById(R.id.confirmation);
 
     }
 
@@ -89,17 +94,12 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth){
 
-        getDate= dayOfMonth + "/" + month +"/" + year;
-        String confirmDate= "You have booked this piece of equipment for: " + getDate;
-        confirm.setText(confirmDate);
+        getDate= dayOfMonth + "/" + (month+1) +"/" + year;
 
         String message = "equipment id = " + equipmentId;
         Log.d("EQUIPID", message);
 
         findUser();
-        //findEquipment("1");
-
-        Toast.makeText(CalendarActivity.this, getDate, Toast.LENGTH_SHORT).show();
 
         btn= findViewById(R.id.back);
         btn.setOnClickListener(new View.OnClickListener() {
@@ -112,6 +112,7 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
     }
 
     private void findUser() {
+        checkEquipment();
         rented = db.collection("rented");
         DocumentReference user = rented.document(currentUserId);
         user.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -123,7 +124,7 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
                     if (document.exists()) {
                         message = "DocumentSnapshot data: " + document.getData();
                         setValue(true);
-                        createEquipment();
+                        checkEquipment();
                     }
                     else {
                         message = "No such document";
@@ -133,34 +134,24 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
                 else{
                     message = "get failed with " + task.getException();
                 }
-               Toast.makeText(CalendarActivity.this, message, Toast.LENGTH_SHORT).show();
+               //Toast.makeText(CalendarActivity.this, message, Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void findEquipment(final String cEquipId) {
-        rented = db.collection("rented");
-        DocumentReference equip = rented.document();
-        equip.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    String message = "";
-                    if(task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-                        if (document.exists()) {
-                            message = "DocumentSnapshot data: " + document.getData();
-                            setValue(true);
-                        }
-                        else {
-                            message = "No such document";
-                        }
-                    }
-                    else{
-                        message = "get failed with " + task.getException();
-                    }
-                    Toast.makeText(CalendarActivity.this, message, Toast.LENGTH_SHORT).show();
-                }
-            });
+    private void checkEquipment() {
+        for(String date : dateRentals) {
+            if(getDate.equals(date)) {
+                Log.d("Check", "Date wanted = " + getDate + " Date check = " + date);
+                equipmentFound = true;
+                notAvail = true;
+            }
+            else {
+                equipmentFound = false;
+                notAvail=false;
+            }
+        }
+        dateUnavailable();
     }
 
     public void createUser() {
@@ -170,6 +161,32 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
         rentRef = db.collection("rented").document(currentUserId);
         rentRef.set(rent);
 
+        if(!equipmentFound) {
+            notAvail = false;
+            Log.d("Check", "Equipment Not found create equipment");
+        }
+        else {
+            Log.d("Check", "Equipment unavailable");
+            notAvail = true;
+        }
+
+        checkEquipment();
+    }
+
+    public void dateUnavailable() {
+        if(notAvail) {
+            String confirmDate= "ERROR: Equipment you selected is not available on " + getDate;
+            Log.d("Check", confirmDate);
+            Toast.makeText(CalendarActivity.this, confirmDate, Toast.LENGTH_SHORT).show();
+            confirm.setText(confirmDate);
+            result.setText("ERROR");
+        }
+        else {
+            String confirmDate= "You have booked this piece of equipment for: " + getDate;
+            confirm.setText(confirmDate);
+            result.setText("Confirmation");
+            createEquipment();
+        }
     }
 
     public void createEquipment() {
@@ -178,7 +195,7 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
         equipment.put("dateOfRental", Arrays.asList(getDate));
 
         equipRentRef = db.collection("equipment").document(Integer.toString(equipmentId));
-
+        Log.d("Check", Integer.toString(equipmentId));
 
         equipRef = db.collection("rented").document(currentUserId).
                 collection("equipment").document(Integer.toString(equipmentId));
@@ -212,6 +229,28 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
                 }
             }
         });
+
+    }
+
+    public void getDates() {
+        DocumentReference docRef = db.collection("equipment").document(Integer.toString(equipmentId));
+        Log.d("Check", Integer.toString(equipmentId));
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                DocumentSnapshot document = task.getResult();
+                if(task.isSuccessful()) {
+                    Log.d("Check", "made it to here");
+                    Log.d("Check", document.get("dateOfRental").toString());
+                    dateRentals = (ArrayList<String>) document.get("dateOfRental");
+                }
+                else {
+                    dateRentals.add("no Values");
+                    Log.d("ERROR", "No Equipment");
+                }
+            }
+        });
+        Log.d("Check", dateRentals.toString());
     }
 
     public void setValue(boolean value) {
