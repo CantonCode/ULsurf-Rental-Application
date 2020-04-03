@@ -88,6 +88,7 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
                 Calendar.getInstance().get(Calendar.MONTH),
                 Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
         );
+        datePicker.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
         datePicker.show();
     }
 
@@ -191,10 +192,9 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
 
     public void createEquipment() {
         final HashMap<String, Object> equipment = new HashMap<>();
-        equipment.put("equipmentId", equipmentId);
         equipment.put("dateOfRental", Arrays.asList(getDate));
 
-        equipRentRef = db.collection("equipment").document(Integer.toString(equipmentId));
+        equipRentRef = db.collection("equipment").document(Integer.toString(equipmentId)).collection("rentalDates").document(Integer.toString(equipmentId));
         Log.d("Check", Integer.toString(equipmentId));
 
         equipRef = db.collection("rented").document(currentUserId).
@@ -233,7 +233,7 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
     }
 
     public void getDates() {
-        DocumentReference docRef = db.collection("equipment").document(Integer.toString(equipmentId));
+        DocumentReference docRef = db.collection("equipment").document(Integer.toString(equipmentId)).collection("rentalDates").document(Integer.toString(equipmentId));
         Log.d("Check", Integer.toString(equipmentId));
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
