@@ -49,12 +49,13 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
         storageReference = storage.getReference();
 
         findViewById(R.id.signOutButton).setOnClickListener(this);
-        userTextView = findViewById(R.id.currentUser);
-        userPic = findViewById(R.id.userProfile);
         findViewById(R.id.goToRental).setOnClickListener(this);
         findViewById(R.id.goToSupport).setOnClickListener(this);
         findViewById(R.id.userProfile).setOnClickListener(this);
         findViewById(R.id.goToMessage).setOnClickListener(this);
+
+        userTextView = findViewById(R.id.currentUser);
+        userPic = findViewById(R.id.userProfile);
 
     }
 

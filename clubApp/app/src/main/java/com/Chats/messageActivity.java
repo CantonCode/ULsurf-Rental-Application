@@ -88,4 +88,11 @@ public class messageActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, homeActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
 }

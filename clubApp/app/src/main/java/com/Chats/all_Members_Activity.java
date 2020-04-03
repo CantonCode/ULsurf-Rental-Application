@@ -37,9 +37,6 @@ public class all_Members_Activity extends AppCompatActivity implements View.OnCl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user);
 
-        mToolbar = (Toolbar) findViewById(R.id.main_appBar);
-        getSupportActionBar().setTitle("All Active Chats");
-
         setUpRecyclerView();
     }
 
