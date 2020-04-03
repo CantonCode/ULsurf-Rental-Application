@@ -9,7 +9,10 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
 import android.view.View;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.example.clubapp.R;
@@ -19,15 +22,19 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
+import java.util.Arrays;
+
 
 public class RentalMainActivity extends AppCompatActivity implements View.OnClickListener{
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference notebookRef = db.collection("equipment");
     private EquipmentAdapter equipmentAdapter;
     private EquipmentAdapter equipmentAdapter1;
+    private EquipmentAdapter equipmentAdapter2;
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private Dialog sortByDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,9 +43,12 @@ public class RentalMainActivity extends AppCompatActivity implements View.OnClic
 
         findViewById(R.id.goBack).setOnClickListener(this);
         findViewById(R.id.sortBy).setOnClickListener(this);
+        SearchView searchView = (SearchView) findViewById(R.id.searchView); // inititate a search view
+
 
         setUpRecyclerView();
         setUpDialog();
+        setUpSearch(searchView);
     }
 
     public void setUpRecyclerView(){
@@ -79,6 +89,26 @@ public class RentalMainActivity extends AppCompatActivity implements View.OnClic
         sortByDialog.findViewById(R.id.availablitiy).setOnClickListener(this);
     }
 
+    private void setUpSearch(SearchView searchView){
+        // perform set on query text listener event
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+// do something on text submit
+                Log.d("RENTAL", "onQueryTextSubmit: " + query);
+                search(query);
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+// do something when text changes
+                return false;
+            }
+        });
+        }
+
     private void changeView(){
         Query query = notebookRef.whereEqualTo("rented",false);
         FirestoreRecyclerOptions<Equipment> options1 = new FirestoreRecyclerOptions.Builder<Equipment>()
@@ -88,6 +118,21 @@ public class RentalMainActivity extends AppCompatActivity implements View.OnClic
         equipmentAdapter1 = new EquipmentAdapter(options1);
         recyclerView.setAdapter(equipmentAdapter1);
         equipmentAdapter1.startListening();
+        sortByDialog.dismiss();
+//        equipmentAdapter1.stopListening();
+    }
+
+    private void search(String s){
+        Log.d("RENTAL", "search: " + s);
+        String desc = s;
+        Query query = notebookRef.whereArrayContainsAny("description",Arrays.asList(desc.trim().toLowerCase()));
+        FirestoreRecyclerOptions<Equipment> options2 = new FirestoreRecyclerOptions.Builder<Equipment>()
+                .setQuery(query, Equipment.class)
+                .build();
+
+        equipmentAdapter2 = new EquipmentAdapter(options2);
+        recyclerView.setAdapter(equipmentAdapter2);
+        equipmentAdapter2.startListening();
         sortByDialog.dismiss();
 //        equipmentAdapter1.stopListening();
     }
