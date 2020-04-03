@@ -29,6 +29,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
+import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
+
 public class homeActivity extends AppCompatActivity implements View.OnClickListener {
 
     private FirebaseAuth mAuth;
@@ -47,12 +49,13 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
         storageReference = storage.getReference();
 
         findViewById(R.id.signOutButton).setOnClickListener(this);
-        userTextView = findViewById(R.id.currentUser);
-        userPic = findViewById(R.id.userProfile);
         findViewById(R.id.goToRental).setOnClickListener(this);
         findViewById(R.id.goToSupport).setOnClickListener(this);
         findViewById(R.id.userProfile).setOnClickListener(this);
         findViewById(R.id.goToMessage).setOnClickListener(this);
+
+        userTextView = findViewById(R.id.currentUser);
+        userPic = findViewById(R.id.userProfile);
 
     }
 
@@ -79,7 +82,7 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
         storageReference.child(path).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
-                Picasso.get().load(uri).fit().centerCrop().into(userPic);
+                Picasso.get().load(uri).fit().centerCrop().transform(new RoundedCornersTransformation(200,0)).into(userPic);
 
 
                 if( currentUser.getPhotoUrl() != uri) {

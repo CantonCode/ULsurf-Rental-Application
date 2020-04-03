@@ -1,11 +1,13 @@
 package com.Login;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,6 +19,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.squareup.picasso.Picasso;
+
+import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
 public class Login extends MainActivity implements
         View.OnClickListener {
@@ -42,10 +47,12 @@ public class Login extends MainActivity implements
         mEmailField = findViewById(R.id.fieldEmail);
         mPasswordField = findViewById(R.id.fieldPassword);
         setProgressBar(R.id.progressBar);
+        ImageView logo = findViewById(R.id.logo);
+        Picasso.get().load("https://firebasestorage.googleapis.com/v0/b/clubapp-surf.appspot.com/o/stockPhotos%2Fulsurfclub.png?alt=media&token=922ce976-e572-43b1-aeac-42c4f99da6b9").transform(new RoundedCornersTransformation(50,0)).into(logo);
+
 
         // Buttons
         findViewById(R.id.emailSignInButton).setOnClickListener(this);
-        findViewById(R.id.signOutButton).setOnClickListener(this);
 
         // [START initialize_auth]
         // Initialize Firebase Auth
@@ -93,6 +100,7 @@ public class Login extends MainActivity implements
                         // [START_EXCLUDE]
                         if (!task.isSuccessful()) {
                             mStatusTextView.setText(R.string.auth_failed);
+                            mStatusTextView.setTextColor(Color.RED);
                         }
                         hideProgressBar();
                         // [END_EXCLUDE]
@@ -137,9 +145,6 @@ public class Login extends MainActivity implements
         } else {
             mStatusTextView.setText(R.string.signed_out);
 
-            findViewById(R.id.emailPasswordButtons).setVisibility(View.VISIBLE);
-            findViewById(R.id.emailPasswordFields).setVisibility(View.VISIBLE);
-            findViewById(R.id.signedInButtons).setVisibility(View.GONE);
         }
     }
 
