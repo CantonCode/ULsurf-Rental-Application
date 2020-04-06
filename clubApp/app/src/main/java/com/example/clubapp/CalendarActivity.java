@@ -89,6 +89,7 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
                 Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
         );
         datePicker.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+        datePicker.invalidateOptionsMenu();
         datePicker.show();
     }
 

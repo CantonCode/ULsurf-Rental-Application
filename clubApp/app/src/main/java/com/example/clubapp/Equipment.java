@@ -1,9 +1,11 @@
 package com.example.clubapp;
 
+import java.util.List;
+
 public class Equipment {
     private int equipmentId;
     private String equipmentName;
-    private String description;
+    private List<String> description;
     private String size;
     private boolean rented;
     private String imageUrl;
@@ -12,7 +14,7 @@ public class Equipment {
         //blank constructor
     }
 
-    public Equipment(int equipmentId,String equipmentName, String description, String size, boolean rented, String imageUrl){
+    public Equipment(int equipmentId,String equipmentName, List<String> description, String size, boolean rented, String imageUrl){
         this.equipmentId = equipmentId;
         this.equipmentName = equipmentName;
         this.description = description;
@@ -37,11 +39,11 @@ public class Equipment {
         this.equipmentName = equipmentName;
     }
 
-    public String getDescription() {
+    public List<String> getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(List<String> description) {
         this.description = description;
     }
 
