@@ -64,6 +64,12 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
         userPic = findViewById(R.id.userProfile);
 
         adminSection.setVisibility(View.GONE);
+        
+        mAuth = FirebaseAuth.getInstance();
+        currentUser = mAuth.getCurrentUser();
+        setCurrentUserText(currentUser);
+        setProfilePic();
+        isAdmin();
 
     }
 
