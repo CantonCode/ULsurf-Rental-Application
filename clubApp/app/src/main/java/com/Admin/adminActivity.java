@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 
 
+import com.Login.homeActivity;
 import com.example.clubapp.R;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -31,5 +32,12 @@ public class adminActivity extends AppCompatActivity implements View.OnClickList
             Intent intent = new Intent(this,addBoard.class);
             startActivity(intent);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, homeActivity.class);
+        startActivity(intent);
+        finish();
     }
 }
