@@ -23,6 +23,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
 import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class RentalMainActivity extends AppCompatActivity implements View.OnClickListener{
@@ -43,7 +45,7 @@ public class RentalMainActivity extends AppCompatActivity implements View.OnClic
 
         findViewById(R.id.goBack).setOnClickListener(this);
         findViewById(R.id.sortBy).setOnClickListener(this);
-        SearchView searchView = (SearchView) findViewById(R.id.searchView); // inititate a search view
+        SearchView searchView = findViewById(R.id.searchView); // inititate a search view
 
 
         setUpRecyclerView();
@@ -94,9 +96,21 @@ public class RentalMainActivity extends AppCompatActivity implements View.OnClic
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-// do something on text submit
+                Pattern pattern = Pattern.compile("\\s");
+                Matcher matcher = pattern.matcher(query);
+                boolean found = matcher.find();
+
                 Log.d("RENTAL", "onQueryTextSubmit: " + query);
-                search(query);
+                Log.d("SEARCH", "is there a space? " + found + " "+ query);
+
+                if(found){
+                    query = query.replace(" ","-");
+                    search(query);
+                    Log.d("SEARCH", "replaced spaces " + found + " "+ query);
+                }else{
+                    search(query);
+                    Log.d("SEARCH", "no spaces " + found + " "+ query);
+                }
 
                 return false;
             }
