@@ -5,7 +5,7 @@
     android:id="@+id/constraint"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CalendarActivity">
+    tools:context="com.Rental.CalendarActivity">
 
     <TextView
         android:id="@+id/date_confirmed"

@@ -1,11 +1,10 @@
-package com.example.clubapp;
+package com.Rental;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.media.audiofx.DynamicsProcessing;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,16 +13,12 @@ import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.example.clubapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,9 +28,6 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.SetOptions;
 
 public class CalendarActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
 
@@ -54,7 +46,7 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
     private String getEquip;
     private String getDate;
     String currentUserId;
-    private int equipmentId;
+    private String equipmentId;
     boolean found;
     boolean equipmentFound;
     boolean notAvail = false;
@@ -68,7 +60,7 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
         showDatePicker();
         this.found = false;
 
-        equipmentId = getIntent().getIntExtra("selected_equipment", 0);
+        equipmentId = getIntent().getStringExtra("selected_equipment");
         getDates();
 
         mAuth = FirebaseAuth.getInstance();
@@ -195,11 +187,11 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
         final HashMap<String, Object> equipment = new HashMap<>();
         equipment.put("dateOfRental", Arrays.asList(getDate));
 
-        equipRentRef = db.collection("equipment").document(Integer.toString(equipmentId)).collection("rentalDates").document(Integer.toString(equipmentId));
-        Log.d("Check", Integer.toString(equipmentId));
+        equipRentRef = db.collection("equipment").document(equipmentId).collection("rentalDates").document(equipmentId);
+        Log.d("Check", equipmentId);
 
         equipRef = db.collection("rented").document(currentUserId).
-                collection("equipment").document(Integer.toString(equipmentId));
+                collection("equipment").document(equipmentId);
 
         equipRentRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -234,8 +226,8 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
     }
 
     public void getDates() {
-        DocumentReference docRef = db.collection("equipment").document(Integer.toString(equipmentId)).collection("rentalDates").document(Integer.toString(equipmentId));
-        Log.d("Check", Integer.toString(equipmentId));
+        DocumentReference docRef = db.collection("equipment").document(equipmentId).collection("rentalDates").document(equipmentId);
+        Log.d("Check", equipmentId);
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
