@@ -58,6 +58,15 @@
             android:textColor="@color/white"
             android:layout_margin="10dp"/>
 
+        <Button
+            android:id="@+id/goToAdmin"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@drawable/my_button"
+            android:text="Manage"
+            android:textColor="@color/white" />
+
     </LinearLayout>
 
     <LinearLayout

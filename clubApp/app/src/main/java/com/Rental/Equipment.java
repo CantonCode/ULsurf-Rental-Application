@@ -3,7 +3,7 @@ package com.Rental;
 import java.util.ArrayList;
 
 public class Equipment {
-    private int equipmentId;
+    private String equipmentId;
     private String equipmentName;
     private ArrayList<String> description;
     private String size;
@@ -14,7 +14,7 @@ public class Equipment {
         //blank constructor
     }
 
-    public Equipment(int equipmentId,String equipmentName, ArrayList<String> description, String size, boolean rented, String imageUrl){
+    public Equipment(String equipmentId,String equipmentName, ArrayList<String> description, String size, boolean rented, String imageUrl){
         this.equipmentId = equipmentId;
         this.equipmentName = equipmentName;
         this.description = description;
@@ -23,11 +23,11 @@ public class Equipment {
         this.imageUrl = imageUrl;
     }
 
-    public int getEquipmentId() {
+    public String getEquipmentId() {
         return equipmentId;
     }
 
-    public void setEquipmentId(int equipmentId) {
+    public void setEquipmentId(String equipmentId) {
         this.equipmentId = equipmentId;
     }
 

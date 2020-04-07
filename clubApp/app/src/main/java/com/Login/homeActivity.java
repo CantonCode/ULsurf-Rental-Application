@@ -8,9 +8,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.Admin.adminActivity;
 import com.Chats.messageActivity;
 import com.Rental.RentalMainActivity;
 import com.Support.SupportActivity;
@@ -24,6 +26,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -36,6 +39,7 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
     private FirebaseAuth mAuth;
     private TextView userTextView;
     private ImageView userPic;
+    private Button adminSection;
     FirebaseStorage storage;
     StorageReference storageReference;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -53,9 +57,19 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.goToSupport).setOnClickListener(this);
         findViewById(R.id.userProfile).setOnClickListener(this);
         findViewById(R.id.goToMessage).setOnClickListener(this);
+        findViewById(R.id.goToAdmin).setOnClickListener(this);
 
+        adminSection = findViewById(R.id.goToAdmin);
         userTextView = findViewById(R.id.currentUser);
         userPic = findViewById(R.id.userProfile);
+
+        adminSection.setVisibility(View.GONE);
+        
+        mAuth = FirebaseAuth.getInstance();
+        currentUser = mAuth.getCurrentUser();
+        setCurrentUserText(currentUser);
+        setProfilePic();
+        isAdmin();
 
     }
 
@@ -67,6 +81,34 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
         currentUser = mAuth.getCurrentUser();
         setCurrentUserText(currentUser);
         setProfilePic();
+        isAdmin();
+    }
+
+    private void isAdmin(){
+        DocumentReference userRef = db.collection("users").document(currentUser.getUid());
+        userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.d("ADMIN", "DocumentSnapshot data: " + document.getData());
+                        Boolean isAdmin = document.getBoolean("admin");
+                        Log.d("ADMIN", "onComplete: is user an admin:"+ isAdmin);
+
+                        if(isAdmin){
+                            adminSection.setVisibility(View.VISIBLE);
+                        }
+
+                    } else {
+                        Log.d("ADMIN", "No such document");
+                    }
+                } else {
+                    Log.d("ADMIN", "get failed with ", task.getException());
+                }
+            }
+        });
+
     }
 
     private void setCurrentUserText(FirebaseUser user){
@@ -162,5 +204,12 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
             Intent intent = new Intent(this, userProfileActivity.class);
             startActivity(intent);
         }
+
+        if(i==R.id.goToAdmin){
+            Intent intent = new Intent(this, adminActivity.class);
+            startActivity(intent);
+        }
+
+
     }
 }
