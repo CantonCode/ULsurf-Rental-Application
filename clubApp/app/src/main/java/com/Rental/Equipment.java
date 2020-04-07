@@ -1,11 +1,13 @@
-package com.example.clubapp;
+package com.Rental;
+
+import java.util.ArrayList;
 
 import java.util.List;
 
 public class Equipment {
-    private int equipmentId;
+    private String equipmentId;
     private String equipmentName;
-    private List<String> description;
+    private ArrayList<String> description;
     private String size;
     private boolean rented;
     private String imageUrl;
@@ -14,7 +16,7 @@ public class Equipment {
         //blank constructor
     }
 
-    public Equipment(int equipmentId,String equipmentName, List<String> description, String size, boolean rented, String imageUrl){
+    public Equipment(String equipmentId,String equipmentName, ArrayList<String> description, String size, boolean rented, String imageUrl){
         this.equipmentId = equipmentId;
         this.equipmentName = equipmentName;
         this.description = description;
@@ -23,11 +25,11 @@ public class Equipment {
         this.imageUrl = imageUrl;
     }
 
-    public int getEquipmentId() {
+    public String getEquipmentId() {
         return equipmentId;
     }
 
-    public void setEquipmentId(int equipmentId) {
+    public void setEquipmentId(String equipmentId) {
         this.equipmentId = equipmentId;
     }
 
@@ -39,11 +41,11 @@ public class Equipment {
         this.equipmentName = equipmentName;
     }
 
-    public List<String> getDescription() {
+    public ArrayList<String> getDescription() {
         return description;
     }
 
-    public void setDescription(List<String> description) {
+    public void setDescription(ArrayList<String> description) {
         this.description = description;
     }
 

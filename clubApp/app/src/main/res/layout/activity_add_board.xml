@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.Login.signUpActivity"
-    android:layout_gravity="center">
+    tools:context="com.Admin.addBoard">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,46 +16,57 @@
             android:id="@+id/textView5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Please Enter Details Below"
+            android:text="Please Add New Board Below"
             android:textStyle="bold"
             android:textSize="24sp"
             android:layout_marginBottom="15dp"/>
 
         <EditText
-            android:id="@+id/signUpEmailField"
+            android:id="@+id/newBoardName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="textEmailAddress"
-            android:hint="Email Address"
+            android:inputType="text"
+            android:hint="Board Name"
             android:layout_margin="5dp"/>
 
         <EditText
-            android:id="@+id/signUpPasswordField"
+            android:id="@+id/newBoardSize"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="textPassword"
-            android:hint="Password"
+            android:inputType="text"
+            android:hint="Board Size"
             android:layout_margin="5dp"/>
 
-        <EditText
-            android:id="@+id/signUpStudentNumber"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="number"
-            android:hint="Student Number"
-            android:layout_margin="5dp"/>
+            android:orientation="horizontal">
 
-        <EditText
-            android:id="@+id/signUpUserName"
-            android:layout_width="wrap_content"
+            <EditText
+                android:id="@+id/newBoardDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:ems="10"
+                android:hint="Description"
+                android:inputType="text" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/addDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                app:srcCompat="@android:drawable/ic_input_add" />
+        </LinearLayout>
+
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipView"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:hint="Display Name"
-            android:layout_margin="5dp"/>
+            android:layout_margin="10dp"/>
 
         <View
             android:layout_width="350dp"
@@ -85,7 +95,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
-                    android:text="Upload Profile Pic:"
+                    android:text="Upload Board Pic"
                     android:textSize="15sp"
                     android:textStyle="bold" />
 
@@ -99,7 +109,7 @@
             </LinearLayout>
 
             <ImageView
-                android:id="@+id/signUpPicture"
+                android:id="@+id/boardPicture"
                 android:layout_weight="1"
                 android:layout_width="200dp"
                 android:layout_height="200dp"
@@ -114,10 +124,10 @@
             />
 
         <Button
-            android:id="@+id/signUpButton"
+            android:id="@+id/addBoardButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sign Up"
+            android:text="Add Board"
             android:layout_margin="10dp"
             android:background="@drawable/my_button"
             android:textColor="@color/white"

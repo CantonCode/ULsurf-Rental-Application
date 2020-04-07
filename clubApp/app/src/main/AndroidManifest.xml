@@ -10,15 +10,22 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".CalendarActivity"></activity>
-        <activity android:name=".userProfileActivity" />
-        <activity android:name=".SupportActivity" />
-        <activity android:name=".RentalMainActivity" />
-        <activity android:name=".homeActivity" />
-        <activity android:name=".Login" />
+        android:theme="@style/AppTheme">     
+        android:theme="@style/AppTheme.NoActionBar">
+        <activity android:name="com.Admin.addBoard"></activity>
+        <activity android:name="com.Admin.adminActivity" />
+        <activity android:name="com.Chats.message_between_users" />
+        <activity android:name="com.Login.signUpActivity" />
+        <activity android:name="com.Login.userProfileActivity" />
+        <activity android:name="com.Support.SupportActivity" />
+        <activity android:name="com.Rental.RentalMainActivity" />
+        <activity android:name="com.Rental.CalendarActivity"></activity>
+        <activity android:name="com.Login.homeActivity" />
+        <activity android:name="com.Login.Login" />
+        <activity android:name="com.Chats.all_Members_Activity" />
+        <activity android:name="com.Chats.messageActivity" />
         <activity
-            android:name=".MainActivity"
+            android:name="com.Login.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>

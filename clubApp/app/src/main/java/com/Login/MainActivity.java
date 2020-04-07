@@ -1,19 +1,26 @@
-package com.example.clubapp;
+package com.Login;
 
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+
 import android.view.View;
 import android.content.Context;
 import android.content.Intent;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+
+import com.example.clubapp.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.squareup.picasso.Picasso;
+
 import androidx.annotation.VisibleForTesting;
 
+import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
-public class MainActivity extends AppCompatActivity {
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     private FirebaseAuth mAuth;
 
@@ -23,8 +30,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
+        setContentView(R.layout.content_main);
+        findViewById(R.id.loginButton).setOnClickListener(this);
+        findViewById(R.id.signUp).setOnClickListener(this);
+        ImageView logo = findViewById(R.id.logo);
+        Picasso.get().load("https://firebasestorage.googleapis.com/v0/b/clubapp-surf.appspot.com/o/stockPhotos%2Fulsurfclub.png?alt=media&token=922ce976-e572-43b1-aeac-42c4f99da6b9").transform(new RoundedCornersTransformation(50,0)).into(logo);
         isUserLoggedIn();
     }
 
@@ -74,6 +84,11 @@ public class MainActivity extends AppCompatActivity {
         if (i == R.id.loginButton){
             Intent intent = new Intent(MainActivity.this, Login.class);
             startActivity(intent);
+        }
+
+        if(i == R.id.signUp){
+            Intent intent1 = new Intent(MainActivity.this, signUpActivity.class);
+            startActivity(intent1);
         }
     }
 
