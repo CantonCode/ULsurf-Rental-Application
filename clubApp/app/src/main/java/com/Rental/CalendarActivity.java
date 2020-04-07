@@ -228,14 +228,18 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
     public void getDates() {
         DocumentReference docRef = db.collection("equipment").document(equipmentId).collection("rentalDates").document(equipmentId);
         Log.d("Check", equipmentId);
+
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 DocumentSnapshot document = task.getResult();
+                Log.d("Check", document.toString());
                 if(task.isSuccessful()) {
-                    Log.d("Check", "made it to here");
-                    Log.d("Check", document.get("dateOfRental").toString());
-                    dateRentals = (ArrayList<String>) document.get("dateOfRental");
+                    if(task.getResult().getData() != null) {
+                        Log.d("Check", "made it to here");
+                        Log.d("Check", document.get("dateOfRental").toString());
+                        dateRentals = (ArrayList<String>) document.get("dateOfRental");
+                    }
                 }
                 else {
                     dateRentals.add("no Values");
