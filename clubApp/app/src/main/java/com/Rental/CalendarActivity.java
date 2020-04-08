@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,9 +19,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 
-//import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.example.clubapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -129,7 +126,6 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
         disabledDays = new Calendar[dateRentals.size()];
 
-        Log.d("Check", dateRentals.toString());
         for(int i = 0; i < dateRentals.size(); i++) {
             String date =dateRentals.get(i);
             try {
@@ -141,13 +137,9 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            Log.d("datesDisabled", disabledDays.toString());
-        }
-        datePickerDialog.setDisabledDays(disabledDays);
-        for(Calendar date: disabledDays ){
-            Log.d("datesDisabled", date.toString());
         }
 
+        datePickerDialog.setDisabledDays(disabledDays);
         datePickerDialog.show(getFragmentManager(), "DatePickerDialog");
     }
 
@@ -161,19 +153,17 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
                 if(task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-                        message = "DocumentSnapshot data: " + document.getData();
                         setValue(true);
                         createEquipment();
                     }
                     else {
-                        message = "No such document";
                         createUser();
                     }
                 }
                 else{
                     message = "get failed with " + task.getException();
                 }
-               //Toast.makeText(CalendarActivity.this, message, Toast.LENGTH_SHORT).show();
+               Toast.makeText(CalendarActivity.this, message, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -185,6 +175,7 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
 
         rentRef = db.collection("rented").document(currentUserId);
         rentRef.set(rent);
+
         createEquipment();
     }
 
@@ -196,8 +187,7 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
         equipRentRef = db.collection("equipment").document(equipmentId).collection("rentalDates").document(equipmentId);
         Log.d("Check", equipmentId);
 
-        equipRef = db.collection("rented").document(currentUserId).
-                collection("equipment").document(equipmentId);
+        equipRef = db.collection("rented").document(currentUserId).collection("equipment").document(equipmentId);
 
         equipRentRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -214,7 +204,7 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
             }
         });
 
-        equipRentRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        equipRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if(task.isSuccessful()){
