@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 
@@ -13,20 +14,27 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.Login.User;
 import com.example.clubapp.R;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+
+import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
 public class MessageAdapter extends FirestoreRecyclerAdapter<Message,MessageAdapter.MessageHolder> {
 
-
-    private static final int SENT = 0;
-    private static final int RECEIVED = 1;
-
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseUser user = mAuth.getCurrentUser();
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     public MessageAdapter( FirestoreRecyclerOptions<Message> options){
         super(options);
@@ -34,8 +42,19 @@ public class MessageAdapter extends FirestoreRecyclerAdapter<Message,MessageAdap
 
 
     protected void onBindViewHolder(final MessageHolder holder, int position,Message model) {
-//        message = model;
 
+        final String selectedUser = model.getReceiver();
+
+        DocumentReference docRef = db.collection("users").document(selectedUser);
+            docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                   User nameDetail = documentSnapshot.toObject(User.class);
+                   holder.chatUserName.setText(nameDetail.getStudentNumber());
+                   Log.d("CHAT", "onSuccess: " + nameDetail.getPhotoUrl());
+                   Picasso.get().load(nameDetail.getPhotoUrl()).transform(new RoundedCornersTransformation(50,0)).fit().centerCrop().into(holder.chatUserImage);
+                }
+            });
 
         Log.d("MessageAdapter", model.getMessage());
 
@@ -57,37 +76,19 @@ public class MessageAdapter extends FirestoreRecyclerAdapter<Message,MessageAdap
 
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.message_card,parent,false);
         final MessageHolder holder = new MessageHolder(v);
-//        if(viewType == SENT)
-//        {
-//            view = LayoutInflater.from(mContext).inflate(R.layout.chat_item_left,parent,false);
-//        }
-//        if(viewType == RECEIVED)
-//        {
-//            view = LayoutInflater.from(mContext).inflate(R.layout.chat_item_right,parent,false);
-//        }
 
         return holder;
 
     }
-
-
-
-
-//    @Override
-//    public int getItemViewType(int position) {
-//        if (message.getSender().equals(userID))
-//            return SENT;
-//        else
-//            return RECEIVED;
-//    }
-
     class MessageHolder extends RecyclerView.ViewHolder {
 
 
         //Variables for my chat lists...
         TextView mContentForSender , mContentForReceiver;
+        TextView chatUserName;
+        ImageView chatUserImage;
 
-        CardView display_chat;
+        CardView userName;
 
 
         public MessageHolder(View itemView) {
@@ -96,10 +97,9 @@ public class MessageAdapter extends FirestoreRecyclerAdapter<Message,MessageAdap
             //My variable initialization
             mContentForSender = itemView.findViewById(R.id.show_message);
             mContentForReceiver = itemView.findViewById(R.id.show_message1);
-            //display_chat = itemView.findViewById(R.id.user_chatBox);
-
-//            mContent =itemView.findViewById(R.id.list_studentNumber);
-
+            chatUserName = itemView.findViewById(R.id.chatUserName);
+            chatUserImage = itemView.findViewById(R.id.chatUserImage);
+            userName = itemView.findViewById(R.id.chat_card);
         }
     }
 }

@@ -51,8 +51,6 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<Chat,ChatAdapter.ChatH
         final String selectedUser;
         final ArrayList<String> users = model.getUsers();
 
-
-
         currentUserId = user.getUid();
 
 
