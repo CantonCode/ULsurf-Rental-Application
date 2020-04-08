@@ -76,7 +76,7 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
 
     private void showDatePicker(){
         datePickerDialog = DatePickerDialog.newInstance(CalendarActivity.this, Year, Month, Day);
-        datePickerDialog.setThemeDark(false);
+        datePickerDialog.setThemeDark(true);
         datePickerDialog.showYearPickerFirst(false);
         datePickerDialog.setTitle("Date Picker");
         datePickerDialog.setCancelColor(getResources().getColor(R.color.colorPrimaryDark));
