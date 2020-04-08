@@ -3,7 +3,7 @@ package com.Rental;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,11 +13,16 @@ import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 
+//import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.example.clubapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -28,40 +33,40 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
-public class CalendarActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
+public class CalendarActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
     private TextView confirm;
     private TextView result;
     private Button btn;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private FirebaseUser firebaseUser;
-    private CollectionReference notebookRef;
-    private CollectionReference newRentalRef;
     private DocumentReference equipRef;
     private DocumentReference rentRef;
     private DocumentReference equipRentRef;
     private FirebaseAuth mAuth;
 
-    private String getEquip;
     private String getDate;
     String currentUserId;
     private String equipmentId;
     boolean found;
-    boolean equipmentFound;
-    boolean notAvail = false;
     CollectionReference rented;
     ArrayList<String> dateRentals = new ArrayList<>();
+    Calendar[] disabledDays;
+
+    DatePickerDialog datePickerDialog ;
+    int Year, Month, Day;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState){
+
+        equipmentId = getIntent().getStringExtra("selected_equipment");
+        getDates();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
         showDatePicker();
         this.found = false;
-
-        equipmentId = getIntent().getStringExtra("selected_equipment");
-        getDates();
 
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -72,28 +77,37 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
 
     }
 
-    private void showDatePicker() {
-        DatePickerDialog datePicker = new DatePickerDialog(
-                this,
-                this,
-                Calendar.getInstance().get(Calendar.YEAR),
-                Calendar.getInstance().get(Calendar.MONTH),
-                Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
-        );
-        datePicker.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
-        datePicker.invalidateOptionsMenu();
-        datePicker.show();
+    private void showDatePicker(){
+        datePickerDialog = DatePickerDialog.newInstance(CalendarActivity.this, Year, Month, Day);
+        datePickerDialog.setThemeDark(false);
+        datePickerDialog.showYearPickerFirst(false);
+        datePickerDialog.setTitle("Date Picker");
+        datePickerDialog.setCancelColor(getResources().getColor(R.color.colorPrimaryDark));
+        datePickerDialog.setOkColor(getResources().getColor(R.color.colorPrimary));
+        datePickerDialog.setAccentColor(getResources().getColor(R.color.colorPrimary));
+
+        Calendar c = Calendar.getInstance();
+        datePickerDialog.setMinDate(c);
+        c.add(Calendar.YEAR, 2);
+        datePickerDialog.setMaxDate(c);
+        datePickerDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+
+            @Override
+            public void onCancel(DialogInterface dialogInterface) {
+                Intent intent = new Intent(CalendarActivity.this, RentalMainActivity.class);
+                startActivity(intent);
+                Toast.makeText(CalendarActivity.this, "Datepicker Canceled", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
-    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth){
+    public void onDateSet(DatePickerDialog view, int Year, int Month, int Day) {
 
-        getDate= dayOfMonth + "/" + (month+1) +"/" + year;
+        getDate = Day+"/"+(Month+1)+"/"+Year;
 
-        String message = "equipment id = " + equipmentId;
-        Log.d("EQUIPID", message);
+        Toast.makeText(CalendarActivity.this, getDate, Toast.LENGTH_LONG).show();
 
-        findUser();
 
         btn= findViewById(R.id.back);
         btn.setOnClickListener(new View.OnClickListener() {
@@ -103,10 +117,41 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
                 startActivity(intent);
             }
         });
+
+        findUser();
+        String confirmDate= "You have booked this piece of equipment for: " + getDate;
+        confirm.setText(confirmDate);
+        result.setText("Confirmation");
+
+    }
+
+    private void disableDates() {
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+        disabledDays = new Calendar[dateRentals.size()];
+
+        Log.d("Check", dateRentals.toString());
+        for(int i = 0; i < dateRentals.size(); i++) {
+            String date =dateRentals.get(i);
+            try {
+                Date newDate = format.parse(date);
+                Log.d("datesDisabled", newDate.toString());
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(newDate);
+                disabledDays[i] = cal;
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            Log.d("datesDisabled", disabledDays.toString());
+        }
+        datePickerDialog.setDisabledDays(disabledDays);
+        for(Calendar date: disabledDays ){
+            Log.d("datesDisabled", date.toString());
+        }
+
+        datePickerDialog.show(getFragmentManager(), "DatePickerDialog");
     }
 
     private void findUser() {
-        checkEquipment();
         rented = db.collection("rented");
         DocumentReference user = rented.document(currentUserId);
         user.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -118,7 +163,7 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
                     if (document.exists()) {
                         message = "DocumentSnapshot data: " + document.getData();
                         setValue(true);
-                        checkEquipment();
+                        createEquipment();
                     }
                     else {
                         message = "No such document";
@@ -133,20 +178,6 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
         });
     }
 
-    private void checkEquipment() {
-        for(String date : dateRentals) {
-            if(getDate.equals(date)) {
-                Log.d("Check", "Date wanted = " + getDate + " Date check = " + date);
-                equipmentFound = true;
-                notAvail = true;
-            }
-            else {
-                equipmentFound = false;
-                notAvail=false;
-            }
-        }
-        dateUnavailable();
-    }
 
     public void createUser() {
         HashMap<String, Object> rent = new HashMap<>();
@@ -154,34 +185,9 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
 
         rentRef = db.collection("rented").document(currentUserId);
         rentRef.set(rent);
-
-        if(!equipmentFound) {
-            notAvail = false;
-            Log.d("Check", "Equipment Not found create equipment");
-        }
-        else {
-            Log.d("Check", "Equipment unavailable");
-            notAvail = true;
-        }
-
-        checkEquipment();
+        createEquipment();
     }
 
-    public void dateUnavailable() {
-        if(notAvail) {
-            String confirmDate= "ERROR: Equipment you selected is not available on " + getDate;
-            Log.d("Check", confirmDate);
-            Toast.makeText(CalendarActivity.this, confirmDate, Toast.LENGTH_SHORT).show();
-            confirm.setText(confirmDate);
-            result.setText("ERROR");
-        }
-        else {
-            String confirmDate= "You have booked this piece of equipment for: " + getDate;
-            confirm.setText(confirmDate);
-            result.setText("Confirmation");
-            createEquipment();
-        }
-    }
 
     public void createEquipment() {
         final HashMap<String, Object> equipment = new HashMap<>();
@@ -226,6 +232,7 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
     }
 
     public void getDates() {
+        Log.d("Check", equipmentId);
         DocumentReference docRef = db.collection("equipment").document(equipmentId).collection("rentalDates").document(equipmentId);
         Log.d("Check", equipmentId);
 
@@ -240,6 +247,7 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
                         Log.d("Check", document.get("dateOfRental").toString());
                         dateRentals = (ArrayList<String>) document.get("dateOfRental");
                     }
+                    disableDates();
                 }
                 else {
                     dateRentals.add("no Values");
