@@ -104,8 +104,8 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<Chat,ChatAdapter.ChatH
     class ChatHolder extends RecyclerView.ViewHolder{
 
         TextView chatUserName;
-        ImageView chatUserImage;
-        CardView chat_selected;
+        ImageView chatUserImage ;
+        CardView chat_selected, card_for_chat_page;
 
         public ChatHolder(final View itemView){
             super(itemView);
@@ -113,6 +113,7 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<Chat,ChatAdapter.ChatH
             chatUserName = itemView.findViewById(R.id.chatUserName);
             chatUserImage = itemView.findViewById(R.id.chatUserImage);
             chat_selected = itemView.findViewById(R.id.chat_card);
+           // card_for_chat_page = itemView.findViewById(R.id.chat_card_for_user_page);
         }
     }
 }
