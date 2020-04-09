@@ -36,30 +36,25 @@ public class MessageAdapter extends FirestoreRecyclerAdapter<Message,MessageAdap
     FirebaseUser user = mAuth.getCurrentUser();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-
     public MessageAdapter( FirestoreRecyclerOptions<Message> options){
         super(options);
     }
 
+
     protected void onBindViewHolder(final MessageHolder holder, int position,Message model) {
 
-        /*
-        String chatId = user.getUid();
-        final ArrayList<String> userName = model.getUsers();
+        final String selectedUser = model.getReceiver();
 
-
-
-        DocumentReference docRef = db.collection("users").document(chatId);
-        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                User nameDetail = documentSnapshot.toObject(User.class);
-                holder.chatUserName.setText(nameDetail.getUserName());
-                Log.d("CHAT", "onSuccess: " + nameDetail.getPhotoUrl());
-                Picasso.get().load(nameDetail.getPhotoUrl()).transform(new RoundedCornersTransformation(50,0)).fit().centerCrop().into(holder.chatUserImage);
-            }
-        });
-        */
+        DocumentReference docRef = db.collection("users").document(selectedUser);
+            docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                   User nameDetail = documentSnapshot.toObject(User.class);
+                   holder.chatUserName.setText(nameDetail.getStudentNumber());
+                   Log.d("CHAT", "onSuccess: " + nameDetail.getPhotoUrl());
+                   Picasso.get().load(nameDetail.getPhotoUrl()).transform(new RoundedCornersTransformation(50,0)).fit().centerCrop().into(holder.chatUserImage);
+                }
+            });
 
         Log.d("MessageAdapter", model.getMessage());
 
@@ -92,7 +87,9 @@ public class MessageAdapter extends FirestoreRecyclerAdapter<Message,MessageAdap
         TextView mContentForSender , mContentForReceiver;
         TextView chatUserName;
         ImageView chatUserImage;
-        CardView chat_selected;
+
+        CardView userName;
+
 
         public MessageHolder(View itemView) {
             super(itemView);
@@ -102,7 +99,7 @@ public class MessageAdapter extends FirestoreRecyclerAdapter<Message,MessageAdap
             mContentForReceiver = itemView.findViewById(R.id.show_message1);
             chatUserName = itemView.findViewById(R.id.chatUserName);
             chatUserImage = itemView.findViewById(R.id.chatUserImage);
-            chat_selected = itemView.findViewById(R.id.chat_card_for_user_page);
+            userName = itemView.findViewById(R.id.chat_card);
         }
     }
 }
