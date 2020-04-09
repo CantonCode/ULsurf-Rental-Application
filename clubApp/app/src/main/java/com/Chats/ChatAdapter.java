@@ -53,7 +53,6 @@ public class ChatAdapter extends FirestoreRecyclerAdapter<Chat,ChatAdapter.ChatH
 
         currentUserId = user.getUid();
 
-
         if(currentUserId.equals(users.get(0))){
            selectedUser = users.get(1);
 

@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
@@ -19,10 +20,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.Login.MainActivity;
+import com.Login.User;
 import com.example.clubapp.R;
 import com.Login.homeActivity;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -35,11 +38,15 @@ import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.squareup.picasso.Picasso;
 
 
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
+
+import de.hdodenhof.circleimageview.CircleImageView;
+import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
 public class message_between_users extends AppCompatActivity implements View.OnClickListener {
 
@@ -59,6 +66,7 @@ public class message_between_users extends AppCompatActivity implements View.OnC
     private ImageButton send_btn;
     private EditText text_msg;
     private TextView userName;
+    private ImageView imageView;
 
 
     private RecyclerView recyclerView;
@@ -66,7 +74,7 @@ public class message_between_users extends AppCompatActivity implements View.OnC
 
     private String getTitle;
     private String getDate;
-    private String getMessage;
+
     String selectedUserId;
     String currentUserId;
     String chatId;
@@ -78,6 +86,8 @@ public class message_between_users extends AppCompatActivity implements View.OnC
     DocumentReference messageRef;
     private RecyclerView.LayoutManager mLayoutManager;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,6 +95,7 @@ public class message_between_users extends AppCompatActivity implements View.OnC
         findViewById(R.id.sendMessage).setOnClickListener(this);
         setValue(false);
         text_msg = findViewById(R.id.newMessage);
+
         selectedUserId = getIntent().getStringExtra("selected_user");
 
         db = FirebaseFirestore.getInstance();
@@ -92,13 +103,27 @@ public class message_between_users extends AppCompatActivity implements View.OnC
         FirebaseUser currentUser = mAuth.getCurrentUser();
         currentUserId = currentUser.getUid();
 
+        setText();
+
         chatId = currentUserId + selectedUserId;
 
         findChat(currentUserId, selectedUserId);
+    }
 
+    private void setText(){
 
+        userName = findViewById(R.id.chatUserName);
+        imageView = findViewById(R.id.chatUserImage);
 
-
+        DocumentReference docRef = db.collection("users").document(selectedUserId);
+        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                User nameDetail = documentSnapshot.toObject(User.class);
+                userName.setText(nameDetail.getUserName());
+                Picasso.get().load(nameDetail.getPhotoUrl()).transform(new RoundedCornersTransformation(50,0)).fit().centerCrop().into(imageView);
+            }
+        });
     }
 
 
@@ -224,49 +249,10 @@ public class message_between_users extends AppCompatActivity implements View.OnC
         recyclerView = findViewById(R.id.messageRecyclerCon);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(messageAdapter);
+
         messageAdapter.startListening();
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-
-        getMenuInflater().inflate(R.menu.message, menu);
-
-
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        super.onOptionsItemSelected(item);
-
-        if (item.getItemId() == R.id.signOutButton) {
-
-            //mUserRef.child("online").setValue(ServerValue.TIMESTAMP);
-
-            mAuth.signOut();
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-            //sendToStart();
-
-        }
-
-        if (item.getItemId() == R.id.goBack) {
-            Intent intent = new Intent(this, all_Members_Activity.class);
-            startActivity(intent);
-        }
-
-        if (item.getItemId() == R.id.home) {
-
-            Intent intent = new Intent(this, homeActivity.class);
-            startActivity(intent);
-
-        }
-
-        return true;
-    }
 
     private void send_Message(String sender, String receiver, String message) {
         Log.d("MESSAGE", "send_message:currentUser: " + currentUserId + "    receiverID:" + selectedUserId);

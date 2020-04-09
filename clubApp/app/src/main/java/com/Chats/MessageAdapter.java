@@ -43,19 +43,6 @@ public class MessageAdapter extends FirestoreRecyclerAdapter<Message,MessageAdap
 
     protected void onBindViewHolder(final MessageHolder holder, int position,Message model) {
 
-        final String selectedUser = model.getReceiver();
-
-        DocumentReference docRef = db.collection("users").document(selectedUser);
-            docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                @Override
-                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                   User nameDetail = documentSnapshot.toObject(User.class);
-                   holder.chatUserName.setText(nameDetail.getStudentNumber());
-                   Log.d("CHAT", "onSuccess: " + nameDetail.getPhotoUrl());
-                   Picasso.get().load(nameDetail.getPhotoUrl()).transform(new RoundedCornersTransformation(50,0)).fit().centerCrop().into(holder.chatUserImage);
-                }
-            });
-
         Log.d("MessageAdapter", model.getMessage());
 
         if(user.getUid().equals(model.getSender())){
