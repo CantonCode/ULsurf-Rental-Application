@@ -111,7 +111,6 @@ public class message_between_users extends AppCompatActivity implements View.OnC
     }
 
     private void setText(){
-
         userName = findViewById(R.id.chatUserName);
         imageView = findViewById(R.id.chatUserImage);
 
