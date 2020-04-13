@@ -20,8 +20,16 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
+import com.github.mikephil.charting.utils.ColorTemplate;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -37,6 +45,7 @@ public class GetRentalsActivity extends AppCompatActivity {
     List<String> names = new ArrayList<>();
     TextView display;
     String equipmentName = "";
+    int pos = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,8 +70,6 @@ public class GetRentalsActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
-                        List<String> row = new ArrayList<>();
-                        //Log.d("Check", document.getId() + " => " + document.getData());
                         rentals = (ArrayList<String>) document.get("dateOfRental");
                         ids.add(document.getId());
                         String name = getEquipmentName(document.getId(), rentals);
@@ -81,6 +88,7 @@ public class GetRentalsActivity extends AppCompatActivity {
                 }
             }
         });
+        barChart();
     }
 
     private String getEquipmentName(String id, final ArrayList<String> dates){
@@ -91,21 +99,16 @@ public class GetRentalsActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 DocumentSnapshot document = task.getResult();
                 equipmentName = document.getString("equipmentName");
-                names.add(equipmentName);
                 display(equipmentName, dates);
             }
         });
-
-        for(String name : names){
-            Log.d("Check", name);
-        }
         return equipmentName;
     }
 
     private void display(String name, ArrayList<String> dates){
         boolean upcomingDate = false;
         boolean nameDisplayed = false;
-
+        names.add(name);
         SimpleDateFormat dateFormat= new SimpleDateFormat("dd/MM/yyyy");
         for(String date : dates) {
             try {
@@ -132,10 +135,34 @@ public class GetRentalsActivity extends AppCompatActivity {
                 System.out.println("Excep"+e);
             }
         }
-        //barChart(name, dates);
     }
 
-    private void barChart(String name, ArrayList<String> dates) {
+    private void barChart() {
+        ArrayList labels= new ArrayList<>();
+        ArrayList entries = new ArrayList<>();
+        BarChart chart = findViewById(R.id.barchart);
 
+        for(int i =0; i < allRentals.size(); i++){
+            int num =0;
+            for(int j=0; j < allRentals.get(i).size(); j++) {
+                Log.d("Check", allRentals.get(i).get(j));
+                num += 1;
+            }
+            Log.d("Check", Integer.toString(num));
+            entries.add(new BarEntry(Float.valueOf(num), i));
+        }
+
+        BarDataSet bardataset = new BarDataSet(entries, "Cells");
+
+        for(String na: names){
+            labels.add(na);
+        }
+
+        BarData data = new BarData(labels, bardataset);
+        chart.setData(data);
+
+        chart.setDescription("Board Rental Summary");  // set the description
+        bardataset.setColors(ColorTemplate.COLORFUL_COLORS);
+        chart.animateY(5000);
     }
 }

@@ -26,12 +26,19 @@
         android:layout_alignParentTop = "true"/>
 
     <TextView
-        android:id="@+id/barchart"
+        android:id="@+id/barchartView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="History"
+        android:text="Stats"
         android:textColor="#2144F3"
         android:textSize="18sp"
         android:textAlignment="center"
         android:layout_below="@+id/textView4"/>
+
+    <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/barchart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/barchartView"/>
+
 </RelativeLayout>
