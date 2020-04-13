@@ -52,23 +52,38 @@ public class MessageAdapter extends FirestoreRecyclerAdapter<Message,MessageAdap
     }
 
 
-    protected void onBindViewHolder(final MessageHolder holder, int position,final Message model) {
+    protected void onBindViewHolder(final MessageHolder holder,final int position,final Message model) {
+
+        final Boolean isEqual;
+
+        if(isMultiple(position, model.getSender()) == MULTIPLE){
+            Log.d("MESSAGE", "EQUALS ");
+          isEqual = true;
+        }
+        else{
+            isEqual = false;
+        }
 
         DocumentReference docRef = db.collection("users").document(model.getSender());
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
+                holder.sender.setVisibility(View.VISIBLE);
+                holder.pic.setVisibility(View.VISIBLE);
+
                 holder.message.setText(model.getMessage());
                 holder.sender.setText(documentSnapshot.get("userName").toString());
                 holder.timestamp.setText(p.format(model.getTime()));
                 Picasso.get().load(documentSnapshot.get("photoUrl").toString()).transform(new RoundedCornersTransformation(50,0)).fit().centerCrop().into(holder.pic);
+
+                if( isEqual){
+
+                    holder.sender.setVisibility(View.GONE);
+                    holder.pic.setVisibility(View.GONE);
+                }
+
             }
         });
-
-        if( isMultiple(position, model.getSender()) == MULTIPLE){
-            holder.sender.setVisibility(View.GONE);
-            holder.pic.setVisibility(View.GONE);
-        }
 
     }
 
@@ -97,17 +112,33 @@ public class MessageAdapter extends FirestoreRecyclerAdapter<Message,MessageAdap
 
     public int isMultiple(int position,String id) {
 
+        int currentMessagePos = position;
+        int previousMessPos = position - 1;
 
-        boolean inBounds = ((position - 1 ) >= 0) && ((position - 1) < getItemCount()) ;
-        Log.d("MESSAGE", "IS IN BOUNDS:" + inBounds);
+        if(previousMessPos < 0)
+            previousMessPos = 0;
 
-        if(inBounds){
-            if (getItem(position - 1).getSender().equals(id))
-                return MULTIPLE;
-            else
-                return NONMULT;
-        }else
-            return 0;
+        String currentSender = getItem(currentMessagePos).getSender();
+        String previousSender = getItem(previousMessPos).getSender()  ;
+
+        String currentMess = getItem(currentMessagePos).getMessage();
+        String previousMess= getItem(previousMessPos).getMessage()  ;
+
+
+
+        Log.d("MESSAGE", "currentMesId" + currentMessagePos);
+        Log.d("MESSAGE", "prevMesId" + previousMessPos);
+        Log.d("MESSAGE", "currentMesSender" + currentSender);
+        Log.d("MESSAGE", "prevMesSender" + previousSender);
+
+        if(currentSender.equals(previousSender)) {
+            Log.d("MESSAGE", "Is a Match: \n" + currentSender + ": "+ currentMess + "\n" + previousSender + ": "+ previousMess);
+            return MULTIPLE;
+        }
+        else {
+            Log.d("MESSAGE", "NOT a Match: \n" + currentSender + ": "+ currentMess + "\n" + previousSender + ": "+ previousMess);
+            return NONMULT;
+        }
 
     }
 

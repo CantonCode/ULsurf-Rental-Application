@@ -13,8 +13,7 @@
 
         android:layout_above="@+id/messageBottom"
         android:layout_alignParentTop="true"
-        android:layout_margin="10dp"
-        tools:listitem="@layout/message_card">
+        android:layout_margin="10dp">
 
     </androidx.recyclerview.widget.RecyclerView>
 
