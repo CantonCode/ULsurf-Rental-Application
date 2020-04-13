@@ -31,9 +31,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
-import java.util.ArrayList;
+public class MessageAdapter extends FirestoreRecyclerAdapter<Message,MessageAdapter.MessageHolder> {
 
-import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
     private static final int LEFT = 0;
     private static final int RIGHT = 1;
@@ -118,10 +117,8 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
         //Variables for my chat lists...
         TextView sender , message, timestamp;
         ImageView pic;
-        TextView chatUserName;
-        ImageView chatUserImage;
 
-        CardView userName;
+
 
 
         public MessageHolder(View itemView) {
@@ -132,9 +129,11 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
             message = itemView.findViewById(R.id.textmessage);
             timestamp = itemView.findViewById(R.id.timestamp);
             pic = itemView.findViewById(R.id.userPic);
-            chatUserName = itemView.findViewById(R.id.chatUserName);
-            chatUserImage = itemView.findViewById(R.id.chatUserImage);
-            userName = itemView.findViewById(R.id.chat_card);
+
+            //display_chat = itemView.findViewById(R.id.user_chatBox);
+
+//            mContent =itemView.findViewById(R.id.list_studentNumber);
+
         }
     }
 }
