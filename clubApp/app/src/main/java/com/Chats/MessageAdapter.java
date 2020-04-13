@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 
@@ -23,9 +24,12 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.squareup.picasso.Picasso;
 
 import org.ocpsoft.prettytime.PrettyTime;
 import androidx.recyclerview.widget.RecyclerView;
+
+import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
 public class MessageAdapter extends FirestoreRecyclerAdapter<Message,MessageAdapter.MessageHolder> {
 
@@ -56,6 +60,7 @@ public class MessageAdapter extends FirestoreRecyclerAdapter<Message,MessageAdap
                 holder.message.setText(model.getMessage());
                 holder.sender.setText(documentSnapshot.get("userName").toString());
                 holder.timestamp.setText(p.format(model.getTime()));
+                Picasso.get().load(documentSnapshot.get("photoUrl").toString()).transform(new RoundedCornersTransformation(50,0)).fit().centerCrop().into(holder.pic);
             }
         });
 
@@ -89,6 +94,7 @@ public class MessageAdapter extends FirestoreRecyclerAdapter<Message,MessageAdap
 
         //Variables for my chat lists...
         TextView sender , message, timestamp;
+        ImageView pic;
 
         CardView display_chat;
 
@@ -100,6 +106,7 @@ public class MessageAdapter extends FirestoreRecyclerAdapter<Message,MessageAdap
             sender = itemView.findViewById(R.id.sendername);
             message = itemView.findViewById(R.id.textmessage);
             timestamp = itemView.findViewById(R.id.timestamp);
+            pic = itemView.findViewById(R.id.userPic);
             //display_chat = itemView.findViewById(R.id.user_chatBox);
 
 //            mContent =itemView.findViewById(R.id.list_studentNumber);
