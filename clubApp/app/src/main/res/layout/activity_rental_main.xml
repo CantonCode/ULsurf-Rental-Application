@@ -83,6 +83,12 @@
 
         </RelativeLayout>
 
+        <Button
+            android:id="@+id/myRentals"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="My Rentals" />
+
     </LinearLayout>
 
 </RelativeLayout>
