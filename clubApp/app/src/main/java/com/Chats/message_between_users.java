@@ -110,20 +110,7 @@ public class message_between_users extends AppCompatActivity implements View.OnC
 
 
     }
-    private void setText(){
-        userName = findViewById(R.id.sendername);
-        String id = userName.getText().toString();
 
-
-        DocumentReference docRef = db.collection("users").document(id);
-        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                User nameDetail = documentSnapshot.toObject(User.class);
-                userName.setText(nameDetail.getUserName());
-            }
-        });
-    }
 
     @Override
     public void onStart() {
@@ -355,11 +342,12 @@ public class message_between_users extends AppCompatActivity implements View.OnC
     @Override
     public void onStop() {
         super.onStop();
-        messageAdapter.stopListening();
+
     }
 
     @Override
     public void onBackPressed() {
+        messageAdapter.stopListening();
         Intent intent = new Intent(this, messageActivity.class);
         startActivity(intent);
         finish();
