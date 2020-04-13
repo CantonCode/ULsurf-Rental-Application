@@ -36,6 +36,8 @@ public class MessageAdapter extends FirestoreRecyclerAdapter<Message,MessageAdap
 
     private static final int LEFT = 0;
     private static final int RIGHT = 1;
+    private static final int MULTIPLE = 2;
+    private static final int NONMULT = 3;
 
     PrettyTime p = new PrettyTime();
 
@@ -51,7 +53,6 @@ public class MessageAdapter extends FirestoreRecyclerAdapter<Message,MessageAdap
 
 
     protected void onBindViewHolder(final MessageHolder holder, int position,final Message model) {
-//        message = model;
 
         DocumentReference docRef = db.collection("users").document(model.getSender());
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -63,6 +64,11 @@ public class MessageAdapter extends FirestoreRecyclerAdapter<Message,MessageAdap
                 Picasso.get().load(documentSnapshot.get("photoUrl").toString()).transform(new RoundedCornersTransformation(50,0)).fit().centerCrop().into(holder.pic);
             }
         });
+
+        if( isMultiple(position, model.getSender()) == MULTIPLE){
+            holder.sender.setVisibility(View.GONE);
+            holder.pic.setVisibility(View.GONE);
+        }
 
     }
 
@@ -86,8 +92,24 @@ public class MessageAdapter extends FirestoreRecyclerAdapter<Message,MessageAdap
             return RIGHT;
         else
             return LEFT;
+
     }
 
+    public int isMultiple(int position,String id) {
+
+
+        boolean inBounds = ((position - 1 ) >= 0) && ((position - 1) < getItemCount()) ;
+        Log.d("MESSAGE", "IS IN BOUNDS:" + inBounds);
+
+        if(inBounds){
+            if (getItem(position - 1).getSender().equals(id))
+                return MULTIPLE;
+            else
+                return NONMULT;
+        }else
+            return 0;
+
+    }
 
     class MessageHolder extends RecyclerView.ViewHolder {
 
@@ -96,7 +118,7 @@ public class MessageAdapter extends FirestoreRecyclerAdapter<Message,MessageAdap
         TextView sender , message, timestamp;
         ImageView pic;
 
-        CardView display_chat;
+
 
 
         public MessageHolder(View itemView) {
@@ -107,6 +129,7 @@ public class MessageAdapter extends FirestoreRecyclerAdapter<Message,MessageAdap
             message = itemView.findViewById(R.id.textmessage);
             timestamp = itemView.findViewById(R.id.timestamp);
             pic = itemView.findViewById(R.id.userPic);
+
             //display_chat = itemView.findViewById(R.id.user_chatBox);
 
 //            mContent =itemView.findViewById(R.id.list_studentNumber);
@@ -114,3 +137,5 @@ public class MessageAdapter extends FirestoreRecyclerAdapter<Message,MessageAdap
         }
     }
 }
+
+
