@@ -87,6 +87,19 @@ public class addBoard extends AppCompatActivity implements View.OnClickListener 
 
     }
 
+    private Boolean wordCount(String text){
+        String[] words = text.split("\\s+");
+        Log.d("ADDBOARD", "wordCount: " + words.length);
+
+        if(words.length > 2) {
+            return false;
+        }
+        else {
+            return true;
+        }
+
+    }
+
     private void addToArray(String desc) {
         Pattern pattern = Pattern.compile("\\s");
         Matcher matcher = pattern.matcher(desc);
@@ -136,18 +149,25 @@ public class addBoard extends AppCompatActivity implements View.OnClickListener 
     }
 
     private void addChip(final String desc) {
-        final Chip chip = new Chip(this);
-        chip.setText(desc);
-        chip.setCloseIconVisible(true);
-        chip.setOnCloseIconClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                chipGroup.removeView(chip);
-                boardDesc.remove(desc);
-                Log.d("ADD", "item removed" + " " + boardDesc);
-            }
-        });
-        chipGroup.addView(chip);
+
+        if(!wordCount(desc)){
+            descriptionText.setError("Max 2 Words");
+        }else {
+
+
+            final Chip chip = new Chip(this);
+            chip.setText(desc);
+            chip.setCloseIconVisible(true);
+            chip.setOnCloseIconClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    chipGroup.removeView(chip);
+                    boardDesc.remove(desc);
+                    Log.d("ADD", "item removed" + " " + boardDesc);
+                }
+            });
+            chipGroup.addView(chip);
+        }
     }
 
     private void selectImage() {
@@ -274,3 +294,4 @@ public class addBoard extends AppCompatActivity implements View.OnClickListener 
         }
     }
 }
+
