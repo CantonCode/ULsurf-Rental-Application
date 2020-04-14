@@ -69,6 +69,7 @@ public class EquipmentAdapter extends FirestoreRecyclerAdapter<Equipment,Equipme
                     public void onClick(View v) {
                         Intent intent = new Intent(v.getContext(), CalendarActivity.class);
                         intent.putExtra("selected_equipment", model.getEquipmentId());
+                        intent.putExtra("selected_equipmentName", model.getEquipmentName());
                         v.getContext().startActivity(intent);
                     }
                 });

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,7 +36,8 @@ import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 public class CalendarActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
     private TextView confirm;
-    private TextView result;
+    private ImageView result;
+    private TextView display;
     private Button btn;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private DocumentReference equipRef;
@@ -46,6 +48,7 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
     private String getDate;
     String currentUserId;
     private String equipmentId;
+    private String equipmentName;
     boolean found;
     CollectionReference rented;
     ArrayList<String> dateRentals = new ArrayList<>();
@@ -58,6 +61,7 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
     protected void onCreate(Bundle savedInstanceState){
 
         equipmentId = getIntent().getStringExtra("selected_equipment");
+        equipmentName = getIntent().getStringExtra("selected_equipmentName");
         getDates();
 
         super.onCreate(savedInstanceState);
@@ -70,7 +74,8 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
         currentUserId = currentUser.getUid();
 
         confirm= findViewById(R.id.date_confirmed);
-        result = findViewById(R.id.confirmation);
+        result = findViewById(R.id.image);
+        display = findViewById(R.id.display);
 
     }
 
@@ -116,10 +121,10 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
         });
 
         findUser();
-        String confirmDate= "You have booked this piece of equipment for: " + getDate;
+        String confirmDate= "Booking confirmed for " + equipmentName + " on the " + getDate;
         confirm.setText(confirmDate);
-        result.setText("Confirmation");
-
+        display.setText("Confirmation");
+        result.setImageResource(R.drawable.tick2);
     }
 
     private void disableDates() {
