@@ -39,7 +39,16 @@ public class userAdapter extends FirestoreRecyclerAdapter<User,userAdapter.UserV
 
         if (user.getUid().equals(model.getUserId())) {
             holder.itemView.setVisibility(View.GONE);
-          // holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
+            holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
+
+            holder.itemView.setVisibility(View.VISIBLE);
+            holder.list_studentNumber.setText(model.getStudentNumber());
+            holder.list_userName.setText(model.getUserName());
+            holder.list_admin.setText(String.valueOf(model.isAdmin()));
+            Picasso.get().load(model.getPhotoUrl()).transform(new RoundedCornersTransformation(150, 5)).fit().centerCrop().into(holder.list_photo);
+            Log.d("USERIDaaaaa", model.getUserName());
+
+
         }else {
             holder.itemView.setVisibility(View.VISIBLE);
 

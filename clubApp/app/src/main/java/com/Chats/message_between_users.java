@@ -108,17 +108,11 @@ public class message_between_users extends AppCompatActivity implements View.OnC
 
         findChat(currentUserId, selectedUserId);
         setText();
-
-
-
-
     }
 
     private void setText(){
-
         userName = findViewById(R.id.username);
         userPic = findViewById(R.id.userPic);
-
 
         DocumentReference docRef = db.collection("users").document(selectedUserId);
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -142,10 +136,6 @@ public class message_between_users extends AppCompatActivity implements View.OnC
 
 //        findChat(currentUserId,selectedUserId);
     }
-
-
-
-
 
     public void setDate() {
         int getCurrentYear = Calendar.getInstance().get(Calendar.YEAR);
