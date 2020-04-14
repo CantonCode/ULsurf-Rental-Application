@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
@@ -67,6 +68,7 @@ public class message_between_users extends AppCompatActivity implements View.OnC
     private ImageButton send_btn;
     private EditText text_msg;
     private TextView userName;
+    private ImageView userPic;
 
 
     RecyclerView recyclerView;
@@ -105,10 +107,28 @@ public class message_between_users extends AppCompatActivity implements View.OnC
         chatId = currentUserId + selectedUserId;
 
         findChat(currentUserId, selectedUserId);
+        setText();
 
 
 
 
+    }
+
+    private void setText(){
+
+        userName = findViewById(R.id.username);
+        userPic = findViewById(R.id.userPic);
+
+
+        DocumentReference docRef = db.collection("users").document(selectedUserId);
+        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                User nameDetail = documentSnapshot.toObject(User.class);
+                userName.setText(nameDetail.getUserName());
+                Picasso.get().load(nameDetail.getPhotoUrl()).transform(new RoundedCornersTransformation(50,0)).fit().centerCrop().into(userPic);
+            }
+        });
     }
 
 
