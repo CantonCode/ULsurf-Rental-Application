@@ -257,47 +257,6 @@ public class message_between_users extends AppCompatActivity implements View.OnC
         recyclerView.setLayoutManager(mLayoutManager);
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-
-        getMenuInflater().inflate(R.menu.message, menu);
-
-
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        super.onOptionsItemSelected(item);
-
-        if (item.getItemId() == R.id.signOutButton) {
-
-            //mUserRef.child("online").setValue(ServerValue.TIMESTAMP);
-
-            mAuth.signOut();
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-            //sendToStart();
-
-        }
-
-        if (item.getItemId() == R.id.goBack) {
-            Intent intent = new Intent(this, all_Members_Activity.class);
-            startActivity(intent);
-        }
-
-        if (item.getItemId() == R.id.home) {
-
-            Intent intent = new Intent(this, homeActivity.class);
-            startActivity(intent);
-
-        }
-
-        return true;
-    }
-
     private void send_Message(String sender, String receiver, String message) {
         Log.d("MESSAGE", "send_message:currentUser: " + currentUserId + "    receiverID:" + selectedUserId);
         Log.d("MESSAGE", "chatID:" + chatId);

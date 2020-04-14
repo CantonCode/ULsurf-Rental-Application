@@ -161,10 +161,6 @@ public class MessageAdapter extends FirestoreRecyclerAdapter<Message,MessageAdap
             timestamp = itemView.findViewById(R.id.timestamp);
             pic = itemView.findViewById(R.id.userPic);
 
-            //display_chat = itemView.findViewById(R.id.user_chatBox);
-
-//            mContent =itemView.findViewById(R.id.list_studentNumber);
-
         }
     }
 }

@@ -69,47 +69,6 @@ public class all_Members_Activity extends AppCompatActivity implements View.OnCl
         userAdapter.stopListening();
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-
-        getMenuInflater().inflate(R.menu.message, menu);
-
-
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        super.onOptionsItemSelected(item);
-
-        if (item.getItemId() == R.id.signOutButton) {
-
-            //mUserRef.child("online").setValue(ServerValue.TIMESTAMP);
-
-            mAuth.signOut();
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-            //sendToStart();
-
-        }
-
-        if (item.getItemId() == R.id.goBack) {
-            Intent intent = new Intent(this, messageActivity.class);
-            startActivity(intent);
-        }
-
-        if (item.getItemId() == R.id.home) {
-
-            Intent intent = new Intent(this, homeActivity.class);
-            startActivity(intent);
-
-        }
-
-        return true;
-    }
-
     @Override
     public void onClick(View v) {
 
