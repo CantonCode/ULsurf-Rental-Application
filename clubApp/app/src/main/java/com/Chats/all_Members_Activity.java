@@ -41,7 +41,7 @@ public class all_Members_Activity extends AppCompatActivity implements View.OnCl
     }
 
     public void setUpRecyclerView(){
-        Query query = notebookRef.orderBy("userId", Query.Direction.ASCENDING);
+        Query query = notebookRef.orderBy("userName", Query.Direction.ASCENDING);
         FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>()
                 .setQuery(query, User.class)
 

@@ -39,7 +39,7 @@ public class userAdapter extends FirestoreRecyclerAdapter<User,userAdapter.UserV
 
         if (user.getUid().equals(model.getUserId())) {
             holder.itemView.setVisibility(View.GONE);
-            holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
+          // holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
         }else {
             holder.itemView.setVisibility(View.VISIBLE);
 
