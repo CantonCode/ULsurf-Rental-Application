@@ -31,9 +31,12 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.squareup.picasso.Picasso;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
-public class CalendarActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
+import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
+
+public class CalendarActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
 
     private TextView confirm;
     private ImageView result;
@@ -59,13 +62,12 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
-
-        equipmentId = getIntent().getStringExtra("selected_equipment");
-        equipmentName = getIntent().getStringExtra("selected_equipmentName");
-        getDates();
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
+        equipmentId = getIntent().getStringExtra("selected_equipment");
+        equipmentName = getIntent().getStringExtra("selected_equipmentName");
+
+        getDates();
         showDatePicker();
         this.found = false;
 
@@ -73,7 +75,7 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
         FirebaseUser currentUser = mAuth.getCurrentUser();
         currentUserId = currentUser.getUid();
 
-        confirm= findViewById(R.id.date_confirmed);
+        confirm = findViewById(R.id.date_confirmed);
         result = findViewById(R.id.image);
         display = findViewById(R.id.display);
 
@@ -124,7 +126,7 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
         String confirmDate= "Booking confirmed for " + equipmentName + " on the " + getDate;
         confirm.setText(confirmDate);
         display.setText("Confirmation");
-        result.setImageResource(R.drawable.tick2);
+        Picasso.get().load(R.drawable.tick2).transform(new RoundedCornersTransformation(50,0)).into(result);
     }
 
     private void disableDates() {
