@@ -28,8 +28,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.clubapp.R;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class EquipmentAdapter extends FirestoreRecyclerAdapter<Equipment,EquipmentAdapter.EquipmentHolder> {
@@ -57,9 +60,23 @@ public class EquipmentAdapter extends FirestoreRecyclerAdapter<Equipment,Equipme
             @Override
             public void onClick(View v) {
                 TextView textViewEquipmentName = equipmentDialog.findViewById(R.id.equipmentName);
+                TextView  textViewEquipmentSize = equipmentDialog.findViewById(R.id.equipmentSize);
                 ImageView imageViewEquipmentImage = equipmentDialog.findViewById(R.id.equipmentImage);
+                ChipGroup chipGroup = equipmentDialog.findViewById(R.id.boardDescriptionGroup);
+                ArrayList<String> desc = model.getDescription();
+
+
                 textViewEquipmentName.setText(model.getEquipmentName());
+                textViewEquipmentSize.setText(model.getSize());
                 Picasso.get().load(model.getImageUrl()).fit().centerCrop().into(imageViewEquipmentImage);
+
+                for(String des: desc) {
+                    des = des.replace("-"," ");
+                    Chip chip = new Chip(equipmentDialog.getContext());
+                    chip.setText(des);
+                    chipGroup.addView(chip);
+                }
+
 
                 equipmentDialog.show();
 
