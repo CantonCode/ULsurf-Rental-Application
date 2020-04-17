@@ -1,6 +1,7 @@
 package com.Chats;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -11,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
@@ -19,27 +21,34 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.Login.MainActivity;
+import com.Login.User;
 import com.example.clubapp.R;
 import com.Login.homeActivity;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.squareup.picasso.Picasso;
 
 
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
+
+import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
 public class message_between_users extends AppCompatActivity implements View.OnClickListener {
 
@@ -59,9 +68,10 @@ public class message_between_users extends AppCompatActivity implements View.OnC
     private ImageButton send_btn;
     private EditText text_msg;
     private TextView userName;
+    private ImageView userPic;
 
 
-    private RecyclerView recyclerView;
+    RecyclerView recyclerView;
 
 
     private String getTitle;
@@ -76,7 +86,7 @@ public class message_between_users extends AppCompatActivity implements View.OnC
     String chatIdTwo;
     CollectionReference chats;
     DocumentReference messageRef;
-    private RecyclerView.LayoutManager mLayoutManager;
+    LinearLayoutManager mLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,16 +102,37 @@ public class message_between_users extends AppCompatActivity implements View.OnC
         FirebaseUser currentUser = mAuth.getCurrentUser();
         currentUserId = currentUser.getUid();
 
+        setUpRecyclerView();
+
         chatId = currentUserId + selectedUserId;
 
         findChat(currentUserId, selectedUserId);
+        setText();
 
 
 
 
     }
 
+    private void setText(){
 
+        userName = findViewById(R.id.username);
+        userPic = findViewById(R.id.userPic);
+
+
+        DocumentReference docRef = db.collection("users").document(selectedUserId);
+        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                User nameDetail = documentSnapshot.toObject(User.class);
+                userName.setText(nameDetail.getUserName());
+                Picasso.get().load(nameDetail.getPhotoUrl()).transform(new RoundedCornersTransformation(50,0)).fit().centerCrop().into(userPic);
+            }
+        });
+    }
+
+
+    @Override
     public void onStart() {
         super.onStart();
 
@@ -111,6 +142,10 @@ public class message_between_users extends AppCompatActivity implements View.OnC
 
 //        findChat(currentUserId,selectedUserId);
     }
+
+
+
+
 
     public void setDate() {
         int getCurrentYear = Calendar.getInstance().get(Calendar.YEAR);
@@ -155,7 +190,7 @@ public class message_between_users extends AppCompatActivity implements View.OnC
                                                         Log.d("MESSAGE", "chatId: chat id one " + chatIdOne);
                                                         setId(chatIdOne);
                                                         setValue(true);
-                                                        setUpRecyclerView();
+                                                        initChat();
                                                     } else {
                                                         Log.d("MESSAGE", "No such document");
                                                     }
@@ -176,7 +211,7 @@ public class message_between_users extends AppCompatActivity implements View.OnC
                         Log.d("MESSAGE", "chatId: id two " + chatIdTwo);
                         setId(chatIdTwo);
                         setValue(true);
-                        setUpRecyclerView();
+                        initChat();
                     } else {
                         Log.d("MESSAGE", "No such document");
                     }
@@ -190,41 +225,36 @@ public class message_between_users extends AppCompatActivity implements View.OnC
         Log.d("MESSAGE", "chatId: " + chatId);
     }
 
-
-    public void setUpRecyclerView() {
-
+    public void initChat(){
         String id = getId();
-        Log.d("MESSAGE", "setUpRecyclerView: #" + id);
+        Log.d("MESSAGE", "chat init:" + id);
+
         notebookRef = db.collection("chats").document(id).collection("messages");
 
-        Query first = notebookRef.orderBy("Time", Query.Direction.DESCENDING);
-        db.collection("chats").document(chatId).collection("messages").get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d("MESSAGE info", document.getId() + " => " + document.getData());
-                            }
-                        } else {
-                            Log.d("MESSAGE", "Error getting documents: ", task.getException());
-                        }
-                    }
-                });
+        Query first = notebookRef.orderBy("Time", Query.Direction.ASCENDING);
 
         FirestoreRecyclerOptions<Message> options = new FirestoreRecyclerOptions.Builder<Message>()
                 .setQuery(first, Message.class)
                 .build();
 
-        Log.d("MESSAGE", "setUpRecyclerView: option " + options);
-
         messageAdapter = new MessageAdapter(options);
-
-        mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true);
-        recyclerView = findViewById(R.id.messageRecyclerCon);
-        recyclerView.setLayoutManager(mLayoutManager);
+        messageAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                recyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
+            }
+        });
         recyclerView.setAdapter(messageAdapter);
         messageAdapter.startListening();
+
+    }
+
+
+    public void setUpRecyclerView() {
+        recyclerView = findViewById(R.id.messageRecyclerCon);
+        mLayoutManager = new LinearLayoutManager(this);
+        mLayoutManager.setStackFromEnd(true);
+        recyclerView.setLayoutManager(mLayoutManager);
     }
 
 
@@ -277,7 +307,7 @@ public class message_between_users extends AppCompatActivity implements View.OnC
 
         if (!createChat) {
             create_chat(sender, receiver);
-            setUpRecyclerView();
+            initChat();
         }
 
 
@@ -291,6 +321,8 @@ public class message_between_users extends AppCompatActivity implements View.OnC
         hashMap.put("Time", FieldValue.serverTimestamp());
 
         newMessageRef.add(hashMap);
+
+        recyclerView.scrollToPosition(messageAdapter.getItemCount());
     }
 
 
@@ -326,14 +358,16 @@ public class message_between_users extends AppCompatActivity implements View.OnC
         return chatId;
     }
 
-    protected void onStop() {
-        super.onStop();
 
+    @Override
+    public void onStop() {
+        super.onStop();
 
     }
 
     @Override
     public void onBackPressed() {
+        messageAdapter.stopListening();
         Intent intent = new Intent(this, messageActivity.class);
         startActivity(intent);
         finish();

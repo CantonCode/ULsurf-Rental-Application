@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,14 +34,18 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.squareup.picasso.Picasso;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
-public class CalendarActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
+import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
+
+public class CalendarActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
 
     private int notificationId = 1;
 
     private TextView confirm;
-    private TextView result;
+    private ImageView result;
+    private TextView display;
     private Button btn;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private DocumentReference equipRef;
@@ -51,6 +56,7 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
     private String getDate;
     String currentUserId;
     private String equipmentId;
+    private String equipmentName;
     boolean found;
     CollectionReference rented;
     ArrayList<String> dateRentals = new ArrayList<>();
@@ -62,12 +68,12 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
-
-        equipmentId = getIntent().getStringExtra("selected_equipment");
-        getDates();
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
+        equipmentId = getIntent().getStringExtra("selected_equipment");
+        equipmentName = getIntent().getStringExtra("selected_equipmentName");
+
+        getDates();
         showDatePicker();
         this.found = false;
 
@@ -75,8 +81,9 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
         FirebaseUser currentUser = mAuth.getCurrentUser();
         currentUserId = currentUser.getUid();
 
-        confirm= findViewById(R.id.date_confirmed);
-        result = findViewById(R.id.confirmation);
+        confirm = findViewById(R.id.date_confirmed);
+        result = findViewById(R.id.image);
+        display = findViewById(R.id.display);
 
     }
 
@@ -109,6 +116,9 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
 
         getDate = Day+"/"+(Month+1)+"/"+Year;
 
+        Toast.makeText(CalendarActivity.this, getDate, Toast.LENGTH_SHORT).show();
+
+
         btn= findViewById(R.id.back);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,7 +129,7 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
         });
 
         findUser();
-        String confirmDate= "You have booked this piece of equipment for: " + getDate;
+        String confirmDate= "Booking confirmed for " + equipmentName + " on the " + getDate;
         confirm.setText(confirmDate);
         result.setText("Confirmation");
 
@@ -150,6 +160,8 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
         // Set alarm.
         // set(type, milliseconds, intent)
         alarm.set(AlarmManager.RTC_WAKEUP, alarmTime, alarmIntent);
+        display.setText("Confirmation");
+        Picasso.get().load(R.drawable.tick2).transform(new RoundedCornersTransformation(50,0)).into(result);
     }
 
     private void disableDates() {
