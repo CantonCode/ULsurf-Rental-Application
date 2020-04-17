@@ -1,16 +1,26 @@
 package com.Rental;
 
+import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
+import android.os.Bundle;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,7 +28,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.clubapp.R;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.Calendar;
 
 public class EquipmentAdapter extends FirestoreRecyclerAdapter<Equipment,EquipmentAdapter.EquipmentHolder> {
 
@@ -45,16 +60,42 @@ public class EquipmentAdapter extends FirestoreRecyclerAdapter<Equipment,Equipme
             @Override
             public void onClick(View v) {
                 TextView textViewEquipmentName = equipmentDialog.findViewById(R.id.equipmentName);
+                TextView  textViewEquipmentSize = equipmentDialog.findViewById(R.id.equipmentSize);
                 ImageView imageViewEquipmentImage = equipmentDialog.findViewById(R.id.equipmentImage);
+                ChipGroup chipGroup = equipmentDialog.findViewById(R.id.boardDescriptionGroup);
+                ArrayList<String> desc = model.getDescription();
+
+
                 textViewEquipmentName.setText(model.getEquipmentName());
+                textViewEquipmentSize.setText(model.getSize());
                 Picasso.get().load(model.getImageUrl()).fit().centerCrop().into(imageViewEquipmentImage);
 
+                for(String des: desc) {
+                    des = des.replace("-"," ");
+                    Chip chip = new Chip(equipmentDialog.getContext());
+                    chip.setText(des);
+                    chipGroup.addView(chip);
+                }
+
+
                 equipmentDialog.show();
+
+                Button btn = (Button) equipmentDialog.findViewById(R.id.rentThisBoard);
+                btn.setOnClickListener( new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(v.getContext(), CalendarActivity.class);
+                        intent.putExtra("selected_equipment", model.getEquipmentId());
+                        intent.putExtra("selected_equipmentName", model.getEquipmentName());
+                        v.getContext().startActivity(intent);
+                    }
+                });
 
             }
 
         });
     }
+
 
     @NonNull
     @Override
@@ -83,6 +124,6 @@ public class EquipmentAdapter extends FirestoreRecyclerAdapter<Equipment,Equipme
             cardViewEquipment = itemView.findViewById(R.id.equipmentCard);
 
         }
-
     }
+
 }

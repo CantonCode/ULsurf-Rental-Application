@@ -19,6 +19,7 @@
         <activity android:name="com.Login.userProfileActivity" />
         <activity android:name="com.Support.SupportActivity" />
         <activity android:name="com.Rental.RentalMainActivity" />
+        <activity android:name="com.Rental.CalendarActivity" />
         <activity android:name="com.Login.homeActivity" />
         <activity android:name="com.Login.Login" />
         <activity android:name="com.Chats.all_Members_Activity" />
@@ -33,6 +34,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <receiver android:name= ".NotifyService" />
     </application>
 
 </manifest>
