@@ -3,6 +3,8 @@ package com.Rental;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,6 +23,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
+import com.example.clubapp.NotifyService;
 import com.example.clubapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -37,6 +40,8 @@ import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
 public class CalendarActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
+
+    private int notificationId = 1;
 
     private TextView confirm;
     private ImageView result;
@@ -56,9 +61,10 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
     CollectionReference rented;
     ArrayList<String> dateRentals = new ArrayList<>();
     Calendar[] disabledDays;
+    SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 
     DatePickerDialog datePickerDialog ;
-    int Year, Month, Day;
+    int Year, Month, Day, hour, min, sec;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -125,12 +131,40 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
         findUser();
         String confirmDate= "Booking confirmed for " + equipmentName + " on the " + getDate;
         confirm.setText(confirmDate);
+
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MINUTE, 30);
+        cal.set(Calendar.HOUR, 10);
+        cal.set(Calendar.AM_PM, Calendar.AM);
+        cal.set(Calendar.MONTH, Month);
+        cal.set(Calendar.DAY_OF_MONTH, Day);
+        cal.set(Calendar.YEAR, Year);
+        cal.add(Calendar.DAY_OF_MONTH, -1);
+
+        Log.d("Check", cal.getTimeInMillis() + " -> " + cal.getTime());
+
+        long alarmTime = cal.getTimeInMillis();
+
+        // Set notificationId & text.
+        Intent intent = new Intent(CalendarActivity.this, NotifyService.class);
+        intent.putExtra("notificationId", notificationId);
+        intent.putExtra("todo", "Upcoming Rental - Tomorrow");
+
+        // getBroadcast(context, requestCode, intent, flags)
+        PendingIntent alarmIntent = PendingIntent.getBroadcast(CalendarActivity.this, 0,
+                intent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        AlarmManager alarm = (AlarmManager) getSystemService(ALARM_SERVICE);
+        // Set alarm.
+        // set(type, milliseconds, intent)
+        alarm.set(AlarmManager.RTC_WAKEUP, alarmTime, alarmIntent);
         display.setText("Confirmation");
         Picasso.get().load(R.drawable.tick2).transform(new RoundedCornersTransformation(50,0)).into(result);
     }
 
     private void disableDates() {
-        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+
         disabledDays = new Calendar[dateRentals.size()];
 
         for(int i = 0; i < dateRentals.size(); i++) {
