@@ -22,9 +22,23 @@
             android:text="equipemnt name"
             android:textColor="@android:color/white"
             android:textStyle="bold"
-            android:textSize="24sp"
+            android:textSize="28sp"
             android:layout_marginTop="120dp"
             />
+
+        <TextView
+            android:id="@+id/equipmentSize"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="size"
+            android:textColor="@android:color/white"
+            android:textStyle="normal"
+            android:textSize="24sp"/>
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/boardDescriptionGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
         <Button
             android:id="@+id/rentThisBoard"
