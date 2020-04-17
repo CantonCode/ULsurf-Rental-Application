@@ -2,6 +2,8 @@ package com.Rental;
 
 import java.util.ArrayList;
 
+import java.util.List;
+
 public class Equipment {
     private String equipmentId;
     private String equipmentName;
