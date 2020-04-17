@@ -1,16 +1,26 @@
 package com.Rental;
 
+import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
+import android.os.Bundle;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,6 +29,8 @@ import com.example.clubapp.R;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.squareup.picasso.Picasso;
+
+import java.util.Calendar;
 
 public class EquipmentAdapter extends FirestoreRecyclerAdapter<Equipment,EquipmentAdapter.EquipmentHolder> {
 
@@ -51,10 +63,22 @@ public class EquipmentAdapter extends FirestoreRecyclerAdapter<Equipment,Equipme
 
                 equipmentDialog.show();
 
+                Button btn = (Button) equipmentDialog.findViewById(R.id.rentThisBoard);
+                btn.setOnClickListener( new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(v.getContext(), CalendarActivity.class);
+                        intent.putExtra("selected_equipment", model.getEquipmentId());
+                        intent.putExtra("selected_equipmentName", model.getEquipmentName());
+                        v.getContext().startActivity(intent);
+                    }
+                });
+
             }
 
         });
     }
+
 
     @NonNull
     @Override
@@ -83,6 +107,6 @@ public class EquipmentAdapter extends FirestoreRecyclerAdapter<Equipment,Equipme
             cardViewEquipment = itemView.findViewById(R.id.equipmentCard);
 
         }
-
     }
+
 }
