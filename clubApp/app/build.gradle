@@ -33,9 +33,12 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation "androidx.cardview:cardview:1.0.0"
     implementation 'com.firebaseui:firebase-ui-firestore:6.2.0'
-    implementation 'com.google.firebase:firebase-firestore:21.4.1'
+    implementation 'com.google.firebase:firebase-firestore:21.4.2'
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.google.firebase:firebase-storage:19.1.1'
     implementation 'jp.wasabeef:picasso-transformations:2.1.0'
     implementation 'com.github.pchmn:MaterialChipsInput:1.0.8'
+
+    implementation 'com.wdullaer:materialdatetimepicker:3.5.1'
+    implementation 'org.ocpsoft.prettytime:prettytime:4.0.1.Final'
 }
