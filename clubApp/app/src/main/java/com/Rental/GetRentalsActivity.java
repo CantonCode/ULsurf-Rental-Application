@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.clubapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -24,14 +25,16 @@ import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class GetRentalsActivity extends AppCompatActivity {
 
@@ -41,11 +44,14 @@ public class GetRentalsActivity extends AppCompatActivity {
     List<List<String>> allRentals = new ArrayList<>();
     List<List<String>> RentalsWithName = new ArrayList<>();
     ArrayList<String> rentals = new ArrayList<>();
+    ArrayList number = new ArrayList<>();
+    ArrayList lab= new ArrayList<>();
+    List<Integer> nums = new ArrayList<>();
     List<String> ids = new ArrayList<>();
     List<String> names = new ArrayList<>();
     TextView display;
     String equipmentName = "";
-    int pos = 0;
+    HashMap<String, String> equipment=new HashMap<String, String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +63,22 @@ public class GetRentalsActivity extends AppCompatActivity {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         currentUserId = currentUser.getUid();
 
-        getUserRentals();
+        CollectionReference docRef = db.collection("equipment");
+        docRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        equipment.put(document.getId(), document.getString("equipmentName"));
+                    }
+
+                } else {
+                    Log.d("Chart", "Error getting documents: ", task.getException());
+                }
+                Log.d("Chart", equipment.toString());
+                getUserRentals();
+            }
+        });
 
         display= findViewById(R.id.textView4);
     }
@@ -76,32 +97,28 @@ public class GetRentalsActivity extends AppCompatActivity {
                         Log.d("Check", name);
                         allRentals.add(rentals);
                     }
-                    Log.d("Check", "" + allRentals);
-                    Log.d("Check", "" + ids);
 
-                    for(int i =0; i < allRentals.size(); i++){
-                        Log.d("Check", "" + ids.get(i) +" "+ allRentals.get(i));
-                    }
-
+                    barChart();
                 } else {
                     Log.d("Check", "Error getting documents: ", task.getException());
                 }
             }
         });
-        barChart();
     }
 
     private String getEquipmentName(String id, final ArrayList<String> dates){
         equipmentName= "";
-        DocumentReference docRef = db.collection("equipment").document(id);
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                DocumentSnapshot document = task.getResult();
-                equipmentName = document.getString("equipmentName");
-                display(equipmentName, dates);
+        nums.add(dates.size());
+        for (Map.Entry<String,String> entry : equipment.entrySet()) {
+            String key = entry.getKey();
+            String name = entry.getValue();
+            //Log.d("Chart", key + " => " + name);
+            if(key.equals(id)){
+                Log.d("Chart", key + " => " + name);
+                display(name, dates);
+                lab.add(name);
             }
-        });
+        }
         return equipmentName;
     }
 
@@ -138,31 +155,29 @@ public class GetRentalsActivity extends AppCompatActivity {
     }
 
     private void barChart() {
-        ArrayList labels= new ArrayList<>();
-        ArrayList entries = new ArrayList<>();
         BarChart chart = findViewById(R.id.barchart);
 
-        for(int i =0; i < allRentals.size(); i++){
-            int num =0;
-            for(int j=0; j < allRentals.get(i).size(); j++) {
-                Log.d("Check", allRentals.get(i).get(j));
-                num += 1;
-            }
-            Log.d("Check", Integer.toString(num));
-            entries.add(new BarEntry(Float.valueOf(num), i));
+        Log.d("Chart", nums.toString());
+        Log.d("Chart", lab.toString());
+
+        for(int i =0; i < nums.size(); i++){
+            int numberOfDates = nums.get(i);
+            float num = (float) numberOfDates;
+            number.add((new BarEntry(num, i)));
         }
 
-        BarDataSet bardataset = new BarDataSet(entries, "Cells");
+        Log.d("Chart", number.toString());
+        BarDataSet bardataset = new BarDataSet(number ,"Cells");
 
-        for(String na: names){
-            labels.add(na);
-        }
-
-        BarData data = new BarData(labels, bardataset);
+        BarData data = new BarData(names, bardataset);
         chart.setData(data);
-
         chart.setDescription("Board Rental Summary");  // set the description
         bardataset.setColors(ColorTemplate.COLORFUL_COLORS);
         chart.animateY(5000);
+
+    }
+
+    private void previousRentals(){
+
     }
 }
