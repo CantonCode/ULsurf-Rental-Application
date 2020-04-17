@@ -131,7 +131,6 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
         findUser();
         String confirmDate= "Booking confirmed for " + equipmentName + " on the " + getDate;
         confirm.setText(confirmDate);
-        result.setText("Confirmation");
 
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.SECOND, 0);
