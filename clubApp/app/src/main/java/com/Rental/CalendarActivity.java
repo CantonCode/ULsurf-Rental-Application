@@ -110,7 +110,7 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
 
         getDate = Day+"/"+(Month+1)+"/"+Year;
 
-        Toast.makeText(CalendarActivity.this, getDate, Toast.LENGTH_LONG).show();
+        Toast.makeText(CalendarActivity.this, getDate, Toast.LENGTH_SHORT).show();
 
 
         btn= findViewById(R.id.back);
