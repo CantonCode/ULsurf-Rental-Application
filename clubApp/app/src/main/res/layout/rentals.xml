@@ -40,7 +40,7 @@
             android:layout_marginStart="8dp"
             android:layout_toEndOf="@+id/imageView"
             android:text="Date"
-            android:textSize="15sp" />
+            android:textSize="18sp" />
 
     </RelativeLayout>
 

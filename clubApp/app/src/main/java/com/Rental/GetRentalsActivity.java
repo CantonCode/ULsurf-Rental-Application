@@ -35,6 +35,8 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -156,8 +158,7 @@ public class GetRentalsActivity extends AppCompatActivity {
             try {
                 Date now = new Date();
                 Date d=dateFormat.parse(date);
-                System.out.println("DATE"+d);
-                System.out.println("Formated"+dateFormat.format(d));
+
                 if(now.before(d)) {
                     Rentals rent = new Rentals(img, boardName, date);
                     allRentaldates.add(rent);
@@ -169,6 +170,15 @@ public class GetRentalsActivity extends AppCompatActivity {
             }
 
         }
+        Collections.sort(allRentaldates, new Comparator<Rentals>() {
+            @Override
+            public int compare(Rentals u1, Rentals u2) {
+                Date u1Date = new Date (u1.getDate());
+                Date u2Date = new Date(u2.getDate());
+                Log.d("Check", "" + u1Date.compareTo(u2Date));
+                return u1Date.compareTo(u2Date);
+            }
+        });
 
     }
 
