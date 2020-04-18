@@ -2,13 +2,11 @@ package com.Rental;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.TextView;
 import com.example.clubapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -191,5 +189,4 @@ public class GetRentalsActivity extends AppCompatActivity {
         chart.animateY(5000);
 
     }
-
 }
