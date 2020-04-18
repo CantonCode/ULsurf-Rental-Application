@@ -45,7 +45,6 @@ public class RentalMainActivity extends AppCompatActivity implements View.OnClic
 
         findViewById(R.id.goBack).setOnClickListener(this);
         findViewById(R.id.sortBy).setOnClickListener(this);
-        findViewById(R.id.myRentals).setOnClickListener(this);
         SearchView searchView = findViewById(R.id.searchView); // inititate a search view
 
 
@@ -82,11 +81,6 @@ public class RentalMainActivity extends AppCompatActivity implements View.OnClic
 
     private void goBack(){
         Intent intent = new Intent(this, homeActivity.class);
-        startActivity(intent);
-    }
-
-    private void goToMyRentals(){
-        Intent intent = new Intent(this, GetRentalsActivity.class);
         startActivity(intent);
     }
 
@@ -173,10 +167,6 @@ public class RentalMainActivity extends AppCompatActivity implements View.OnClic
         if (i == R.id.availablitiy) {
             changeView();
             Toast.makeText(this, "Showing only available boards", Toast.LENGTH_LONG).show();
-        }
-
-        if(i == R.id.myRentals){
-            goToMyRentals();
         }
 
     }
