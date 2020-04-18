@@ -2,27 +2,21 @@ package com.Rental;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.Dialog;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.example.clubapp.R;
-import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
+
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -34,12 +28,10 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -49,15 +41,11 @@ public class GetRentalsActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     String currentUserId;
     List<List<String>> allRentals = new ArrayList<>();
-    List<List<String>> RentalsWithName = new ArrayList<>();
     List<String> rentals = new ArrayList<>();
     ArrayList number = new ArrayList<>();
     ArrayList lab= new ArrayList<>();
     List<Integer> nums = new ArrayList<>();
-    List<String> ids = new ArrayList<>();
     List<String> names = new ArrayList<>();
-    TextView display;
-    String equipmentName = "";
     HashMap<String, String> equipment=new HashMap<String, String>();
     HashMap<String, String> equipmentPics=new HashMap<String, String>();
     ArrayList<Rentals> allRentaldates = new ArrayList<>();
@@ -175,7 +163,6 @@ public class GetRentalsActivity extends AppCompatActivity {
             public int compare(Rentals u1, Rentals u2) {
                 Date u1Date = new Date (u1.getDate());
                 Date u2Date = new Date(u2.getDate());
-                Log.d("Check", "" + u1Date.compareTo(u2Date));
                 return u1Date.compareTo(u2Date);
             }
         });
