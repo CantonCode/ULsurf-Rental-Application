@@ -7,7 +7,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
+
 import com.example.clubapp.R;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -188,5 +193,20 @@ public class GetRentalsActivity extends AppCompatActivity {
         bardataset.setColors(ColorTemplate.COLORFUL_COLORS);
         chart.animateY(5000);
 
+
+        chart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, int dataSetIndex, Highlight h) {
+                int index = e.getXIndex();
+                String name = names.get(index);
+                Toast.makeText(GetRentalsActivity.this, "Board = " + name + " \nNumber of times rented = " + e.getVal(), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onNothingSelected() {
+
+            }
+        });
     }
+
 }
