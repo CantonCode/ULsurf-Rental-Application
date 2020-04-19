@@ -124,7 +124,7 @@ public class RentalMainActivity extends AppCompatActivity implements View.OnClic
         }
 
     private void changeView(){
-        Query query = notebookRef.whereEqualTo("rented",false);
+        Query query = notebookRef.orderBy("size", Query.Direction.DESCENDING);
         FirestoreRecyclerOptions<Equipment> options1 = new FirestoreRecyclerOptions.Builder<Equipment>()
                 .setQuery(query, Equipment.class)
                 .build();
@@ -166,7 +166,7 @@ public class RentalMainActivity extends AppCompatActivity implements View.OnClic
 
         if (i == R.id.availablitiy) {
             changeView();
-            Toast.makeText(this, "Showing only available boards", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Showing by size", Toast.LENGTH_SHORT).show();
         }
 
     }
