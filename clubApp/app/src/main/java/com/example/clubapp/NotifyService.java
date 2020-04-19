@@ -19,6 +19,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.Login.MainActivity;
+import com.Rental.GetRentalsActivity;
 
 public class NotifyService extends BroadcastReceiver {
 
@@ -32,7 +33,7 @@ public class NotifyService extends BroadcastReceiver {
         String message = intent.getStringExtra("todo");
 
         // When notification is tapped, call MainActivity.
-        Intent mainIntent = new Intent(context, MainActivity.class);
+        Intent mainIntent = new Intent(context, GetRentalsActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, mainIntent, 0);
 
         NotificationManager myNotificationManager =

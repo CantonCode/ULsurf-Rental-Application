@@ -36,6 +36,7 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
 
     private EditText emailField;
     private EditText passwordField;
+    private EditText adminCode;
     private EditText studentNumField;
     private EditText userNameField;
     private TextView uploadText;
@@ -59,6 +60,7 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
         passwordField = findViewById(R.id.signUpPasswordField);
         studentNumField = findViewById(R.id.signUpStudentNumber);
         userNameField = findViewById(R.id.signUpUserName);
+        adminCode = findViewById(R.id.adminCode);
         userPicture = findViewById(R.id.signUpPicture);
         uploadText = findViewById(R.id.uploadText);
         Picasso.get().load("http://s3.amazonaws.com/37assets/svn/765-default-avatar.png").fit().centerCrop().into(userPicture);
@@ -69,7 +71,7 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
 
     }
 
-    private void createAccount(final String email, final String password,final String number, final String username, Uri filePath) {
+    private void createAccount(final String email, final String password,final String number, final String username, final String admin, Uri filePath) {
         if (!validateForm(email, password, number, username,filePath)) {
             return;
         }
@@ -83,7 +85,7 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("USER", "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            createUserInDataBase(number,username,user);
+                            createUserInDataBase(number,username,admin,user);
                             uploadPic(user);
                             setProfileUserName(user,username);
                             Toast.makeText(signUpActivity.this, "Account Created Successfully", Toast.LENGTH_SHORT).show();
@@ -242,10 +244,18 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
         return valid;
     }
 
-    private void createUserInDataBase(String number,String username,FirebaseUser user){
+    private Boolean checkAdminCode(String admin){
+        if(admin.equals("1234")){
+            return true;
+        }else return false;
+    }
+
+    private void createUserInDataBase(String number,String username,String admin,FirebaseUser user){
+         Boolean becomeAdmin =  checkAdminCode(admin);
+
         Log.d("USER", "enterdatabase");
         String id = user.getUid();
-        User newUser = new User(username,id,number,"",false);
+        User newUser = new User(username,id,number,"",becomeAdmin);
 
         Log.d("USER","this is a new user" + newUser.toString());
 
@@ -272,7 +282,7 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
 
         if(i==R.id.signUpButton){
             createAccount(emailField.getText().toString(),passwordField.getText().toString(),
-                    studentNumField.getText().toString(),userNameField.getText().toString(),filePath);
+                    studentNumField.getText().toString(),userNameField.getText().toString(),adminCode.getText().toString(),filePath);
         }
 
         if(i == R.id.uploadPicture){
@@ -280,3 +290,5 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 }
+
+

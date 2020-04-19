@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.Rental.GetRentalsActivity;
 import com.example.clubapp.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -41,6 +42,7 @@ public class userProfileActivity extends AppCompatActivity implements View.OnCli
         setContentView(R.layout.activity_user_profile);
 
         findViewById(R.id.goBack).setOnClickListener(this);
+        findViewById(R.id.myRentals).setOnClickListener(this);
 
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
@@ -91,7 +93,10 @@ public class userProfileActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
-
+    private void goToMyRentals(){
+        Intent intent = new Intent(this, GetRentalsActivity.class);
+        startActivity(intent);
+    }
 
     private void goBack(){
         Intent intent = new Intent(this, homeActivity.class);
@@ -102,6 +107,9 @@ public class userProfileActivity extends AppCompatActivity implements View.OnCli
         int i = v.getId();
         if (i == R.id.goBack) {
             goBack();
+        }
+        if(i == R.id.myRentals){
+            goToMyRentals();
         }
     }
 }
