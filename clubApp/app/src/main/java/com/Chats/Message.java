@@ -9,6 +9,7 @@ public class Message {
     private String receiver;
     private String message;
     private Date Time;
+    private boolean seen;
 
 
 
@@ -22,6 +23,7 @@ public class Message {
         this.receiver = receiver;
         this.message = message;
         this.Time = Time;
+        this.seen = seen;
     }
 
     public String getSender() {
@@ -51,4 +53,8 @@ public class Message {
     public void setMessage(String message) {
         this.message = message;
     }
+
+    public boolean isSeen() { return seen; }
+
+    public void setSeen(boolean seen) { this.seen = seen; }
 }

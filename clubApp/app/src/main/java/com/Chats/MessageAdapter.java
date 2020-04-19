@@ -54,7 +54,12 @@ public class MessageAdapter extends FirestoreRecyclerAdapter<Message,MessageAdap
 
     protected void onBindViewHolder(final MessageHolder holder,final int position,final Message model) {
 
+        int currentMessagePos = position;
+        int previousMessPos = position - 1;
+        Message message = new Message();
+
         final Boolean isEqual;
+
 
         if(isMultiple(position, model.getSender()) == MULTIPLE){
             Log.d("MESSAGE", "EQUALS ");
@@ -85,6 +90,18 @@ public class MessageAdapter extends FirestoreRecyclerAdapter<Message,MessageAdap
             }
         });
 
+        // I think we need to clear it then set it
+        if(position == position -1) // currentPosition < PreviousPosition
+             {
+            if(message.isSeen()){
+                holder.txt_seen.setText("seen");
+            } else {
+                holder.txt_seen.setText("delivered");
+            }
+        }
+        else {
+            holder.txt_seen.setVisibility(View.GONE);
+        }
     }
 
 
@@ -146,7 +163,7 @@ public class MessageAdapter extends FirestoreRecyclerAdapter<Message,MessageAdap
 
 
         //Variables for my chat lists...
-        TextView sender , message, timestamp;
+        TextView sender , message, timestamp, txt_seen;
         ImageView pic;
 
 
@@ -160,6 +177,7 @@ public class MessageAdapter extends FirestoreRecyclerAdapter<Message,MessageAdap
             message = itemView.findViewById(R.id.textmessage);
             timestamp = itemView.findViewById(R.id.timestamp);
             pic = itemView.findViewById(R.id.userPic);
+            txt_seen = itemView.findViewById(R.id.isSeen);
 
         }
     }

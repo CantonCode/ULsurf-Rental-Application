@@ -67,7 +67,7 @@ public class message_between_users extends AppCompatActivity implements View.OnC
 
     private ImageButton send_btn;
     private EditText text_msg;
-    private TextView userName;
+    private TextView userName, seen;
     private ImageView userPic;
 
 
@@ -108,6 +108,8 @@ public class message_between_users extends AppCompatActivity implements View.OnC
 
         findChat(currentUserId, selectedUserId);
         setText();
+        seenMessage(currentUserId);
+
     }
 
     private void setText(){
@@ -239,6 +241,27 @@ public class message_between_users extends AppCompatActivity implements View.OnC
 
     }
 
+    private void seenMessage(final String currentUserId){
+
+        notebookRef = db.collection("chats").document(currentUserId).collection("messages");
+
+        // potentially could use Listener Registration
+        EventListener<DocumentSnapshot> notebook = new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(DocumentSnapshot snapshot, FirebaseFirestoreException e) {
+                if (snapshot != null && snapshot.exists()) {
+                    Message message =  snapshot.toObject(Message.class);
+                    if(message.getReceiver().equals(firebaseUser.getUid()) && message.getSender().equals(selectedUserId)){
+                        HashMap<String, Object> hashMap = new HashMap<>();
+                        hashMap.put("isSeen", true);
+                        notebookRef.document(currentUserId).update(hashMap);
+
+                    }
+                }
+            }
+        };
+    }
+
 
     public void setUpRecyclerView() {
         recyclerView = findViewById(R.id.messageRecyclerCon);
@@ -251,12 +274,14 @@ public class message_between_users extends AppCompatActivity implements View.OnC
         Log.d("MESSAGE", "send_message:currentUser: " + currentUserId + "    receiverID:" + selectedUserId);
         Log.d("MESSAGE", "chatID:" + chatId);
 
+
         Boolean createChat = getValue();
         Log.d("MESSAGE", "Is chat already created?:  " + createChat);
 
         if (!createChat) {
             create_chat(sender, receiver);
             initChat();
+
         }
 
 
@@ -268,6 +293,7 @@ public class message_between_users extends AppCompatActivity implements View.OnC
         hashMap.put("receiver", receiver);
         hashMap.put("message", message);
         hashMap.put("Time", FieldValue.serverTimestamp());
+        hashMap.put("isSeen", false);
 
         newMessageRef.add(hashMap);
 
@@ -284,6 +310,7 @@ public class message_between_users extends AppCompatActivity implements View.OnC
             if (!msg.equals("")) {
                 Log.d("MESSAGE", "Sending Message:currentUser: " + currentUserId + "    receiverID:" + selectedUserId);
                 send_Message(currentUserId, selectedUserId, msg);
+
             } else {
                 Toast.makeText(message_between_users.this, "Can't do text", Toast.LENGTH_SHORT).show();
             }
