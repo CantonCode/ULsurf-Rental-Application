@@ -11,6 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
+        <activity android:name="com.Admin.manage_boards"></activity>
         <activity android:name="com.Admin.addBoard" />
         <activity android:name="com.Admin.adminActivity" />
         <activity android:name="com.Chats.message_between_users" />
@@ -33,7 +34,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <receiver android:name= ".NotifyService" />
+
+        <receiver android:name=".NotifyService" />
     </application>
 
 </manifest>
