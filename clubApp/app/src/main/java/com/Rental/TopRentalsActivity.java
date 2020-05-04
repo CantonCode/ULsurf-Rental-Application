@@ -19,6 +19,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -40,6 +41,7 @@ public class TopRentalsActivity extends AppCompatActivity {
     HashMap<String, Integer> numOfRentals=new HashMap<>();
     Map<String, Integer> sortedMap = new LinkedHashMap<String, Integer>();
     List<String> rentals = new ArrayList<>();
+    ArrayList<String> keys = new ArrayList<>();
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth;
@@ -134,6 +136,7 @@ public class TopRentalsActivity extends AppCompatActivity {
         for (Map.Entry<String, Integer> entry : sortedMap.entrySet()) {
             String key = entry.getKey();
             int num = entry.getValue();
+            keys.add(key);
             mSeriesMax += num;
             Log.d("Check R", key + " " + num);
         }
@@ -182,7 +185,7 @@ public class TopRentalsActivity extends AppCompatActivity {
             @Override
             public void onSeriesItemAnimationProgress(float percentComplete, float currentPosition) {
                 float percentFilled = ((currentPosition - seriesItem.getMinValue()) / (seriesItem.getMaxValue() - seriesItem.getMinValue()));
-                textPercentage.setText(String.format("%.0f%%", percentFilled * 100f));
+                textPercentage.setText(" " + currentPosition);
             }
 
             @Override
@@ -195,7 +198,7 @@ public class TopRentalsActivity extends AppCompatActivity {
         seriesItem.addArcSeriesItemListener(new SeriesItem.SeriesItemListener() {
             @Override
             public void onSeriesItemAnimationProgress(float percentComplete, float currentPosition) {
-                textActivity1.setText(String.format("%.0f ", currentPosition));
+                textActivity1.setText("You rented " + (keys.get(keys.size() -1)) + " " + sortedMap.get(keys.get(keys.size() -1)) + " times");
             }
 
             @Override
@@ -213,12 +216,26 @@ public class TopRentalsActivity extends AppCompatActivity {
                 .setInitialVisibility(false)
                 .build();
 
+        final TextView textPercentage = (TextView) findViewById(R.id.textPercentage);
+        seriesItem.addArcSeriesItemListener(new SeriesItem.SeriesItemListener() {
+            @Override
+            public void onSeriesItemAnimationProgress(float percentComplete, float currentPosition) {
+                float percentFilled = ((currentPosition - seriesItem.getMinValue()) / (seriesItem.getMaxValue() - seriesItem.getMinValue()));
+                textPercentage.setText(" " + currentPosition);
+            }
+
+            @Override
+            public void onSeriesItemDisplayProgress(float percentComplete) {
+
+            }
+        });
+
         final TextView textActivity2 = (TextView) findViewById(R.id.textActivity2);
 
         seriesItem.addArcSeriesItemListener(new SeriesItem.SeriesItemListener() {
             @Override
             public void onSeriesItemAnimationProgress(float percentComplete, float currentPosition) {
-                textActivity2.setText(String.format("%.0f ", currentPosition));
+                textActivity2.setText("You rented " + (keys.get(keys.size() -2)) + " " + sortedMap.get(keys.get(keys.size() -2)) + " times");
             }
 
             @Override
@@ -236,12 +253,26 @@ public class TopRentalsActivity extends AppCompatActivity {
                 .setInitialVisibility(false)
                 .build();
 
+        final TextView textPercentage = (TextView) findViewById(R.id.textPercentage);
+        seriesItem.addArcSeriesItemListener(new SeriesItem.SeriesItemListener() {
+            @Override
+            public void onSeriesItemAnimationProgress(float percentComplete, float currentPosition) {
+                float percentFilled = ((currentPosition - seriesItem.getMinValue()) / (seriesItem.getMaxValue() - seriesItem.getMinValue()));
+                textPercentage.setText(" " + currentPosition);
+            }
+
+            @Override
+            public void onSeriesItemDisplayProgress(float percentComplete) {
+
+            }
+        });
+
         final TextView textActivity3 = (TextView) findViewById(R.id.textActivity3);
 
         seriesItem.addArcSeriesItemListener(new SeriesItem.SeriesItemListener() {
             @Override
             public void onSeriesItemAnimationProgress(float percentComplete, float currentPosition) {
-                textActivity3.setText(String.format("%.2f ", currentPosition));
+                textActivity3.setText("You rented " + (keys.get(keys.size() -3)) + " " + sortedMap.get(keys.get(keys.size() -3)) + " times");
             }
 
             @Override
@@ -255,86 +286,249 @@ public class TopRentalsActivity extends AppCompatActivity {
 
     private void createEvents() {
         mDecoView.executeReset();
+        float first;
+        float second = 0.0f;
+        float third = 0.0f;
 
-        mDecoView.addEvent(new DecoEvent.Builder(mSeriesMax)
-                .setIndex(mBackIndex)
-                .setDuration(3000)
-                .setDelay(100)
-                .build());
+        if (sortedMap.size() >= 3){
+            int i = keys.size() -1;
+            first = (float) sortedMap.get(keys.get(i));
+            second = (float) sortedMap.get(keys.get(i -1));
+            third = (float) sortedMap.get(keys.get(i - 2));
+            Log.d("Check R", first  + ", " + second + ", " +  third);
 
-        mDecoView.addEvent(new DecoEvent.Builder(DecoDrawEffect.EffectType.EFFECT_SPIRAL_OUT)
-                .setIndex(mSeries1Index)
-                .setDuration(2000)
-                .setDelay(1250)
-                .build());
+            mDecoView.addEvent(new DecoEvent.Builder(mSeriesMax)
+                    .setIndex(mBackIndex)
+                    .setDuration(3000)
+                    .setDelay(100)
+                    .build());
 
-        mDecoView.addEvent(new DecoEvent.Builder(42.4f)
-                .setIndex(mSeries1Index)
-                .setDelay(3250)
-                .build());
+            mDecoView.addEvent(new DecoEvent.Builder(DecoDrawEffect.EffectType.EFFECT_SPIRAL_OUT)
+                    .setIndex(mSeries1Index)
+                    .setDuration(2000)
+                    .setDelay(1250)
+                    .build());
 
-        mDecoView.addEvent(new DecoEvent.Builder(DecoDrawEffect.EffectType.EFFECT_SPIRAL_OUT)
-                .setIndex(mSeries2Index)
-                .setDuration(1000)
-                .setEffectRotations(1)
-                .setDelay(7000)
-                .build());
+            mDecoView.addEvent(new DecoEvent.Builder(first)
+                    .setIndex(mSeries1Index)
+                    .setDelay(3250)
+                    .build());
 
-        mDecoView.addEvent(new DecoEvent.Builder(16.3f)
-                .setIndex(mSeries2Index)
-                .setDelay(8500)
-                .build());
+            mDecoView.addEvent(new DecoEvent.Builder(DecoDrawEffect.EffectType.EFFECT_SPIRAL_OUT)
+                    .setIndex(mSeries2Index)
+                    .setDuration(1000)
+                    .setEffectRotations(1)
+                    .setDelay(7000)
+                    .build());
 
-        mDecoView.addEvent(new DecoEvent.Builder(DecoDrawEffect.EffectType.EFFECT_SPIRAL_OUT)
-                .setIndex(mSeries3Index)
-                .setDuration(1000)
-                .setEffectRotations(1)
-                .setDelay(12500)
-                .build());
+            mDecoView.addEvent(new DecoEvent.Builder(second)
+                    .setIndex(mSeries2Index)
+                    .setDelay(8500)
+                    .build());
 
-        mDecoView.addEvent(new DecoEvent.Builder(4.36f).setIndex(mSeries3Index).setDelay(14000).build());
+            mDecoView.addEvent(new DecoEvent.Builder(DecoDrawEffect.EffectType.EFFECT_SPIRAL_OUT)
+                    .setIndex(mSeries3Index)
+                    .setDuration(1000)
+                    .setEffectRotations(1)
+                    .setDelay(12500)
+                    .build());
 
-        mDecoView.addEvent(new DecoEvent.Builder(0).setIndex(mSeries3Index).setDelay(18000).build());
+            mDecoView.addEvent(new DecoEvent.Builder(third).setIndex(mSeries3Index).setDelay(14000).build());
 
-        mDecoView.addEvent(new DecoEvent.Builder(0).setIndex(mSeries2Index).setDelay(18000).build());
+            mDecoView.addEvent(new DecoEvent.Builder(0).setIndex(mSeries3Index).setDelay(18000).build());
 
-        mDecoView.addEvent(new DecoEvent.Builder(0)
-                .setIndex(mSeries1Index)
-                .setDelay(20000)
-                .setDuration(1000)
-                .setInterpolator(new AnticipateInterpolator())
-                .setListener(new DecoEvent.ExecuteEventListener() {
-                    @Override
-                    public void onEventStart(DecoEvent decoEvent) {
+            mDecoView.addEvent(new DecoEvent.Builder(0).setIndex(mSeries2Index).setDelay(18000).build());
 
-                    }
+            mDecoView.addEvent(new DecoEvent.Builder(0)
+                    .setIndex(mSeries1Index)
+                    .setDelay(20000)
+                    .setDuration(1000)
+                    .setInterpolator(new AnticipateInterpolator())
+                    .setListener(new DecoEvent.ExecuteEventListener() {
+                        @Override
+                        public void onEventStart(DecoEvent decoEvent) {
 
-                    @Override
-                    public void onEventEnd(DecoEvent decoEvent) {
-                        resetText();
-                    }
-                })
-                .build());
+                        }
 
-        mDecoView.addEvent(new DecoEvent.Builder(DecoDrawEffect.EffectType.EFFECT_SPIRAL_EXPLODE)
-                .setIndex(mSeries1Index)
-                .setDelay(21000)
-                .setDuration(3000)
-                .setDisplayText("Woo!")
-                .setListener(new DecoEvent.ExecuteEventListener() {
-                    @Override
-                    public void onEventStart(DecoEvent decoEvent) {
+                        @Override
+                        public void onEventEnd(DecoEvent decoEvent) {
+                            resetText();
+                        }
+                    })
+                    .build());
 
-                    }
+            mDecoView.addEvent(new DecoEvent.Builder(DecoDrawEffect.EffectType.EFFECT_SPIRAL_EXPLODE)
+                    .setIndex(mSeries1Index)
+                    .setDelay(21000)
+                    .setDuration(3000)
+                    .setDisplayText("Woo!")
+                    .setListener(new DecoEvent.ExecuteEventListener() {
+                        @Override
+                        public void onEventStart(DecoEvent decoEvent) {
 
-                    @Override
-                    public void onEventEnd(DecoEvent decoEvent) {
-                        createEvents();
-                    }
-                })
-                .build());
+                        }
 
-        resetText();
+                        @Override
+                        public void onEventEnd(DecoEvent decoEvent) {
+                            createEvents();
+                        }
+                    })
+                    .build());
+
+            resetText();
+        }
+        else if (sortedMap.size() == 2){
+            int i = keys.size() -1;
+            first = (float) sortedMap.get(keys.get(i));
+            second = (float) sortedMap.get(keys.get(i -1));
+            mDecoView.addEvent(new DecoEvent.Builder(mSeriesMax)
+                    .setIndex(mBackIndex)
+                    .setDuration(3000)
+                    .setDelay(100)
+                    .build());
+
+            mDecoView.addEvent(new DecoEvent.Builder(DecoDrawEffect.EffectType.EFFECT_SPIRAL_OUT)
+                    .setIndex(mSeries1Index)
+                    .setDuration(2000)
+                    .setDelay(1250)
+                    .build());
+
+            mDecoView.addEvent(new DecoEvent.Builder(first)
+                    .setIndex(mSeries1Index)
+                    .setDelay(3250)
+                    .build());
+
+            mDecoView.addEvent(new DecoEvent.Builder(DecoDrawEffect.EffectType.EFFECT_SPIRAL_OUT)
+                    .setIndex(mSeries2Index)
+                    .setDuration(1000)
+                    .setEffectRotations(1)
+                    .setDelay(7000)
+                    .build());
+
+            mDecoView.addEvent(new DecoEvent.Builder(second)
+                    .setIndex(mSeries2Index)
+                    .setDelay(8500)
+                    .build());
+
+            mDecoView.addEvent(new DecoEvent.Builder(DecoDrawEffect.EffectType.EFFECT_SPIRAL_OUT)
+                    .setIndex(mSeries3Index)
+                    .setDuration(1000)
+                    .setEffectRotations(1)
+                    .setDelay(12500)
+                    .build());
+
+            mDecoView.addEvent(new DecoEvent.Builder(0).setIndex(mSeries3Index).setDelay(18000).build());
+
+            mDecoView.addEvent(new DecoEvent.Builder(0).setIndex(mSeries2Index).setDelay(18000).build());
+
+            mDecoView.addEvent(new DecoEvent.Builder(0)
+                    .setIndex(mSeries1Index)
+                    .setDelay(20000)
+                    .setDuration(1000)
+                    .setInterpolator(new AnticipateInterpolator())
+                    .setListener(new DecoEvent.ExecuteEventListener() {
+                        @Override
+                        public void onEventStart(DecoEvent decoEvent) {
+
+                        }
+
+                        @Override
+                        public void onEventEnd(DecoEvent decoEvent) {
+                            resetText();
+                        }
+                    })
+                    .build());
+
+            mDecoView.addEvent(new DecoEvent.Builder(DecoDrawEffect.EffectType.EFFECT_SPIRAL_EXPLODE)
+                    .setIndex(mSeries1Index)
+                    .setDelay(21000)
+                    .setDuration(3000)
+                    .setDisplayText("Woo!")
+                    .setListener(new DecoEvent.ExecuteEventListener() {
+                        @Override
+                        public void onEventStart(DecoEvent decoEvent) {
+
+                        }
+
+                        @Override
+                        public void onEventEnd(DecoEvent decoEvent) {
+                            createEvents();
+                        }
+                    })
+                    .build());
+
+            resetText();
+        }
+        else if (sortedMap.size() == 1){
+            int i = keys.size() -1;
+            first = (float) sortedMap.get(keys.get(i));
+            mDecoView.addEvent(new DecoEvent.Builder(mSeriesMax)
+                    .setIndex(mBackIndex)
+                    .setDuration(3000)
+                    .setDelay(100)
+                    .build());
+
+            mDecoView.addEvent(new DecoEvent.Builder(DecoDrawEffect.EffectType.EFFECT_SPIRAL_OUT)
+                    .setIndex(mSeries1Index)
+                    .setDuration(2000)
+                    .setDelay(1250)
+                    .build());
+
+            mDecoView.addEvent(new DecoEvent.Builder(first)
+                    .setIndex(mSeries1Index)
+                    .setDelay(3250)
+                    .build());
+
+            mDecoView.addEvent(new DecoEvent.Builder(DecoDrawEffect.EffectType.EFFECT_SPIRAL_OUT)
+                    .setIndex(mSeries2Index)
+                    .setDuration(1000)
+                    .setEffectRotations(1)
+                    .setDelay(7000)
+                    .build());
+
+
+            mDecoView.addEvent(new DecoEvent.Builder(0).setIndex(mSeries3Index).setDelay(18000).build());
+
+            mDecoView.addEvent(new DecoEvent.Builder(0).setIndex(mSeries2Index).setDelay(18000).build());
+
+            mDecoView.addEvent(new DecoEvent.Builder(0)
+                    .setIndex(mSeries1Index)
+                    .setDelay(20000)
+                    .setDuration(1000)
+                    .setInterpolator(new AnticipateInterpolator())
+                    .setListener(new DecoEvent.ExecuteEventListener() {
+                        @Override
+                        public void onEventStart(DecoEvent decoEvent) {
+
+                        }
+
+                        @Override
+                        public void onEventEnd(DecoEvent decoEvent) {
+                            resetText();
+                        }
+                    })
+                    .build());
+
+            mDecoView.addEvent(new DecoEvent.Builder(DecoDrawEffect.EffectType.EFFECT_SPIRAL_EXPLODE)
+                    .setIndex(mSeries1Index)
+                    .setDelay(21000)
+                    .setDuration(3000)
+                    .setDisplayText("Woo!")
+                    .setListener(new DecoEvent.ExecuteEventListener() {
+                        @Override
+                        public void onEventStart(DecoEvent decoEvent) {
+
+                        }
+
+                        @Override
+                        public void onEventEnd(DecoEvent decoEvent) {
+                            createEvents();
+                        }
+                    })
+                    .build());
+
+            resetText();
+        }
     }
 
     private void resetText() {

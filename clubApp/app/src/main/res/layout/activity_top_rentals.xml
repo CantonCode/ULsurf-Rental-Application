@@ -8,7 +8,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="600dp">
+        android:layout_height="500dp">
 
         <TextView
             android:id="@+id/textPercentage"
@@ -38,11 +38,21 @@
             android:layout_height="300dp" >
 
         </com.hookedonplay.decoviewlib.DecoView>
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="#0022FF"
+            android:textAlignment="center"
+            android:textColor="#F7F7F8"
+            android:textSize="18sp"
+            android:text="Your Top Rentals" />
     </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="350dp"
+        android:layout_height="450dp"
         android:layout_marginTop="610dp">
 
         <TextView
@@ -60,6 +70,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"
+            android:layout_alignParentTop="true"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <TextView
