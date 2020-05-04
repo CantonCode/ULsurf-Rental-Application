@@ -3,9 +3,11 @@ package com.Support;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
+
 import com.example.clubapp.R;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Criteria;
@@ -17,6 +19,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -51,9 +54,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private LatLng mOrigin;
     private LatLng mDestination;
-    private Polyline mPolyline;
     private FusedLocationProviderClient mFusedLocationClient;
-    ArrayList<LatLng> mMarkerPoints;
+    protected LocationManager locationManager;
+    protected LocationListener locationListener;
+    protected Context context;
+    private String txtLat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,35 +73,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mapFragment.getMapAsync(this);
 
-        mMarkerPoints = new ArrayList<>();
-
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        getLastKnownLocation();
-    }
-
-    private void getLastKnownLocation() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
-            @Override
-            public void onComplete(@NonNull Task<Location> task) {
-                if (task.isSuccessful()) {
-                    Location location = task.getResult();
-                    GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
-                    Log.d("lat", "value: " + geoPoint.getLatitude());
-                    Log.d("lng", "value: " + geoPoint.getLongitude());
-                }
-            }
-        });
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, (LocationListener) this);
+    }
+
+    public LatLng onLocationChanged(Location location) {
+        Double lat = location.getLatitude();
+        Double lng = location.getLongitude();
+        LatLng currentLocation = new LatLng(lat, lng);
+        return currentLocation;
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         LatLng boathouse = new LatLng(52.675768, -8.582914);
+        LatLng currentLocation = new LatLng(onLocationChanged())
         googleMap.addMarker(new MarkerOptions().position(boathouse)
-                .title("Marker in Boathouse"));
+                .title("UL Boathouse"));
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(boathouse));
     }
 }
