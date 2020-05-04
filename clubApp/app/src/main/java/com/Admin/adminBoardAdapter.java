@@ -24,7 +24,7 @@ public class adminBoardAdapter extends FirestoreRecyclerAdapter<Equipment, admin
 
         @Override
         protected void onBindViewHolder(@NonNull adminBoardHolder holder, int position, @NonNull Equipment model) {
-
+                holder.boardName.setText(model.getEquipmentName());
         }
 
 
@@ -46,6 +46,8 @@ class adminBoardHolder extends RecyclerView.ViewHolder{
 
         public adminBoardHolder(View itemView){
             super(itemView);
+
+            boardName = itemView.findViewById(R.id.boardName);
 
         }
     }
