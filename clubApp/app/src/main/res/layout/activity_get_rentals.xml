@@ -20,17 +20,26 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="600dp"
+        android:layout_height="500dp"
         android:layout_below="@id/rentals"
-        android:background="#ADDFF1"
         android:padding="4dp"
         android:scrollbars="vertical" />
+
+    <TextView
+        android:id="@+id/noRentals"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/overview"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="18sp"/>
 
     <Button
         android:id="@+id/overview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/recyclerView"
+        android:layout_marginTop="60dp"
         android:layout_centerHorizontal="true"
         android:text="Overview" />
 

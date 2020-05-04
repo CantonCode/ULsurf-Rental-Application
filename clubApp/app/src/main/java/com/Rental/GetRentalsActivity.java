@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.clubapp.R;
@@ -52,7 +53,7 @@ public class GetRentalsActivity extends AppCompatActivity {
     HashMap<String, String> equipment=new HashMap<String, String>();
     HashMap<String, String> equipmentPics=new HashMap<String, String>();
     ArrayList<Rentals> allRentaldates = new ArrayList<>();
-
+    TextView noRentals;
     CollectionReference notebookRef;
 
     private RecyclerView mRecyclerView;
@@ -63,7 +64,7 @@ public class GetRentalsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_get_rentals);
-
+        noRentals = findViewById(R.id.noRentals);
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -178,6 +179,9 @@ public class GetRentalsActivity extends AppCompatActivity {
     }
 
     public void buildRecyclerView() {
+        if(allRentaldates.size() == 0){
+            noRentals.setText("You have no upcoming rentals");
+        }
         Log.d("Adapt", "in build");
         mRecyclerView = findViewById(R.id.recyclerView);
         mRecyclerView.setHasFixedSize(true);

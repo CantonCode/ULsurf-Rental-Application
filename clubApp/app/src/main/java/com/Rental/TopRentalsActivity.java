@@ -161,6 +161,7 @@ public class TopRentalsActivity extends AppCompatActivity {
         }
         else{
             TextView error = findViewById(R.id.error);
+            Log.d("Check R", "No rentals");
             error.setText("You have no rentals to display");
         }
     }

@@ -19,15 +19,6 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textSize="40sp"/>
 
-        <TextView
-            android:id="@+id/error"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_above="@id/dynamicArcView"
-            android:layout_centerInParent="true"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="20dp" />
-
         <com.hookedonplay.decoviewlib.DecoView
             xmlns:custom="http://schemas.android.com/apk/res-auto"
             custom:dv_lineWidth="26dp"
@@ -54,6 +45,18 @@
         android:layout_width="match_parent"
         android:layout_height="450dp"
         android:layout_marginTop="610dp">
+
+        <TextView
+            android:id="@+id/error"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp"
+            android:layout_alignParentTop="true"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="18sp"/>
 
         <TextView
             android:id="@+id/textActivity2"

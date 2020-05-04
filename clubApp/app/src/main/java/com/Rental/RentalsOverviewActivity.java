@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.clubapp.R;
@@ -38,6 +39,7 @@ public class RentalsOverviewActivity extends AppCompatActivity {
     HashMap<String, String> equipment=new HashMap<String, String>();
     List<String> rentals = new ArrayList<>();
     ArrayList number = new ArrayList<>();
+    TextView noRentals;
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth;
@@ -47,6 +49,7 @@ public class RentalsOverviewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rentals_overview);
+        noRentals = findViewById(R.id.noData);
 
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
@@ -86,8 +89,11 @@ public class RentalsOverviewActivity extends AppCompatActivity {
                         rentals = (ArrayList<String>) document.get("dateOfRental");
                         setRental(document.getId(), rentals);
                     }
-
-                    barChart();
+                    if(rentals.size() > 0)
+                        barChart();
+                    else{
+                        noRentals.setText("You have no rentals to display");
+                    }
                 } else {
                     Log.d("Check", "Error getting documents: ", task.getException());
                 }
