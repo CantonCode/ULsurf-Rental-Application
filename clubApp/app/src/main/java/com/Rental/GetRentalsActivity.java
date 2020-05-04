@@ -5,8 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.clubapp.R;
@@ -45,9 +48,6 @@ public class GetRentalsActivity extends AppCompatActivity {
     String currentUserId;
     List<List<String>> allRentals = new ArrayList<>();
     List<String> rentals = new ArrayList<>();
-    ArrayList number = new ArrayList<>();
-    ArrayList lab= new ArrayList<>();
-    List<Integer> nums = new ArrayList<>();
     List<String> names = new ArrayList<>();
     HashMap<String, String> equipment=new HashMap<String, String>();
     HashMap<String, String> equipmentPics=new HashMap<String, String>();
@@ -70,6 +70,27 @@ public class GetRentalsActivity extends AppCompatActivity {
         currentUserId = currentUser.getUid();
         notebookRef = db.collection("rented").document(currentUserId).collection("equipment");
 
+        getEquipment();
+        Button btn = findViewById(R.id.overview);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(GetRentalsActivity.this, RentalsOverviewActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        Button btn2 = findViewById(R.id.topRentals);
+        btn2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(GetRentalsActivity.this, TopRentalsActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+
+    private void getEquipment(){
         CollectionReference docRef = db.collection("equipment");
         docRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -90,17 +111,6 @@ public class GetRentalsActivity extends AppCompatActivity {
         });
     }
 
-    public void buildRecyclerView() {
-        Log.d("Adapt", "in build");
-        mRecyclerView = findViewById(R.id.recyclerView);
-        mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(this);
-        mAdapter = new RentalsAdapter(allRentaldates);
-        Log.d("Adapt", allRentaldates.toString());
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setAdapter(mAdapter);
-    }
-
     private void getUserRentals(){
         CollectionReference colRef = db.collection("rented").document(currentUserId).collection("equipment");
 
@@ -113,8 +123,6 @@ public class GetRentalsActivity extends AppCompatActivity {
                         allRentals.add(rentals);
                         setRental(document.getId(), rentals);
                     }
-
-                    barChart();
                     buildRecyclerView();
                 } else {
                     Log.d("Check", "Error getting documents: ", task.getException());
@@ -126,7 +134,6 @@ public class GetRentalsActivity extends AppCompatActivity {
     private void setRental(String id, List<String> dates) {
         String boardName ="";
         String img ="";
-        nums.add(dates.size());
         for (Map.Entry<String,String> entry : equipment.entrySet()) {
             String key = entry.getKey();
             String name = entry.getValue();
@@ -134,7 +141,6 @@ public class GetRentalsActivity extends AppCompatActivity {
                 Log.d("Chart", key + " => " + name);
                 boardName = name;
                 names.add(name);
-                lab.add(name);
             }
         }
         for (Map.Entry<String,String> entry : equipmentPics.entrySet()) {
@@ -169,44 +175,16 @@ public class GetRentalsActivity extends AppCompatActivity {
                 return u1Date.compareTo(u2Date);
             }
         });
-
     }
 
-    private void barChart() {
-        BarChart chart = findViewById(R.id.barchart);
-
-        Log.d("Chart", nums.toString());
-        Log.d("Chart", lab.toString());
-
-        for(int i =0; i < nums.size(); i++){
-            int numberOfDates = nums.get(i);
-            float num = (float) numberOfDates;
-            number.add((new BarEntry(num, i)));
-        }
-
-        Log.d("Chart", number.toString());
-        BarDataSet bardataset = new BarDataSet(number ,"Cells");
-
-        BarData data = new BarData(names, bardataset);
-        chart.setData(data);
-        chart.setDescription("Board Rental Summary");  // set the description
-        bardataset.setColors(ColorTemplate.COLORFUL_COLORS);
-        chart.animateY(5000);
-
-
-        chart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
-            @Override
-            public void onValueSelected(Entry e, int dataSetIndex, Highlight h) {
-                int index = e.getXIndex();
-                String name = names.get(index);
-                Toast.makeText(GetRentalsActivity.this, "Board = " + name + " \nNumber of times rented = " + e.getVal(), Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onNothingSelected() {
-
-            }
-        });
+    public void buildRecyclerView() {
+        Log.d("Adapt", "in build");
+        mRecyclerView = findViewById(R.id.recyclerView);
+        mRecyclerView.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(this);
+        mAdapter = new RentalsAdapter(allRentaldates);
+        Log.d("Adapt", allRentaldates.toString());
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setAdapter(mAdapter);
     }
-
 }

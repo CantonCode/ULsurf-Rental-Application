@@ -20,37 +20,27 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="600dp"
         android:layout_below="@id/rentals"
         android:background="#ADDFF1"
         android:padding="4dp"
         android:scrollbars="vertical" />
 
-
-    <TextView
-        android:id="@+id/barchartView"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_below="@+id/recyclerView"
-        android:background="#0022FF"
-        android:text="Overview"
-        android:textAlignment="center"
-        android:textColor="#F7F7F8"
-        android:textSize="18sp" />
-
-
-    <RelativeLayout
+    <Button
+        android:id="@+id/overview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:layout_below="@id/barchartView">
+        android:layout_below="@id/recyclerView"
+        android:layout_centerHorizontal="true"
+        android:text="Overview" />
 
-        <com.github.mikephil.charting.charts.BarChart
-            android:id="@+id/barchart"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:backgroundTint="#ADDFF1" />
-    </RelativeLayout>
+    <Button
+        android:id="@+id/topRentals"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/overview"
+        android:layout_centerHorizontal="true"
+        android:text="Top Rentals" />
 
 </RelativeLayout>
 
