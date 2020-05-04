@@ -1,5 +1,7 @@
 package com.Support;
 
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 import com.example.clubapp.R;
 
@@ -17,6 +19,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -26,6 +30,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.GeoPoint;
 
 import org.json.JSONObject;
 
@@ -45,6 +52,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private LatLng mOrigin;
     private LatLng mDestination;
     private Polyline mPolyline;
+    private FusedLocationProviderClient mFusedLocationClient;
     ArrayList<LatLng> mMarkerPoints;
 
     @Override
@@ -61,6 +69,32 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
 
         mMarkerPoints = new ArrayList<>();
+
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        getLastKnownLocation();
+    }
+
+    private void getLastKnownLocation() {
+        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+            @Override
+            public void onComplete(@NonNull Task<Location> task) {
+                if(task.isSuccessful()) {
+                    Location location = task.getResult();
+                    GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
+                    setMarker(geoPoint);
+                }
+            }
+        });
+    }
+
+    private void setMarker(GeoPoint currentLocation) {
+        double lat = currentLocation.getLatitude();
+        double lng = currentLocation.getLongitude();
+        LatLng latlng = new LatLng(lat, lng);
+        mMarkerPoints.add(latlng);
     }
 
     @Override
