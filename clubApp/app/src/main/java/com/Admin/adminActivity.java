@@ -32,6 +32,11 @@ public class adminActivity extends AppCompatActivity implements View.OnClickList
             Intent intent = new Intent(this,addBoard.class);
             startActivity(intent);
         }
+
+        if (i == R.id.manageBoards){
+            Intent intent = new Intent(this,manage_boards.class);
+            startActivity(intent);
+        }
     }
 
     @Override
