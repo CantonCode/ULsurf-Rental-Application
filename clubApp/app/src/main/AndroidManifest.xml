@@ -7,7 +7,9 @@
          location permissions for the 'MyLocation' functionality.
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission. ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
+
 
     <application
 
@@ -31,7 +33,10 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key" />
+            android:value="AIzaSyDyKaBBvRLUvDMCpzxrddhoqeGhWCPEzT0" />
+
+        <meta-data android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
 
 
         <activity android:name="com.Admin.manage_boards"></activity>
@@ -43,6 +48,7 @@
         <activity android:name="com.Admin.adminActivity" />
         <activity android:name="com.Chats.message_between_users" />
         <activity android:name="com.Login.signUpActivity" />
+
         <activity android:name="com.Login.userProfileActivity" />
         <activity android:name="com.Support.SupportActivity" />
         <activity android:name="com.Rental.RentalMainActivity" />
