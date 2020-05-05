@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
 import android.Manifest;
 import android.app.ProgressDialog;
@@ -42,7 +43,9 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class signUpActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -57,8 +60,8 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private final int PICK_IMAGE_REQUEST = 22;
     private final int REQUEST_IMAGE_CAPTURE = 1001;
-    private final int MY_CAMERA_PERMISSION_CODE = 100;
-    private final int CAMERA_REQUEST = 1888;
+    private final int REQUEST_TAKE_PHOTO = 1;
+    private String currentPhotoPath;
     private Uri image_uri;
     FirebaseStorage storage;
     StorageReference storageReference;
@@ -169,10 +172,34 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
     private void takePicture() {
         //Log.d("Check", "connecting to camera");
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        Log.d("Check", ""+ filePath);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-            Log.d("Check", "go to activity");
+            try{
+                File f = createImageFile();;
+            }
+            catch(IOException ex){
+
+            }
+            File newFile = new File(currentPhotoPath);
+            filePath = Uri.fromFile(newFile);;
+            startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
         }
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
     }
 
     private void uploadPic(FirebaseUser user){
@@ -211,8 +238,7 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Log.d("Check",""+ filePath);
-        if(requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
-                && data != null && data.getData() != null )
+        if(requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null )
         {
             filePath = data.getData();
             Log.d("Check",""+ filePath);
@@ -220,11 +246,10 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
         }
 
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            filePath = data.getData();
-            Log.d("Check",""+ filePath);
             Picasso.get().load(filePath).centerCrop().fit().into(userPicture);
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
+            Log.d("Check",""+ imageBitmap);
             userPicture.setImageBitmap(imageBitmap);
         }
     }
@@ -276,6 +301,7 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
             studentNumField.setError(null);
         }
 
+        Log.d("Check","File Path = "+ filePath);
         if(filePath == null){
             valid = false;
             uploadText.setError("required");
