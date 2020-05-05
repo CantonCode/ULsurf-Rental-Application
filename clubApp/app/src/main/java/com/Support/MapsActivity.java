@@ -144,24 +144,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(
                         ltlng, 16f);
                 mMap.animateCamera(cameraUpdate);
-            }
-        });
 
-        //get destination location when user click on map
-        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-            @Override
-            public void onMapClick(LatLng latLng) {
-
-                end=latLng;
+                end= new LatLng(52.675742, -8.582924);
 
                 mMap.clear();
 
                 start=new LatLng(myLocation.getLatitude(),myLocation.getLongitude());
-                //start route finding
+
                 Findroutes(start,end);
             }
         });
-
     }
 
 
