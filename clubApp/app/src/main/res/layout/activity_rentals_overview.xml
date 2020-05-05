@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.Rental.RentalsOverviewActivity">
+
+    <TextView
+        android:id="@+id/barchartView"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_below="@+id/recyclerView"
+        android:background="#0022FF"
+        android:text="Board Rentals Overview"
+        android:textAlignment="center"
+        android:textColor="#F7F7F8"
+        android:textSize="18sp" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:layout_below="@id/barchartView">
+
+        <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/barchart"
+        android:layout_width="match_parent"
+        android:layout_height="600dp"
+        android:backgroundTint="#ADDFF1" >
+
+        </com.github.mikephil.charting.charts.BarChart>
+
+        <TextView
+            android:id="@+id/noData"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="600dp"
+            android:text=""
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
+    </RelativeLayout>
+
+</RelativeLayout>
