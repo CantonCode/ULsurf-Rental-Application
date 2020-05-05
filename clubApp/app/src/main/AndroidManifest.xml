@@ -6,8 +6,9 @@
          Google Maps Android API v2, but you must specify either coarse or fine
          location permissions for the 'MyLocation' functionality.
     -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
 
     <application
         android:allowBackup="true"
@@ -17,17 +18,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
 
-        <!--
-             The API key for Google Maps-based APIs is defined as a string resource.
-             (See the file "res/values/google_maps_api.xml").
-             Note that the API key is linked to the encryption key used to sign the APK.
-             You need a different API key for each encryption key, including the release key that is used to
-             sign the APK for publishing.
-             You can define the keys for the debug and release targets in src/debug/ and src/release/.
-        -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key" />
+            android:value="AIzaSyDyKaBBvRLUvDMCpzxrddhoqeGhWCPEzT0" />
+
+        <meta-data android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
 
         <activity
             android:name="com.Support.MapsActivity"
@@ -37,6 +33,7 @@
         <activity android:name="com.Admin.adminActivity" />
         <activity android:name="com.Chats.message_between_users" />
         <activity android:name="com.Login.signUpActivity" />
+
         <activity android:name="com.Login.userProfileActivity" />
         <activity android:name="com.Support.SupportActivity" />
         <activity android:name="com.Rental.RentalMainActivity" />

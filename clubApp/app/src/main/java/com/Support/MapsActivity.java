@@ -2,7 +2,13 @@ package com.Support;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
+
+import com.directions.route.AbstractRouting;
+import com.directions.route.RouteException;
+import com.directions.route.Routing;
+import com.directions.route.RoutingListener;
 import com.example.clubapp.R;
 
 import android.Manifest;
@@ -19,8 +25,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -32,7 +41,9 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.GeoPoint;
+import com.squareup.okhttp.Route;
 
 import org.json.JSONObject;
 
@@ -46,277 +57,205 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
+        GoogleApiClient.OnConnectionFailedListener, RoutingListener {
 
+    //google map object
     private GoogleMap mMap;
-    private LatLng mOrigin;
-    private LatLng mDestination;
-    private Polyline mPolyline;
-    private FusedLocationProviderClient mFusedLocationClient;
-    ArrayList<LatLng> mMarkerPoints;
+
+    //current and destination location objects
+    Location myLocation=null;
+    Location destinationLocation=null;
+    protected LatLng start=null;
+    protected LatLng end=null;
+
+    //to get location permissions.
+    private final static int LOCATION_REQUEST_CODE = 23;
+    boolean locationPermission=false;
+
+    //polyline object
+    private List<Polyline> polylines=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_maps);
 
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        //request location permission.
+        requestPermision();
+
+        //init google map fragment to show map.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-
         mapFragment.getMapAsync(this);
-
-        mMarkerPoints = new ArrayList<>();
-
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        getLastKnownLocation();
     }
 
-    private void getLastKnownLocation() {
-        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
+    private void requestPermision()
+    {
+        if(ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                    LOCATION_REQUEST_CODE);
         }
-        mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
-            @Override
-            public void onComplete(@NonNull Task<Location> task) {
-                if(task.isSuccessful()) {
-                    Location location = task.getResult();
-                    GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
-                    setMarker(geoPoint);
+        else{
+            locationPermission=true;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case LOCATION_REQUEST_CODE: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    //if permission granted.
+                    locationPermission=true;
+                    getMyLocation();
+
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
                 }
+                return;
+            }
+        }
+    }
+
+    //to get user location
+    private void getMyLocation(){
+        mMap.setMyLocationEnabled(true);
+        mMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
+            @Override
+            public void onMyLocationChange(Location location) {
+
+                myLocation=location;
+                LatLng ltlng=new LatLng(location.getLatitude(),location.getLongitude());
+                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(
+                        ltlng, 16f);
+                mMap.animateCamera(cameraUpdate);
             }
         });
+
+        //get destination location when user click on map
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+
+                end=latLng;
+
+                mMap.clear();
+
+                start=new LatLng(myLocation.getLatitude(),myLocation.getLongitude());
+                //start route finding
+                Findroutes(start,end);
+            }
+        });
+
     }
 
-    private void setMarker(GeoPoint currentLocation) {
-        double lat = currentLocation.getLatitude();
-        double lng = currentLocation.getLongitude();
-        LatLng latlng = new LatLng(lat, lng);
-        mMarkerPoints.add(latlng);
-    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-            @Override
-            public void onMapClick(LatLng point) {
-                // Already two locations
-                if (mMarkerPoints.size() > 1) {
-                    mMarkerPoints.clear();
-                    mMap.clear();
-                }
 
-                // Adding new item to the ArrayList
-                mMarkerPoints.add(point);
+        getMyLocation();
 
-                // Creating MarkerOptions
-                MarkerOptions options = new MarkerOptions();
-
-                // Setting the position of the marker
-                options.position(point);
-
-                /**
-                 * For the start location, the color of marker is GREEN and
-                 * for the end location, the color of marker is RED.
-                 */
-                if (mMarkerPoints.size() == 1) {
-                    options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-                } else if (mMarkerPoints.size() == 2) {
-                    options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-                }
-
-                // Add new marker to the Google Map Android API V2
-                mMap.addMarker(options);
-
-                // Checks, whether start and end locations are captured
-                if (mMarkerPoints.size() >= 2) {
-                    mOrigin = mMarkerPoints.get(0);
-                    mDestination = mMarkerPoints.get(1);
-                    drawRoute();
-                }
-
-            }
-        });
-    }
-
-    private void drawRoute() {
-
-        // Getting URL to the Google Directions API
-        String url = getDirectionsUrl(mOrigin, mDestination);
-
-        DownloadTask downloadTask = new DownloadTask();
-
-        // Start downloading json data from Google Directions API
-        downloadTask.execute(url);
     }
 
 
-    private String getDirectionsUrl(LatLng origin, LatLng dest) {
-
-        // Origin of route
-        String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
-
-        // Destination of route
-        String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
-
-        // Key
-        String key = "key=" + getString(R.string.google_maps_key);
-
-        // Building the parameters to the web service
-        String parameters = str_origin + "&" + str_dest + "&" + key;
-
-        // Output format
-        String output = "json";
-
-        // Building the url to the web service
-        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters;
-
-        return url;
-    }
-
-    /**
-     * A method to download json data from url
-     */
-    private String downloadUrl(String strUrl) throws IOException {
-        String data = "";
-        InputStream iStream = null;
-        HttpURLConnection urlConnection = null;
-        try {
-            URL url = new URL(strUrl);
-
-            // Creating an http connection to communicate with url
-            urlConnection = (HttpURLConnection) url.openConnection();
-
-            // Connecting to url
-            urlConnection.connect();
-
-            // Reading data from url
-            iStream = urlConnection.getInputStream();
-
-            BufferedReader br = new BufferedReader(new InputStreamReader(iStream));
-
-            StringBuffer sb = new StringBuffer();
-
-            String line = "";
-            while ((line = br.readLine()) != null) {
-                sb.append(line);
-            }
-
-            data = sb.toString();
-
-            br.close();
-
-        } catch (Exception e) {
-            Log.d("Exception on download", e.toString());
-        } finally {
-            iStream.close();
-            urlConnection.disconnect();
+    // function to find Routes.
+    public void Findroutes(LatLng Start, LatLng End)
+    {
+        if(Start==null || End==null) {
+            Toast.makeText(MapsActivity.this,"Unable to get location",Toast.LENGTH_LONG).show();
         }
-        return data;
-    }
+        else
+        {
 
-    /**
-     * A class to download data from Google Directions URL
-     */
-    private class DownloadTask extends AsyncTask<String, Void, String> {
-
-        // Downloading data in non-ui thread
-        @Override
-        protected String doInBackground(String... url) {
-
-            // For storing data from web service
-            String data = "";
-
-            try {
-                // Fetching the data from web service
-                data = downloadUrl(url[0]);
-                Log.d("DownloadTask", "DownloadTask : " + data);
-            } catch (Exception e) {
-                Log.d("Background Task", e.toString());
-            }
-            return data;
-        }
-
-        // Executes in UI thread, after the execution of
-        // doInBackground()
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-
-            ParserTask parserTask = new ParserTask();
-
-            // Invokes the thread for parsing the JSON data
-            parserTask.execute(result);
+            Routing routing = new Routing.Builder()
+                    .travelMode(AbstractRouting.TravelMode.DRIVING)
+                    .withListener(this)
+                    .alternativeRoutes(true)
+                    .waypoints(Start, End)
+                    .key("AIzaSyDyKaBBvRLUvDMCpzxrddhoqeGhWCPEzT0")  //also define your api key here.
+                    .build();
+            routing.execute();
         }
     }
 
-    /**
-     * A class to parse the Google Directions in JSON format
-     */
-    private class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
-
-        // Parsing the data in non-ui thread
-        @Override
-        protected List<List<HashMap<String, String>>> doInBackground(String... jsonData) {
-
-            JSONObject jObject;
-            List<List<HashMap<String, String>>> routes = null;
-
-            try {
-                jObject = new JSONObject(jsonData[0]);
-                DirectionsJSONParser parser = new DirectionsJSONParser();
-
-                // Starts parsing data
-                routes = parser.parse(jObject);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return routes;
+    //If Route finding success..
+    @Override
+    public void onRoutingSuccess(ArrayList<com.directions.route.Route> arrayList, int shortestRouteIndex){
+        CameraUpdate center = CameraUpdateFactory.newLatLng(start);
+        CameraUpdate zoom = CameraUpdateFactory.zoomTo(16);
+        if(polylines!=null) {
+            polylines.clear();
         }
+        PolylineOptions polyOptions = new PolylineOptions();
+        LatLng polylineStartLatLng=null;
+        LatLng polylineEndLatLng=null;
 
-        // Executes in UI thread, after the parsing process
-        @Override
-        protected void onPostExecute(List<List<HashMap<String, String>>> result) {
-            ArrayList<LatLng> points = null;
-            PolylineOptions lineOptions = null;
 
-            // Traversing through all the routes
-            for (int i = 0; i < result.size(); i++) {
-                points = new ArrayList<LatLng>();
-                lineOptions = new PolylineOptions();
+        polylines = new ArrayList<>();
+        //add route(s) to the map using polyline
+        for (int i = 0; i <arrayList.size(); i++) {
 
-                // Fetching i-th route
-                List<HashMap<String, String>> path = result.get(i);
+            if(i==shortestRouteIndex)
+            {
+                polyOptions.color(getResources().getColor(R.color.colorPrimary));
+                polyOptions.width(7);
+                polyOptions.addAll(arrayList.get(shortestRouteIndex).getPoints());
+                Polyline polyline = mMap.addPolyline(polyOptions);
+                polylineStartLatLng=polyline.getPoints().get(0);
+                int k=polyline.getPoints().size();
+                polylineEndLatLng=polyline.getPoints().get(k-1);
+                polylines.add(polyline);
 
-                // Fetching all the points in i-th route
-                for (int j = 0; j < path.size(); j++) {
-                    HashMap<String, String> point = path.get(j);
+            }
+            else {
 
-                    double lat = Double.parseDouble(point.get("lat"));
-                    double lng = Double.parseDouble(point.get("lng"));
-                    LatLng position = new LatLng(lat, lng);
-
-                    points.add(position);
-                }
-
-                // Adding all the points in the route to LineOptions
-                lineOptions.addAll(points);
-                lineOptions.width(8);
-                lineOptions.color(Color.RED);
             }
 
-            // Drawing polyline in the Google Map for the i-th route
-            if (lineOptions != null) {
-                if (mPolyline != null) {
-                    mPolyline.remove();
-                }
-                mPolyline = mMap.addPolyline(lineOptions);
-
-            } else
-                Toast.makeText(getApplicationContext(), "No route is found", Toast.LENGTH_LONG).show();
         }
+
+        //Add Marker on route starting position
+        MarkerOptions startMarker = new MarkerOptions();
+        startMarker.position(polylineStartLatLng);
+        startMarker.title("My Location");
+        mMap.addMarker(startMarker);
+
+        //Add Marker on route ending position
+        MarkerOptions endMarker = new MarkerOptions();
+        endMarker.position(polylineEndLatLng);
+        endMarker.title("Destination");
+        mMap.addMarker(endMarker);
+    }
+
+
+    //Routing call back functions.
+    @Override
+    public void onRoutingFailure(RouteException e) {
+        View parentLayout = findViewById(android.R.id.content);
+        Snackbar snackbar= Snackbar.make(parentLayout, e.toString(), Snackbar.LENGTH_LONG);
+        snackbar.show();
+       // Findroutes(start,end);
+    }
+
+    @Override
+    public void onRoutingStart() {
+        Toast.makeText(MapsActivity.this,"Finding Route...",Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onRoutingCancelled() {
+        Findroutes(start,end);
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Findroutes(start,end);
+
     }
 }
