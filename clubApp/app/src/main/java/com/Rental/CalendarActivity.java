@@ -47,6 +47,7 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
     private ImageView result;
     private TextView display;
     private Button btn;
+    private Button btn2;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private DocumentReference equipRef;
     private DocumentReference rentRef;
@@ -85,6 +86,23 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
         result = findViewById(R.id.image);
         display = findViewById(R.id.display);
 
+        btn= findViewById(R.id.back);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                Intent intent = new Intent(CalendarActivity.this, RentalMainActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        btn2= findViewById(R.id.myRentals);
+        btn2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                Intent intent = new Intent(CalendarActivity.this, GetRentalsActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void showDatePicker(){
@@ -117,16 +135,6 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
         getDate = Day+"/"+(Month+1)+"/"+Year;
 
         Toast.makeText(CalendarActivity.this, getDate, Toast.LENGTH_SHORT).show();
-
-
-        btn= findViewById(R.id.back);
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v){
-                Intent intent = new Intent(CalendarActivity.this, RentalMainActivity.class);
-                startActivity(intent);
-            }
-        });
 
         findUser();
         String confirmDate= "Booking confirmed for " + equipmentName + " on the " + getDate;

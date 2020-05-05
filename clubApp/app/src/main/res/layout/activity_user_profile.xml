@@ -125,6 +125,13 @@
 
     </LinearLayout>
 
+    <Button
+        android:id="@+id/myRentals"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/goBack"
+        android:layout_centerHorizontal="true"
+        android:text="My Rentals" />
 
     <Button
         android:id="@+id/goBack"

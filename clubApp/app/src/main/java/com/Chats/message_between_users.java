@@ -367,7 +367,6 @@ public class message_between_users extends AppCompatActivity implements View.OnC
 
     @Override
     public void onBackPressed() {
-        messageAdapter.stopListening();
         Intent intent = new Intent(this, messageActivity.class);
         startActivity(intent);
         finish();
