@@ -300,19 +300,19 @@ public class TopRentalsActivity extends AppCompatActivity {
 
             mDecoView.addEvent(new DecoEvent.Builder(mSeriesMax)
                     .setIndex(mBackIndex)
-                    .setDuration(3000)
-                    .setDelay(100)
+                    .setDuration(2000)
+                    .setDelay(500)
                     .build());
 
             mDecoView.addEvent(new DecoEvent.Builder(DecoDrawEffect.EffectType.EFFECT_SPIRAL_OUT)
                     .setIndex(mSeries1Index)
-                    .setDuration(2000)
-                    .setDelay(1250)
+                    .setDuration(1000)
+                    .setDelay(600)
                     .build());
 
             mDecoView.addEvent(new DecoEvent.Builder(first)
                     .setIndex(mSeries1Index)
-                    .setDelay(3250)
+                    .setDelay(1125)
                     .build());
 
             mDecoView.addEvent(new DecoEvent.Builder(DecoDrawEffect.EffectType.EFFECT_SPIRAL_OUT)
@@ -512,8 +512,8 @@ public class TopRentalsActivity extends AppCompatActivity {
 
             mDecoView.addEvent(new DecoEvent.Builder(DecoDrawEffect.EffectType.EFFECT_SPIRAL_EXPLODE)
                     .setIndex(mSeries1Index)
-                    .setDelay(21000)
-                    .setDuration(3000)
+                    .setDelay(6000)
+                    .setDuration(2000)
                     .setDisplayText("Woo!")
                     .setListener(new DecoEvent.ExecuteEventListener() {
                         @Override
