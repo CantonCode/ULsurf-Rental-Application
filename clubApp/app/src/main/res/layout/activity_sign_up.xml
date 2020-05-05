@@ -105,6 +105,14 @@
                     android:text="Select Image"
                     android:background="@drawable/my_button"
                     android:textColor="@color/white"/>
+
+                <Button
+                    android:id="@+id/takePicture"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Take Picture"
+                    android:background="@drawable/my_button"
+                    android:textColor="@color/white" />
             </LinearLayout>
 
             <ImageView
@@ -114,6 +122,7 @@
                 android:layout_height="200dp"
                 android:layout_marginRight="10dp"
                 tools:srcCompat="@tools:sample/avatars" />
+
         </LinearLayout>
 
         <View

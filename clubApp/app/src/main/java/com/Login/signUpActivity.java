@@ -2,15 +2,24 @@ package com.Login;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -32,6 +41,9 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
+
 public class signUpActivity extends AppCompatActivity implements View.OnClickListener {
 
     private EditText emailField;
@@ -41,8 +53,13 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
     private EditText userNameField;
     private TextView uploadText;
     private ImageView userPicture;
+    private Button takePicture;
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private final int PICK_IMAGE_REQUEST = 22;
+    private final int REQUEST_IMAGE_CAPTURE = 1001;
+    private final int MY_CAMERA_PERMISSION_CODE = 100;
+    private final int CAMERA_REQUEST = 1888;
+    private Uri image_uri;
     FirebaseStorage storage;
     StorageReference storageReference;
     private Uri filePath;
@@ -50,11 +67,24 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
         findViewById(R.id.signUpButton).setOnClickListener(this);
         findViewById(R.id.uploadPicture).setOnClickListener(this);
+        takePicture = findViewById(R.id.takePicture);
+
+        takePicture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (ContextCompat.checkSelfPermission(signUpActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    takePicture.setEnabled(false);
+                    ActivityCompat.requestPermissions(signUpActivity.this, new String[] { Manifest.permission.CAMERA }, 1000);
+                }
+                else {
+                    takePicture();
+                }
+            }
+        });
 
         emailField = findViewById(R.id.signUpEmailField);
         passwordField = findViewById(R.id.signUpPasswordField);
@@ -67,8 +97,6 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
 
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
-
-
     }
 
     private void createAccount(final String email, final String password,final String number, final String username, final String admin, Uri filePath) {
@@ -112,35 +140,39 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
 
     private void setProfileUserName(final FirebaseUser user, final String username){
 
-
         Log.d("USER", "User profile updated." + user );
         if( user != null) {
             final String email = user.getEmail();
 
-                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                            .setDisplayName(username)
-                            .build();
+            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                    .setDisplayName(username)
+                    .build();
 
-                    user.updateProfile(profileUpdates)
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
-                                        Log.d("USER", "User profile updated." + email);
-                                    }
-                                }
-                            });
+            user.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()) {
+                        Log.d("USER", "User profile updated." + email);
+                    }
                 }
-
-
-
+            });
         }
+    }
 
     private void selectImage(){
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+    }
+
+    private void takePicture() {
+        //Log.d("Check", "connecting to camera");
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            Log.d("Check", "go to activity");
+        }
     }
 
     private void uploadPic(FirebaseUser user){
@@ -157,8 +189,7 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
                     Toast.makeText(signUpActivity.this, "Uploaded", Toast.LENGTH_LONG).show();
                     success();
                 }
-            })
-                    .addOnFailureListener(new OnFailureListener() {
+            }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             progressDialog.dismiss();
@@ -174,23 +205,32 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
                         }
                     });
         }
-
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Log.d("Check",""+ filePath);
         if(requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
                 && data != null && data.getData() != null )
         {
             filePath = data.getData();
+            Log.d("Check",""+ filePath);
             Picasso.get().load(filePath).centerCrop().fit().into(userPicture);
+        }
+
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            filePath = data.getData();
+            Log.d("Check",""+ filePath);
+            Picasso.get().load(filePath).centerCrop().fit().into(userPicture);
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            userPicture.setImageBitmap(imageBitmap);
         }
     }
 
     private boolean validateForm(String email,String password, String number, String username,Uri filePath){
         boolean valid = true;
-
 
         if(TextUtils.isEmpty(email)) {
             emailField.setError("Required");
@@ -247,11 +287,13 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
     private Boolean checkAdminCode(String admin){
         if(admin.equals("1234")){
             return true;
-        }else return false;
+        }
+        else
+            return false;
     }
 
     private void createUserInDataBase(String number,String username,String admin,FirebaseUser user){
-         Boolean becomeAdmin =  checkAdminCode(admin);
+        Boolean becomeAdmin =  checkAdminCode(admin);
 
         Log.d("USER", "enterdatabase");
         String id = user.getUid();
@@ -277,6 +319,16 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == 0) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                    && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                takePicture.setEnabled(true);
+            }
+        }
+    }
+
+    @Override
     public void onClick(View v) {
         int i = v.getId();
 
@@ -287,6 +339,14 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
 
         if(i == R.id.uploadPicture){
             selectImage();
+        }
+
+        if(i == R.id.takePicture){
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.CAMERA }, 0);
+            }
+            else
+                takePicture();
         }
     }
 }
