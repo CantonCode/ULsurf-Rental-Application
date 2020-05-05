@@ -7,20 +7,26 @@
          location permissions for the 'MyLocation' functionality.
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission. ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
 
+
     <application
+
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-
+        <activity android:name="com.Rental.RentalsOverviewActivity"></activity>
+        <activity android:name="com.Rental.TopRentalsActivity" />
         <!--
+                 
+              
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
              Note that the API key is linked to the encryption key used to sign the APK.
@@ -30,16 +36,22 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key" />
+            android:value="AIzaSyDyKaBBvRLUvDMCpzxrddhoqeGhWCPEzT0" />
 
+        <meta-data android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+
+        <activity android:name="com.Admin.manage_boards"></activity>
         <activity
             android:name="com.Support.MapsActivity"
             android:label="@string/title_activity_maps" />
-        <activity android:name="com.Rental.GetRentalsActivity"></activity>
+        <activity android:name="com.Rental.GetRentalsActivity" />
         <activity android:name="com.Admin.addBoard" />
         <activity android:name="com.Admin.adminActivity" />
         <activity android:name="com.Chats.message_between_users" />
         <activity android:name="com.Login.signUpActivity" />
+
         <activity android:name="com.Login.userProfileActivity" />
         <activity android:name="com.Support.SupportActivity" />
         <activity android:name="com.Rental.RentalMainActivity" />
@@ -58,7 +70,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <receiver android:name= ".NotifyService" />
+
+        <receiver android:name=".NotifyService" />
     </application>
 
 </manifest>
