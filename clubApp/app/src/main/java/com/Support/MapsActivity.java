@@ -71,6 +71,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     //google map object
     private GoogleMap mMap;
+    String mapOption = "";
 
     //current and destination location objects
     Location myLocation=null;
@@ -97,6 +98,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        mapOption = getIntent().getStringExtra("Map code");
     }
 
     private void requestPermision()
@@ -145,7 +147,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         ltlng, 16f);
                 mMap.animateCamera(cameraUpdate);
 
-                end= new LatLng(52.675742, -8.582924);
+                if(mapOption == "boathouse") {
+
+                    end= new LatLng(52.675742, -8.582924);
+                }
+                else {
+                    end= new LatLng(52.673801, -8.565130);
+                }
 
                 mMap.clear();
 
