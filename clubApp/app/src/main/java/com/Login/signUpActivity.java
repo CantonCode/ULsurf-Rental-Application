@@ -61,11 +61,9 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
     private Button takePicture;
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private final int PICK_IMAGE_REQUEST = 22;
-    private final int IMAGE_CAPTURE_CODE = 1001;
     private final int REQUEST_IMAGE_CAPTURE = 1;
     private final int PERMISSION_CODE = 1000;
-    private String currentPhotoPath;
-    private Uri image_uri;
+
     FirebaseStorage storage;
     StorageReference storageReference;
     private Uri filePath;
@@ -326,7 +324,7 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
         switch(requestCode){
             case PERMISSION_CODE: {
                 if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                    //takePicture();
+                    Toast.makeText(signUpActivity.this, "Permission Granted", Toast.LENGTH_SHORT).show();
                 }
                 else {
                     Toast.makeText(signUpActivity.this, "Permission Denied", Toast.LENGTH_SHORT).show();
