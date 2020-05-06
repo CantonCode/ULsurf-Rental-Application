@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.Login.Login"
-    android:background="#FFFFFF"
+    android:background="@drawable/surf_background2"
     android:layout_gravity="center"
     >
 
@@ -22,29 +22,31 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center"
-        android:layout_marginTop="100dp">
+        android:layout_marginTop="50dp">
 
         <ImageView
             android:id="@+id/logo"
-            android:layout_width="300dp"
-            android:layout_height="200dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            tools:srcCompat="@tools:sample/backgrounds/scenic" />
+            android:background="@drawable/trans_surf"
+            />
 
         <TextView
             android:id="@+id/textView8"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="15sp"
+            android:layout_margin="10sp"
             android:textAlignment="center"
             android:textSize="30sp"
             android:textStyle="bold"
+            android:textColor="@color/white"
             android:text="UL Surf Club" />
 
         <View
             android:layout_width="350dp"
             android:layout_height="2dp"
-            android:background="@android:color/black" />
+            android:background="@android:color/white" />
     </LinearLayout>
 
     <LinearLayout
@@ -60,6 +62,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
+            android:textSize="20sp"
+            android:textColor="@color/white"
+
             android:text="Logged out, Please sign in Below" />
 
         <EditText

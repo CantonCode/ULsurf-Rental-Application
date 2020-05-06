@@ -4,27 +4,28 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.Chats.message_between_users">
+    tools:context="com.Chats.message_between_users"
+    android:background="#e2ebf1">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="1dp"
+
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="54dp"
         android:gravity="center"
         android:orientation="vertical">
-
-        <androidx.cardview.widget.CardView
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="5dp">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
                 android:layout_gravity="center"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:background="@drawable/heading_text"
+                android:layout_margin="5dp">
 
                 <ImageView
                     android:id="@+id/userPic"
@@ -41,26 +42,18 @@
                     android:layout_marginTop="17sp"
                     android:gravity="center_vertical"
                     android:text="TextView"
-
-
+                    android:textColor="#ffde59"
                     android:textSize="24sp"
                     android:textStyle="bold" />
             </LinearLayout>
 
-        </androidx.cardview.widget.CardView>
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/messageRecyclerCon"
             android:layout_width="match_parent"
-            android:layout_height="573dp"
-
-
-            android:layout_marginStart="10sp"
-            android:layout_marginTop="10sp"
-            android:layout_marginEnd="10sp"
-            android:layout_marginBottom="10sp">
-
+            android:layout_height="match_parent"
+            android:layout_margin="10dp">
         </androidx.recyclerview.widget.RecyclerView>
+
 
     </LinearLayout>
 
@@ -69,8 +62,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:background="@color/border"
+        android:padding="5dp"
         android:layout_alignParentBottom="true"
-        android:background="@color/white">
+        >
 
         <EditText
             android:id="@+id/newMessage"
@@ -79,7 +74,8 @@
             android:layout_weight="1"
             android:ems="10"
             android:hint="Type a Message"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/sendMessage"
@@ -87,7 +83,9 @@
             android:layout_height="wrap_content"
             android:clickable="true"
             android:focusable="true"
-            app:srcCompat="@android:drawable/ic_menu_send" />
+            app:srcCompat="@android:drawable/ic_menu_send"
+            />
     </LinearLayout>
+
 
 </RelativeLayout>

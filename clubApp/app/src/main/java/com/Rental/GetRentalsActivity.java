@@ -13,6 +13,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.Login.MainActivity;
+import com.Login.userProfileActivity;
 import com.example.clubapp.R;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
@@ -191,4 +193,12 @@ public class GetRentalsActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
     }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, userProfileActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
 }

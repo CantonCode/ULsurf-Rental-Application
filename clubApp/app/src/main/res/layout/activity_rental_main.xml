@@ -6,40 +6,44 @@
     android:orientation="vertical"
     tools:context="com.Rental.RentalMainActivity"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#e2ebf1">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
+        android:gravity="center"
+
         android:orientation="vertical"
         tools:context="com.Rental.RentalMainActivity">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="5dp"
-            app:cardCornerRadius="15dp">
+
+
 
             <TextView
-                android:id="@+id/textView"
+                android:layout_margin="15dp"
+                android:paddingTop="15dp"
+                android:paddingBottom="15dp"
+                android:id="@+id/rentals"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="25dp"
-                android:gravity="center"
-                android:text="@string/welcomeRental"
-                android:textColor="@android:color/black"
-                android:textSize="24sp"
-                android:textStyle="bold" />
-        </androidx.cardview.widget.CardView>
+                android:text="Upcoming Rentals"
+                android:textAlignment="center"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                android:textColor="#ffde59"
+                android:background="@drawable/heading_text"
+
+                />
+
+
+
 
         <SearchView
             android:id="@+id/searchView"
             android:layout_width="200dp"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/sortBy"
@@ -48,7 +52,9 @@
             android:layout_gravity="center"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="20dp"
-            app:cardCornerRadius="10dp">
+            app:cardCornerRadius="10dp"
+            android:background="@null"
+            app:cardBackgroundColor="#03525d">
 
             <TextView
                 android:id="@+id/SortByText"
@@ -57,32 +63,29 @@
                 android:layout_margin="5dp"
                 android:gravity="center"
                 android:text="Sort By ..."
-                android:textColor="@android:color/black"
                 android:textSize="24sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:textColor="#ffde59"
+                android:background="@drawable/heading_text"/>
     </androidx.cardview.widget.CardView>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerEquipment"
-            android:layout_width="341dp"
-            android:layout_height="419dp"
-            android:scrollbars="horizontal"
+            android:layout_width="340dp"
+            android:layout_height="429dp"
             tools:listitem="@layout/equipment_item" />
 
-        <Button
-            android:id="@+id/goBack"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="0dp"
-            android:layout_marginBottom="0dp"
-            android:text="@string/go_back" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        </RelativeLayout>
 
     </LinearLayout>
+    <Button
+        android:id="@+id/goBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/go_back"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+
+        />
 
 </RelativeLayout>

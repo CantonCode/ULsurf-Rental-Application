@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.Login.signUpActivity"
-    android:layout_gravity="center">
+    android:layout_gravity="center"
+    android:background="@drawable/surf3">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,7 +21,8 @@
             android:text="Please Enter Details Below"
             android:textStyle="bold"
             android:textSize="24sp"
-            android:layout_marginBottom="15dp"/>
+            android:layout_marginBottom="15dp"
+            android:textColor="@color/white"/>
 
         <EditText
             android:id="@+id/signUpEmailField"
@@ -29,7 +31,9 @@
             android:ems="10"
             android:inputType="textEmailAddress"
             android:hint="Email Address"
-            android:layout_margin="5dp"/>
+            android:layout_margin="5dp"
+            android:textColor="@color/white"
+            />
 
         <EditText
             android:id="@+id/signUpPasswordField"
@@ -38,7 +42,8 @@
             android:ems="10"
             android:inputType="textPassword"
             android:hint="Password"
-            android:layout_margin="5dp"/>
+            android:layout_margin="5dp"
+            android:textColor="@color/white"/>
 
         <EditText
             android:id="@+id/signUpStudentNumber"
@@ -47,7 +52,8 @@
             android:ems="10"
             android:inputType="number"
             android:hint="Student Number"
-            android:layout_margin="5dp"/>
+            android:layout_margin="5dp"
+            android:textColor="@color/white"/>
 
         <EditText
             android:id="@+id/signUpUserName"
@@ -56,7 +62,8 @@
             android:ems="10"
             android:inputType="textPersonName"
             android:hint="Display Name"
-            android:layout_margin="5dp"/>
+            android:layout_margin="5dp"
+            android:textColor="@color/white"/>
 
         <EditText
             android:id="@+id/adminCode"
@@ -65,12 +72,13 @@
             android:ems="10"
             android:layout_margin="5dp"
             android:inputType="numberPassword"
-            android:hint="Admin Code(if applicable)"/>
+            android:hint="Admin Code(if applicable)"
+            android:textColor="@color/white"/>
 
         <View
             android:layout_width="350dp"
             android:layout_height="2dp"
-            android:background="@android:color/black"
+            android:background="@android:color/white"
             />
 
         <LinearLayout
@@ -96,7 +104,8 @@
                     android:layout_marginBottom="10dp"
                     android:text="Upload Profile Pic:"
                     android:textSize="15sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:textColor="@color/white"/>
 
                 <Button
                     android:id="@+id/uploadPicture"
@@ -119,7 +128,7 @@
         <View
             android:layout_width="350dp"
             android:layout_height="2dp"
-            android:background="@android:color/black"
+            android:background="@android:color/white"
             />
 
         <Button
