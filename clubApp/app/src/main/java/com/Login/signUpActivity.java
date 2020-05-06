@@ -9,6 +9,7 @@ import androidx.core.content.FileProvider;
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -42,6 +43,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -59,8 +61,9 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
     private Button takePicture;
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private final int PICK_IMAGE_REQUEST = 22;
-    private final int REQUEST_IMAGE_CAPTURE = 1001;
-    private final int REQUEST_TAKE_PHOTO = 1;
+    private final int IMAGE_CAPTURE_CODE = 1001;
+    private final int REQUEST_IMAGE_CAPTURE = 1;
+    private final int PERMISSION_CODE = 1000;
     private String currentPhotoPath;
     private Uri image_uri;
     FirebaseStorage storage;
@@ -75,16 +78,16 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
         findViewById(R.id.signUpButton).setOnClickListener(this);
         findViewById(R.id.uploadPicture).setOnClickListener(this);
         takePicture = findViewById(R.id.takePicture);
-
         takePicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (ContextCompat.checkSelfPermission(signUpActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                    takePicture.setEnabled(false);
-                    ActivityCompat.requestPermissions(signUpActivity.this, new String[] { Manifest.permission.CAMERA }, 1000);
+
+                if (ContextCompat.checkSelfPermission(signUpActivity.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED ||
+                        ContextCompat.checkSelfPermission(signUpActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+                    ActivityCompat.requestPermissions(signUpActivity.this, new String[] { Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE }, PERMISSION_CODE);
                 }
                 else {
-                    takePicture();
+                    takePicture(v);
                 }
             }
         });
@@ -127,10 +130,6 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
                                     Toast.LENGTH_SHORT).show();
                             ;
                         }
-
-                        // [START_EXCLUDE]
-//                        hideProgressBar();
-                        // [END_EXCLUDE]
                     }
                 });
 
@@ -169,37 +168,17 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
     }
 
-    private void takePicture() {
-        //Log.d("Check", "connecting to camera");
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        Log.d("Check", ""+ filePath);
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            try{
-                File f = createImageFile();;
-            }
-            catch(IOException ex){
-
-            }
-            File newFile = new File(currentPhotoPath);
-            filePath = Uri.fromFile(newFile);;
-            startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
-        }
+    private void takePicture(View view) {
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE);
     }
 
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-
-        // Save a file: path for use with ACTION_VIEW intents
-        currentPhotoPath = image.getAbsolutePath();
-        return image;
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        Log.d("Check","get bitmap");
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
     }
 
     private void uploadPic(FirebaseUser user){
@@ -237,7 +216,6 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d("Check",""+ filePath);
         if(requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null )
         {
             filePath = data.getData();
@@ -245,12 +223,15 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
             Picasso.get().load(filePath).centerCrop().fit().into(userPicture);
         }
 
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Picasso.get().load(filePath).centerCrop().fit().into(userPicture);
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK){
+            Log.d("Check"," checking activity");
             Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            Log.d("Check",""+ imageBitmap);
-            userPicture.setImageBitmap(imageBitmap);
+            Bitmap photo = (Bitmap) extras.get("data");
+            Log.d("Check"," " + photo);
+            userPicture.setImageBitmap(photo);
+            Uri tempUri = getImageUri(getApplicationContext(), photo);
+            filePath = tempUri;
+            Log.d("Check"," " + tempUri);
         }
     }
 
@@ -301,19 +282,16 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
             studentNumField.setError(null);
         }
 
-        Log.d("Check","File Path = "+ filePath);
         if(filePath == null){
             valid = false;
             uploadText.setError("required");
         }
-
         return valid;
     }
 
     private Boolean checkAdminCode(String admin){
-        if(admin.equals("1234")){
+        if(admin.equals("1234"))
             return true;
-        }
         else
             return false;
     }
@@ -341,15 +319,18 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
                 Log.d("USER", "User failed to add to data base");
             }
         });
-
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode == 0) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
-                    && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                takePicture.setEnabled(true);
+        switch(requestCode){
+            case PERMISSION_CODE: {
+                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    //takePicture();
+                }
+                else {
+                    Toast.makeText(signUpActivity.this, "Permission Denied", Toast.LENGTH_SHORT).show();
+                }
             }
         }
     }
@@ -365,14 +346,6 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
 
         if(i == R.id.uploadPicture){
             selectImage();
-        }
-
-        if(i == R.id.takePicture){
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.CAMERA }, 0);
-            }
-            else
-                takePicture();
         }
     }
 }
