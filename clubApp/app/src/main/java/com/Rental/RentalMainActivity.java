@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.SearchView;
 import android.widget.Toast;
 
+import com.Login.MainActivity;
 import com.example.clubapp.R;
 import com.Login.homeActivity;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -170,4 +171,12 @@ public class RentalMainActivity extends AppCompatActivity implements View.OnClic
         }
 
     }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, homeActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
 }

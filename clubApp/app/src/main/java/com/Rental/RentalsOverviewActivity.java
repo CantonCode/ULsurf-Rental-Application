@@ -3,11 +3,13 @@ package com.Rental;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.Login.userProfileActivity;
 import com.example.clubapp.R;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.data.BarData;
@@ -149,5 +151,11 @@ public class RentalsOverviewActivity extends AppCompatActivity {
 
             }
         });
+    }
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, userProfileActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

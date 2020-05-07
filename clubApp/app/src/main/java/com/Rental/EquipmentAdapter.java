@@ -55,6 +55,16 @@ public class EquipmentAdapter extends FirestoreRecyclerAdapter<Equipment,Equipme
 
         equipmentDialog.setContentView(R.layout.equipment_detail_page);
         equipmentDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        ChipGroup chipGroup = equipmentDialog.findViewById(R.id.boardDescriptionGroup);
+        ArrayList<String> desc = model.getDescription();
+
+        for(String des: desc) {
+            Chip chip = new Chip(equipmentDialog.getContext());
+            des = des.replace("-"," ");
+
+            chip.setText(des);
+            chipGroup.addView(chip);
+        }
 
         holder.cardViewEquipment.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,21 +72,10 @@ public class EquipmentAdapter extends FirestoreRecyclerAdapter<Equipment,Equipme
                 TextView textViewEquipmentName = equipmentDialog.findViewById(R.id.equipmentName);
                 TextView  textViewEquipmentSize = equipmentDialog.findViewById(R.id.equipmentSize);
                 ImageView imageViewEquipmentImage = equipmentDialog.findViewById(R.id.equipmentImage);
-                ChipGroup chipGroup = equipmentDialog.findViewById(R.id.boardDescriptionGroup);
-                ArrayList<String> desc = model.getDescription();
-
 
                 textViewEquipmentName.setText(model.getEquipmentName());
                 textViewEquipmentSize.setText(model.getSize());
                 Picasso.get().load(model.getImageUrl()).fit().centerCrop().into(imageViewEquipmentImage);
-
-                for(String des: desc) {
-                    des = des.replace("-"," ");
-                    Chip chip = new Chip(equipmentDialog.getContext());
-                    chip.setText(des);
-                    chipGroup.addView(chip);
-                }
-
 
                 equipmentDialog.show();
 
@@ -84,10 +83,13 @@ public class EquipmentAdapter extends FirestoreRecyclerAdapter<Equipment,Equipme
                 btn.setOnClickListener( new View.OnClickListener(){
                     @Override
                     public void onClick(View v) {
+
+
                         Intent intent = new Intent(v.getContext(), CalendarActivity.class);
                         intent.putExtra("selected_equipment", model.getEquipmentId());
                         intent.putExtra("selected_equipmentName", model.getEquipmentName());
                         v.getContext().startActivity(intent);
+                        equipmentDialog.dismiss();
                     }
                 });
 

@@ -23,6 +23,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
+import com.Login.MainActivity;
 import com.example.clubapp.NotifyService;
 import com.example.clubapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -110,9 +111,9 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
         datePickerDialog.setThemeDark(true);
         datePickerDialog.showYearPickerFirst(false);
         datePickerDialog.setTitle("Date Picker");
-        datePickerDialog.setCancelColor(getResources().getColor(R.color.colorPrimaryDark));
-        datePickerDialog.setOkColor(getResources().getColor(R.color.colorPrimary));
-        datePickerDialog.setAccentColor(getResources().getColor(R.color.colorPrimary));
+        datePickerDialog.setCancelColor(getResources().getColor(R.color.white));
+        datePickerDialog.setOkColor(getResources().getColor(R.color.white));
+        datePickerDialog.setAccentColor(getResources().getColor(R.color.white));
 
         Calendar c = Calendar.getInstance();
         datePickerDialog.setMinDate(c);
@@ -300,5 +301,14 @@ public class CalendarActivity extends AppCompatActivity implements DatePickerDia
     public void setValue(boolean value) {
         this.found = value;
     }
+
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, RentalMainActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
 
 }

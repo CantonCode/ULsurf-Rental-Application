@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.Admin.adminActivity">
+    tools:context="com.Admin.adminActivity"
+    android:background="#e2ebf1">
 
     <FrameLayout
         android:id="@+id/addBoardFragment"
@@ -19,22 +20,18 @@
         android:orientation="vertical"
         android:gravity="center">
 
-        <Button
+        <ImageView
             android:id="@+id/manageBoards"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_margin="10dp"
-            android:background="@drawable/my_button"
-            android:text="Manage Boards"
             android:textColor="@color/white" />
 
-        <Button
+        <ImageView
             android:id="@+id/addBoards"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_margin="10dp"
-            android:background="@drawable/my_button"
-            android:text="Add Boards"
             android:textColor="@color/white" />
 
     </LinearLayout>
