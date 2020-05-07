@@ -37,6 +37,15 @@
             android:layout_height="wrap_content"
             android:text="Find Boathouse" />
 
+        <Button
+            android:id="@+id/goMaps2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Find Pool"
+            android:ems="9"
+            android:layout_gravity="center"
+            />
+
     </LinearLayout>
 
     <Button
