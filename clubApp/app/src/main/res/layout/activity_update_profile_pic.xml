@@ -4,17 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.Login.UpdateProfilePicActivity">
+    tools:context="com.Login.UpdateProfilePicActivity"
+    android:background="#e2ebf1">
 
     <TextView
+        android:id="@+id/currentUser"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:text="Change your profile picture"
-        android:textSize="18dp"
-        android:textAlignment="center"
-        android:textColor="@color/black"/>
+        android:layout_height="50dp"
+        android:layout_margin="15dp"
+        android:background="@drawable/heading_text"
+        android:gravity="center"
+        android:text="Change Profile Picture"
+        android:textColor="#ffde59"
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
     <ImageView
         android:id="@+id/profilePicture"
@@ -32,7 +35,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="63dp"
         android:layout_marginBottom="10dp"
-        android:background="@drawable/my_button"
+
         android:text="Select Picture" />
 
     <Button
@@ -42,17 +45,17 @@
     android:layout_below="@id/uploadPic"
     android:layout_centerHorizontal="true"
     android:layout_margin="10dp"
-    android:background="@drawable/my_button"
+
     android:text="Take Picture" />
 
     <Button
         android:id="@+id/changePic"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/takePic"
         android:layout_centerHorizontal="true"
         android:layout_margin="10dp"
-        android:background="@drawable/my_button"
+
         android:text="Change Profile Picture" />
 
 </RelativeLayout>
