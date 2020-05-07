@@ -2,11 +2,18 @@ package com.Admin;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
@@ -36,6 +43,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -53,6 +61,9 @@ public class addBoard extends AppCompatActivity implements View.OnClickListener 
     private Uri filePath;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     private final int PICK_IMAGE_REQUEST = 22;
+    private final int REQUEST_IMAGE_CAPTURE = 1;
+    private final int PERMISSION_CODE = 1000;
+
     ImageView boardPic;
     EditText boardName;
     EditText boardSize;
@@ -77,13 +88,17 @@ public class addBoard extends AppCompatActivity implements View.OnClickListener 
         findViewById(R.id.addDescription).setOnClickListener(this);
         findViewById(R.id.uploadPicture).setOnClickListener(this);
         findViewById(R.id.addBoardButton).setOnClickListener(this);
+        findViewById(R.id.takePicture).setOnClickListener(this);
 
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
         uniqueID = UUID.randomUUID().toString();
         boardDesc = new ArrayList<>();
 
-
+        if (ContextCompat.checkSelfPermission(addBoard.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED ||
+                ContextCompat.checkSelfPermission(addBoard.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(addBoard.this, new String[] { Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE }, PERMISSION_CODE);
+        }
 
     }
 
@@ -177,6 +192,19 @@ public class addBoard extends AppCompatActivity implements View.OnClickListener 
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
     }
 
+    private void takePicture(View view) {
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE);
+    }
+
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        Log.d("Check","get bitmap");
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
+
     private void uploadPic() {
         if (filePath != null) {
             final ProgressDialog progressDialog = new ProgressDialog(this);
@@ -235,6 +263,31 @@ public class addBoard extends AppCompatActivity implements View.OnClickListener 
             filePath = data.getData();
             Picasso.get().load(filePath).centerCrop().fit().into(boardPic);
         }
+
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK){
+            Log.d("Check"," checking activity");
+            Bundle extras = data.getExtras();
+            Bitmap photo = (Bitmap) extras.get("data");
+            Log.d("Check"," " + photo);
+            Uri tempUri = getImageUri(getApplicationContext(), photo);
+            filePath = tempUri;
+            Picasso.get().load(filePath).centerCrop().fit().into(boardPic);
+            Log.d("Check"," " + tempUri);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch(requestCode){
+            case PERMISSION_CODE: {
+                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    Toast.makeText(addBoard.this, "Permission Granted", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Toast.makeText(addBoard.this, "Permission Denied", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
     }
 
     private boolean validateForm(String name, String size, ArrayList<String> desc, Uri filePath) {
@@ -280,6 +333,10 @@ public class addBoard extends AppCompatActivity implements View.OnClickListener 
         }
         if(i == R.id.uploadPicture){
             selectImage();
+        }
+
+        if(i == R.id.takePicture){
+            takePicture(v);
         }
 
         if(i == R.id.addBoardButton){
