@@ -191,7 +191,6 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
     private boolean validateForm(String email,String password, String number, String username,Uri filePath){
         boolean valid = true;
 
-
         if(TextUtils.isEmpty(email)) {
             emailField.setError("Required");
             valid = false;

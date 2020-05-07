@@ -43,6 +43,7 @@ public class userProfileActivity extends AppCompatActivity implements View.OnCli
 
         findViewById(R.id.goBack).setOnClickListener(this);
         findViewById(R.id.myRentals).setOnClickListener(this);
+        findViewById(R.id.editPic).setOnClickListener(this);
 
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
@@ -103,6 +104,11 @@ public class userProfileActivity extends AppCompatActivity implements View.OnCli
         startActivity(intent);
     }
 
+    private void goToUpdatePic() {
+        Intent intent = new Intent(this, UpdateProfilePicActivity.class);
+        startActivity(intent);
+    }
+
     public void onClick(View v){
         int i = v.getId();
         if (i == R.id.goBack) {
@@ -110,6 +116,9 @@ public class userProfileActivity extends AppCompatActivity implements View.OnCli
         }
         if(i == R.id.myRentals){
             goToMyRentals();
+        }
+        if(i == R.id.editPic){
+            goToUpdatePic();
         }
     }
 }
