@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -39,7 +40,7 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
     private FirebaseAuth mAuth;
     private TextView userTextView;
     private ImageView userPic;
-    private Button adminSection;
+    private ImageView adminSection,messaging,support,rental;
     FirebaseStorage storage;
     StorageReference storageReference;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -60,8 +61,15 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.goToAdmin).setOnClickListener(this);
 
         adminSection = findViewById(R.id.goToAdmin);
+        messaging = findViewById(R.id.goToMessage);
+        support = findViewById(R.id.goToSupport);
+        rental = findViewById(R.id.goToRental);
         userTextView = findViewById(R.id.currentUser);
         userPic = findViewById(R.id.userProfile);
+        Picasso.get().load("https://firebasestorage.googleapis.com/v0/b/clubapp-surf.appspot.com/o/stockPhotos%2Frental_icon.png?alt=media&token=4b3770cc-b22b-4193-82aa-a0c0b79c53e7").fit().centerCrop().transform(new RoundedCornersTransformation(10,0)).into(rental);
+        Picasso.get().load("https://firebasestorage.googleapis.com/v0/b/clubapp-surf.appspot.com/o/stockPhotos%2Fmessaging_icon.png?alt=media&token=9b143190-a997-40fe-a686-e24230ec19dc").fit().centerCrop().transform(new RoundedCornersTransformation(10,0)).into(messaging);
+        Picasso.get().load("https://firebasestorage.googleapis.com/v0/b/clubapp-surf.appspot.com/o/stockPhotos%2FIinfo_icon.png?alt=media&token=93c05c0d-3b89-4b3b-810d-296ef0daf27e").fit().centerCrop().transform(new RoundedCornersTransformation(10,0)).into(support);
+        Picasso.get().load("https://firebasestorage.googleapis.com/v0/b/clubapp-surf.appspot.com/o/stockPhotos%2Fadmin_icon.png?alt=media&token=a1792b39-317d-4b25-abe6-fbe427a9bfb9").fit().centerCrop().transform(new RoundedCornersTransformation(10,0)).into(adminSection);
 
         adminSection.setVisibility(View.GONE);
         

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.Login.Login"
-    android:background="#FFFFFF"
+    android:background="@drawable/surf_background2"
     android:layout_gravity="center"
     >
 
@@ -22,29 +22,32 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center"
-        android:layout_marginTop="100dp">
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="25dp">
 
         <ImageView
             android:id="@+id/logo"
-            android:layout_width="300dp"
-            android:layout_height="200dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            tools:srcCompat="@tools:sample/backgrounds/scenic" />
+            android:background="@drawable/trans_surf"
+            />
 
         <TextView
             android:id="@+id/textView8"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="15sp"
+            android:layout_margin="10sp"
             android:textAlignment="center"
             android:textSize="30sp"
             android:textStyle="bold"
+            android:textColor="@color/white"
             android:text="UL Surf Club" />
 
         <View
             android:layout_width="350dp"
             android:layout_height="2dp"
-            android:background="@android:color/black" />
+            android:background="@android:color/white" />
     </LinearLayout>
 
     <LinearLayout
@@ -55,20 +58,37 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="25dp">
 
+
         <TextView
             android:id="@+id/status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="Logged out, Please sign in Below" />
+            android:layout_margin="5dp"
+            android:textSize="20sp"
+            style="bold"
+            android:textColor="@color/white"
+            android:text="Logged out, Please sign in Below"
+            android:padding="10dp"
+            android:background="@drawable/edit_text_with_boarder"/>
+
+
+
+
 
         <EditText
             android:id="@+id/fieldEmail"
+            android:textColor="@color/white"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
             android:layout_margin="5dp"
-            android:hint="Email Address"/>
+            android:hint="Email Address"
+            android:padding="10dp"
+            android:background="@drawable/edit_text_with_boarder"/>
+
+
+
+
 
         <EditText
             android:id="@+id/fieldPassword"
@@ -76,19 +96,22 @@
             android:layout_height="wrap_content"
             android:inputType="textPassword"
             android:layout_margin="5dp"
-             android:hint="Password"/>
+             android:hint="Password"
+            android:padding="10dp"
+            android:background="@drawable/edit_text_with_boarder"/>
+
 
         <Button
             android:id="@+id/emailSignInButton"
             android:layout_margin="5dp"
             android:layout_marginBottom="20dp"
             android:layout_width="200dp"
-            android:layout_height="45dp"
+            android:layout_height="wrap_content"
             android:text="Login"
-            android:textAlignment="center"
             android:textColor="@color/white"
             android:textSize="24sp"
             android:textStyle="bold"
+            android:padding="5dp"
             android:background="@drawable/my_button"/>
     </LinearLayout>
 

@@ -49,7 +49,7 @@ public class Login extends MainActivity implements
         mPasswordField = findViewById(R.id.fieldPassword);
         setProgressBar(R.id.progressBar);
         ImageView logo = findViewById(R.id.logo);
-        Picasso.get().load("https://firebasestorage.googleapis.com/v0/b/clubapp-surf.appspot.com/o/stockPhotos%2Fulsurfclub.png?alt=media&token=922ce976-e572-43b1-aeac-42c4f99da6b9").transform(new RoundedCornersTransformation(50,0)).into(logo);
+//        Picasso.get().load("https://firebasestorage.googleapis.com/v0/b/clubapp-surf.appspot.com/o/stockPhotos%2Fulsurfclub.png?alt=media&token=922ce976-e572-43b1-aeac-42c4f99da6b9").transform(new RoundedCornersTransformation(50,0)).into(logo);
 
 
         // Buttons

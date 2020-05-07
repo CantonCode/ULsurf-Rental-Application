@@ -4,52 +4,59 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.Admin.manage_boards">
+    tools:context="com.Admin.manage_boards"
+    android:background="@color/cardview_dark_background">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_above="@+id/buttonLayout">
 
         <TextView
-            android:id="@+id/textView4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="20dp"
+            android:id="@+id/currentUser"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_margin="15dp"
+            android:background="@drawable/heading_text"
+            android:gravity="center"
             android:text="Manage Boards"
-            android:textColor="@color/black"
+            android:textColor="#ffde59"
             android:textSize="24sp"
             android:textStyle="bold" />
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/addBoardRecycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/addBoardRecycler"
             tools:listitem="@layout/manage_board_card"
-            android:background="@color/cardview_dark_background"
+
             />
 
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/buttonLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:layout_alignParentBottom="true"
-        android:orientation="vertical"
-        android:gravity="center">
+        android:gravity="center"
+        android:orientation="vertical">
 
         <Button
             android:id="@+id/button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
             android:background="@drawable/my_button"
             android:text="Go Back"
             android:textAlignment="center"
             android:textColor="@color/white"
             android:textSize="24sp"
             android:textStyle="bold" />
+
     </LinearLayout>
 
 </RelativeLayout>

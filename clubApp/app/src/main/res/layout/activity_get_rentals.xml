@@ -4,18 +4,33 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.Rental.GetRentalsActivity">
+    tools:context="com.Rental.GetRentalsActivity"
+    android:background="#e2ebf1"
+    android:layout_gravity="center_horizontal">
 
     <TextView
+        android:id="@+id/noRentals"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="18sp" />
+
+    <TextView
+        android:layout_margin="15dp"
         android:id="@+id/rentals"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:text="Upcoming Rentals"
         android:textAlignment="center"
-        android:textSize="18sp"
-        android:textColor="#F7F7F8"
-        android:background="#0022FF"
-        android:layout_alignParentTop = "true"/>
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:textColor="#ffde59"
+        android:background="@drawable/heading_text"
+        android:layout_alignParentTop = "true"
+        />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
@@ -25,31 +40,31 @@
         android:padding="4dp"
         android:scrollbars="vertical" />
 
-    <TextView
-        android:id="@+id/noRentals"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/overview"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="18sp"/>
 
-    <Button
-        android:id="@+id/overview"
+    <LinearLayout
+        android:id="@+id/buttons"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/recyclerView"
-        android:layout_marginTop="60dp"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:text="Overview" />
+        android:gravity="center">
 
-    <Button
-        android:id="@+id/topRentals"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/overview"
-        android:layout_centerHorizontal="true"
-        android:text="Top Rentals" />
+        <Button
+            android:id="@+id/overview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="Overview" />
+
+        <Button
+            android:id="@+id/topRentals"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="Top Rentals" />
+
+    </LinearLayout>
 
 </RelativeLayout>
 

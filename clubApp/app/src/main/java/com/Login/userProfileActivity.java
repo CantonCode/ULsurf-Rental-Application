@@ -121,4 +121,11 @@ public class userProfileActivity extends AppCompatActivity implements View.OnCli
             goToUpdatePic();
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, homeActivity.class);
+        startActivity(intent);
+        finish();
+    }
 }
