@@ -11,7 +11,10 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.PopupMenu;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -90,6 +93,14 @@ public class RentalMainActivity extends AppCompatActivity implements View.OnClic
         sortByDialog.setContentView(R.layout.sort_by_equipment);
         sortByDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         sortByDialog.findViewById(R.id.availablitiy).setOnClickListener(this);
+        sortByDialog.findViewById(R.id.level).setOnClickListener(this);
+    }
+
+    public void showPopup(View v) {
+        PopupMenu popup = new PopupMenu(this, v);
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.message, popup.getMenu());
+        popup.show();
     }
 
     private void setUpSearch(SearchView searchView){
@@ -170,6 +181,50 @@ public class RentalMainActivity extends AppCompatActivity implements View.OnClic
             Toast.makeText(this, "Showing by size", Toast.LENGTH_SHORT).show();
         }
 
+        if( i == R.id.level){
+            PopupMenu popup = new PopupMenu(RentalMainActivity.this, v);
+            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener(){
+                public boolean onMenuItemClick(MenuItem item) {
+                    switch (item.getItemId()) {
+                        case R.id.beginner:
+                            Toast.makeText(RentalMainActivity.this, "Showing Beginner Boards", Toast.LENGTH_SHORT).show();
+                            search("beginner");
+                            return true;
+                        case R.id.intermediate:
+                            Toast.makeText(RentalMainActivity.this, "Showing Intermediate Boards", Toast.LENGTH_SHORT).show();
+                            search("intermediate");
+                            return true;
+                        case R.id.advanced:
+                            Toast.makeText(RentalMainActivity.this, "Showing Advanced Boards", Toast.LENGTH_SHORT).show();
+                            search("advanced");
+                            return true;
+                        default:
+                            return false;
+                    }
+                }
+            });
+            popup.inflate(R.menu.message);
+            popup.show();
+        }
+
+
+
+    }
+
+
+    public boolean onMenuItemClick(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.beginner:
+                search("beginner");
+            case R.id.intermediate:
+                search("intermediate");
+            case R.id.advanced:
+                search("advanced");
+
+
+            default:
+                return false;
+        }
     }
 
     @Override
