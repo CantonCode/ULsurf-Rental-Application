@@ -16,6 +16,13 @@
             android:layout_height="wrap_content"
             android:text="Size" />
 
+        <Button
+            android:id="@+id/level"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Levels"
+            />
+
 
     </LinearLayout>
 

@@ -220,4 +220,9 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
 
 
     }
+
+
+    @Override
+    public void onBackPressed() {
+    }
 }

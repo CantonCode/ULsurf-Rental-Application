@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/beginner"
 
-    <item
-        android:id="@+id/home"
-        android:title="Home Page" />
-    <item
-        android:id="@+id/goBack"
-        android:title="Previous Page" />
-    <item
-        android:id="@+id/signOutButton"
-        android:title="Log Out" />
+        android:title="@string/beginner" />
+    <item android:id="@+id/intermediate"
+        android:title="@string/intermediate"
+        />
+    <item android:id="@+id/advanced"
+
+        android:title="@string/advanced" />
 </menu>
