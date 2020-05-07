@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/beginner"
+
+        android:title="@string/beginner" />
+    <item android:id="@+id/intermediate"
+        android:title="@string/intermediate"
+         />
+    <item android:id="@+id/advanced"
+
+        android:title="@string/advanced" />
+</menu>

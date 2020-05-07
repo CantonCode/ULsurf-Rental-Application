@@ -3,6 +3,7 @@ package com.Chats;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -28,7 +29,6 @@ public class messageActivity extends AppCompatActivity implements View.OnClickLi
     private ChatAdapter chatAdapter;
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

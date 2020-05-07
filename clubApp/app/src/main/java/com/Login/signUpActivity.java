@@ -2,15 +2,26 @@ package com.Login;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
+import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -32,6 +43,12 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class signUpActivity extends AppCompatActivity implements View.OnClickListener {
 
     private EditText emailField;
@@ -41,8 +58,12 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
     private EditText userNameField;
     private TextView uploadText;
     private ImageView userPicture;
+    private Button takePicture;
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private final int PICK_IMAGE_REQUEST = 22;
+    private final int REQUEST_IMAGE_CAPTURE = 1;
+    private final int PERMISSION_CODE = 1000;
+
     FirebaseStorage storage;
     StorageReference storageReference;
     private Uri filePath;
@@ -50,11 +71,24 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
         findViewById(R.id.signUpButton).setOnClickListener(this);
         findViewById(R.id.uploadPicture).setOnClickListener(this);
+        takePicture = findViewById(R.id.takePicture);
+        takePicture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (ContextCompat.checkSelfPermission(signUpActivity.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED ||
+                        ContextCompat.checkSelfPermission(signUpActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+                    ActivityCompat.requestPermissions(signUpActivity.this, new String[] { Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE }, PERMISSION_CODE);
+                }
+                else {
+                    takePicture(v);
+                }
+            }
+        });
 
         emailField = findViewById(R.id.signUpEmailField);
         passwordField = findViewById(R.id.signUpPasswordField);
@@ -67,8 +101,6 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
 
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
-
-
     }
 
     private void createAccount(final String email, final String password,final String number, final String username, final String admin, Uri filePath) {
@@ -96,10 +128,6 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
                                     Toast.LENGTH_SHORT).show();
                             ;
                         }
-
-                        // [START_EXCLUDE]
-//                        hideProgressBar();
-                        // [END_EXCLUDE]
                     }
                 });
 
@@ -112,35 +140,43 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
 
     private void setProfileUserName(final FirebaseUser user, final String username){
 
-
         Log.d("USER", "User profile updated." + user );
         if( user != null) {
             final String email = user.getEmail();
 
-                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                            .setDisplayName(username)
-                            .build();
+            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                    .setDisplayName(username)
+                    .build();
 
-                    user.updateProfile(profileUpdates)
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
-                                        Log.d("USER", "User profile updated." + email);
-                                    }
-                                }
-                            });
+            user.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()) {
+                        Log.d("USER", "User profile updated." + email);
+                    }
                 }
-
-
-
+            });
         }
+    }
 
     private void selectImage(){
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+    }
+
+    private void takePicture(View view) {
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE);
+    }
+
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        Log.d("Check","get bitmap");
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
     }
 
     private void uploadPic(FirebaseUser user){
@@ -157,8 +193,7 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
                     Toast.makeText(signUpActivity.this, "Uploaded", Toast.LENGTH_LONG).show();
                     success();
                 }
-            })
-                    .addOnFailureListener(new OnFailureListener() {
+            }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             progressDialog.dismiss();
@@ -174,17 +209,27 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
                         }
                     });
         }
-
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
-                && data != null && data.getData() != null )
+        if(requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null )
         {
             filePath = data.getData();
+            Log.d("Check",""+ filePath);
             Picasso.get().load(filePath).centerCrop().fit().into(userPicture);
+        }
+
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK){
+            Log.d("Check"," checking activity");
+            Bundle extras = data.getExtras();
+            Bitmap photo = (Bitmap) extras.get("data");
+            Log.d("Check"," " + photo);
+            userPicture.setImageBitmap(photo);
+            Uri tempUri = getImageUri(getApplicationContext(), photo);
+            filePath = tempUri;
+            Log.d("Check"," " + tempUri);
         }
     }
 
@@ -239,18 +284,18 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
             valid = false;
             uploadText.setError("required");
         }
-
         return valid;
     }
 
     private Boolean checkAdminCode(String admin){
-        if(admin.equals("1234")){
+        if(admin.equals("1234"))
             return true;
-        }else return false;
+        else
+            return false;
     }
 
     private void createUserInDataBase(String number,String username,String admin,FirebaseUser user){
-         Boolean becomeAdmin =  checkAdminCode(admin);
+        Boolean becomeAdmin =  checkAdminCode(admin);
 
         Log.d("USER", "enterdatabase");
         String id = user.getUid();
@@ -272,7 +317,20 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
                 Log.d("USER", "User failed to add to data base");
             }
         });
+    }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch(requestCode){
+            case PERMISSION_CODE: {
+                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    Toast.makeText(signUpActivity.this, "Permission Granted", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Toast.makeText(signUpActivity.this, "Permission Denied", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
     }
 
     @Override
