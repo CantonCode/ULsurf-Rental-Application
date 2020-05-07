@@ -76,6 +76,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         double longitude = location.getLongitude();
         LatLng latLng = new LatLng(latitude, longitude);
         start = new LatLng(latitude, longitude);
+        mMap.addMarker(new MarkerOptions().position(latLng));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
         getEndLocation();
@@ -159,7 +160,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         MarkerOptions startMarker = new MarkerOptions();
         startMarker.position(polylineStartLatLng);
         startMarker.title("My Location");
-        mMap.addMarker(startMarker);
+        //mMap.addMarker(startMarker);
 
         //Add Marker on route ending position
         MarkerOptions endMarker = new MarkerOptions();
