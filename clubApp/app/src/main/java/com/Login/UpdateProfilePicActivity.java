@@ -40,6 +40,7 @@ public class UpdateProfilePicActivity extends AppCompatActivity implements View.
     FirebaseStorage storage;
     StorageReference storageReference;
     private Uri filePath;
+    private FirebaseUser user;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
@@ -53,8 +54,15 @@ public class UpdateProfilePicActivity extends AppCompatActivity implements View.
         findViewById(R.id.takePic).setOnClickListener(UpdateProfilePicActivity.this);
         findViewById(R.id.changePic).setOnClickListener(UpdateProfilePicActivity.this);
 
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference();
+
+        user = mAuth.getCurrentUser();
+        Log.d("Check", ""+ user.getUid());
+
         changePic= findViewById(R.id.changePic);
         profilePic = findViewById(R.id.profilePicture);
+        Picasso.get().load("http://s3.amazonaws.com/37assets/svn/765-default-avatar.png").fit().centerCrop().into(profilePic);
 
         if(!validate())
             changePic.setEnabled(false);
@@ -85,7 +93,7 @@ public class UpdateProfilePicActivity extends AppCompatActivity implements View.
         startActivity(intent);
     }
 
-    private void uploadPic(FirebaseUser user){
+    private void uploadPic(){
         if(filePath != null){
             final ProgressDialog progressDialog = new ProgressDialog(this);
             progressDialog.setTitle("Uploading...");
@@ -158,8 +166,7 @@ public class UpdateProfilePicActivity extends AppCompatActivity implements View.
            // takePicture(v);
         }
         if(i == R.id.changePic){
-            FirebaseUser user = mAuth.getCurrentUser();
-            uploadPic(user);
+            uploadPic();
         }
     }
 
