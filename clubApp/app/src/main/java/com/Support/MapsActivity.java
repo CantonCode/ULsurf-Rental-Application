@@ -4,45 +4,24 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
-
 import com.directions.route.AbstractRouting;
 import com.directions.route.RouteException;
 import com.directions.route.Routing;
 import com.directions.route.RoutingListener;
 import com.example.clubapp.R;
-
 import android.Manifest;
-import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Looper;
-import android.provider.Settings;
-import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -75,47 +54,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
-        //request location permission.
-        requestPermision();
-
         //init google map fragment to show map.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         mapOption = getIntent().getStringExtra("Map code");
-    }
-
-    private void requestPermision()
-    {
-        if(ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                    LOCATION_REQUEST_CODE);
-        }
-        else{
-            locationPermission=true;
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case LOCATION_REQUEST_CODE: {
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    //if permission granted.
-                    locationPermission=true;
-                    getMyLocation();
-
-                } else {
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                }
-                return;
-            }
-        }
     }
 
     //to get user location
@@ -148,15 +91,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
         getMyLocation();
-
     }
-
 
     // function to find Routes.
     public void Findroutes(LatLng Start, LatLng End)
@@ -166,7 +105,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         else
         {
-
             Routing routing = new Routing.Builder()
                     .travelMode(AbstractRouting.TravelMode.DRIVING)
                     .withListener(this)
@@ -190,8 +128,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng polylineStartLatLng=null;
         LatLng polylineEndLatLng=null;
 
-
         polylines = new ArrayList<>();
+
         //add route(s) to the map using polyline
         for (int i = 0; i <arrayList.size(); i++) {
 
@@ -207,10 +145,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 polylines.add(polyline);
 
             }
-            else {
-
-            }
-
         }
 
         //Add Marker on route starting position
@@ -233,7 +167,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         View parentLayout = findViewById(android.R.id.content);
         Snackbar snackbar= Snackbar.make(parentLayout, e.toString(), Snackbar.LENGTH_LONG);
         snackbar.show();
-       // Findroutes(start,end);
     }
 
     @Override
