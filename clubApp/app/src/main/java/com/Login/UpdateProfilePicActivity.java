@@ -2,10 +2,14 @@ package com.Login;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,7 +25,6 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -29,6 +32,8 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
+
+import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
 public class UpdateProfilePicActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -41,7 +46,6 @@ public class UpdateProfilePicActivity extends AppCompatActivity implements View.
     StorageReference storageReference;
     private Uri filePath;
     private FirebaseUser user;
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     @Override
@@ -62,13 +66,35 @@ public class UpdateProfilePicActivity extends AppCompatActivity implements View.
 
         changePic= findViewById(R.id.changePic);
         profilePic = findViewById(R.id.profilePicture);
-        Picasso.get().load("http://s3.amazonaws.com/37assets/svn/765-default-avatar.png").fit().centerCrop().into(profilePic);
+        setProfilePic();
+
+        if (ContextCompat.checkSelfPermission(UpdateProfilePicActivity.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED ||
+                ContextCompat.checkSelfPermission(UpdateProfilePicActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(UpdateProfilePicActivity.this, new String[] { Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE }, PERMISSION_CODE);
+        }
 
         if(!validate())
             changePic.setEnabled(false);
     }
 
-    /*private void takePicture(View view) {
+    private void setProfilePic(){
+        String path ="images/" + user.getUid();
+        storageReference.child(path).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Log.d("PROFILE", "SUCESS" + uri);
+                Picasso.get().load(uri).fit().centerCrop().transform(new RoundedCornersTransformation(200,0)).into(profilePic);
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+            }
+        });
+    }
+
+    private void takePicture(View view) {
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE);
     }
@@ -79,7 +105,7 @@ public class UpdateProfilePicActivity extends AppCompatActivity implements View.
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
         String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
         return Uri.parse(path);
-    }*/
+    }
 
     private void selectPicture() {
         Intent intent = new Intent();
@@ -132,19 +158,30 @@ public class UpdateProfilePicActivity extends AppCompatActivity implements View.
             filePath = data.getData();
             Picasso.get().load(filePath).centerCrop().fit().into(profilePic);
         }
-        /*if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK){
-            Log.d("Check"," checking activity");
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK){
             Bundle extras = data.getExtras();
             Bitmap photo = (Bitmap) extras.get("data");
-            Log.d("Check"," " + photo);
-            profilePic.setImageBitmap(photo);
             Uri tempUri = getImageUri(getApplicationContext(), photo);
             filePath = tempUri;
-            Log.d("Check"," " + tempUri);
-        }*/
+            Picasso.get().load(filePath).fit().centerCrop().transform(new RoundedCornersTransformation(200,0)).into(profilePic);
+        }
 
         if(validate())
             changePic.setEnabled(true);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch(requestCode){
+            case PERMISSION_CODE: {
+                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    Toast.makeText(UpdateProfilePicActivity.this, "Permission Granted", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Toast.makeText(UpdateProfilePicActivity.this, "Permission Denied", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
     }
 
     private boolean validate(){
@@ -163,7 +200,7 @@ public class UpdateProfilePicActivity extends AppCompatActivity implements View.
             selectPicture();
         }
         if (i == R.id.takePic){
-           // takePicture(v);
+            takePicture(v);
         }
         if(i == R.id.changePic){
             uploadPic();
