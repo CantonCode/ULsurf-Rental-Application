@@ -28,6 +28,22 @@ public class SupportActivity extends AppCompatActivity implements View.OnClickLi
         findViewById(R.id.goBack).setOnClickListener(this);
         findViewById(R.id.goMaps).setOnClickListener(this);
         findViewById(R.id.goMaps2).setOnClickListener(this);
+
+        if(ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
+                    LOCATION_REQUEST_CODE);
+            if(ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.ACCESS_COARSE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED) {
+            }
+            else {
+                Toast.makeText(SupportActivity.this,
+                        "You must accept location permissions to access this feature.", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     private void goBack() {
@@ -52,80 +68,12 @@ public class SupportActivity extends AppCompatActivity implements View.OnClickLi
         if (i == R.id.goBack) {
             goBack();
         }
-
         if (i == R.id.goMaps) {
-            if(locationEnabled()) {
-                if(ContextCompat.checkSelfPermission(this,
-                        Manifest.permission.ACCESS_COARSE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED) {
-                            ActivityCompat.requestPermissions(this,
-                                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
-                                    LOCATION_REQUEST_CODE);
-                            if(ContextCompat.checkSelfPermission(this,
-                                    Manifest.permission.ACCESS_COARSE_LOCATION)
-                                    == PackageManager.PERMISSION_GRANTED) {
-                                goToMaps();
-                            }
-                            else {
-                                Toast.makeText(SupportActivity.this,
-                                        "You must accept location permissions to access this feature.", Toast.LENGTH_LONG).show();
-                            }
-                }
-                else {
-                    goToMaps();
-                }
-            }
-            else {
-                Toast.makeText(SupportActivity.this,
-                        "Your location services are turned off.", Toast.LENGTH_LONG).show();
-            }
-
+            goToMaps();
         }
 
         if (i == R.id.goMaps2) {
-            if(locationEnabled()) {
-                if(ContextCompat.checkSelfPermission(this,
-                        Manifest.permission.ACCESS_COARSE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(this,
-                            new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
-                            LOCATION_REQUEST_CODE);
-                    if(ContextCompat.checkSelfPermission(this,
-                            Manifest.permission.ACCESS_COARSE_LOCATION)
-                            == PackageManager.PERMISSION_GRANTED) {
-                        goToMaps2();
-                    }
-                    else {
-                        Toast.makeText(SupportActivity.this,
-                                "You must accept location permissions to access this feature.", Toast.LENGTH_LONG).show();
-                    }
-                }
-                else {
-                    goToMaps2();
-                }
-            }
-            else {
-                Toast.makeText(SupportActivity.this,
-                        "Your location services are turned off.", Toast.LENGTH_LONG).show();
-            }
-        }
-    }
-
-    private boolean locationEnabled(){
-        LocationManager lm = (LocationManager)getSystemService(Context. LOCATION_SERVICE);
-        boolean gps_enabled = false;
-        try {
-            gps_enabled = lm.isProviderEnabled(LocationManager. GPS_PROVIDER ) ;
-        } catch (Exception e) {
-            e.printStackTrace() ;
-        }
-        Log.d("gps: ", "status" + gps_enabled);
-
-        if(gps_enabled) {
-            return true;
-        }
-        else {
-            return false;
+            goToMaps2();
         }
     }
 }

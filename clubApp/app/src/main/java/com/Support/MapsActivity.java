@@ -4,17 +4,24 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
+
 import com.directions.route.AbstractRouting;
 import com.directions.route.RouteException;
 import com.directions.route.Routing;
 import com.directions.route.RoutingListener;
 import com.example.clubapp.R;
+
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
+import android.location.Criteria;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdate;
@@ -27,78 +34,79 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.material.snackbar.Snackbar;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
-        GoogleApiClient.OnConnectionFailedListener, RoutingListener {
+         RoutingListener {
 
     //google map object
     private GoogleMap mMap;
     String mapOption = "";
 
     //current and destination location objects
-    Location myLocation=null;
-    protected LatLng start=null;
-    protected LatLng end=null;
+    Location myLocation = null;
+    protected LatLng start = null;
+    protected LatLng end = null;
 
     //to get location permissions.
     private final static int LOCATION_REQUEST_CODE = 23;
-    boolean locationPermission=false;
+    boolean locationPermission = false;
 
     //polyline object
-    private List<Polyline> polylines=null;
+    private List<Polyline> polylines = null;
+
+    Location currentLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-
+        //getMyLocation();
         //init google map fragment to show map.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        mapFragment.getMapAsync(MapsActivity.this);
         mapOption = getIntent().getStringExtra("Map code");
     }
 
+    public void onLocationChanged(Location location) {
+        double latitude = location.getLatitude();
+        double longitude = location.getLongitude();
+        LatLng latLng = new LatLng(latitude, longitude);
+        start = new LatLng(latitude, longitude);
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+        getEndLocation();
+    }
+
     //to get user location
-    private void getMyLocation(){
-        mMap.setMyLocationEnabled(true);
-        mMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
-            @Override
-            public void onMyLocationChange(Location location) {
+    private void getEndLocation() {
+        if (mapOption == "boathouse") {
 
-                myLocation=location;
-                LatLng ltlng=new LatLng(location.getLatitude(),location.getLongitude());
-                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(
-                        ltlng, 16f);
-                mMap.animateCamera(cameraUpdate);
-
-                if(mapOption == "boathouse") {
-
-                    end= new LatLng(52.675742, -8.582924);
-                }
-                else {
-                    end= new LatLng(52.673801, -8.565130);
-                }
-
-                mMap.clear();
-
-                start=new LatLng(myLocation.getLatitude(),myLocation.getLongitude());
-
-                Findroutes(start,end);
-            }
-        });
+            end = new LatLng(52.675742, -8.582924);
+        } else {
+            end = new LatLng(52.673801, -8.565130);
+        }
+        findRoutes(start, end);
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        getMyLocation();
+        googleMap.setMyLocationEnabled(true);
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+        String bestProvider = locationManager.getBestProvider(criteria, true);
+        @SuppressLint("MissingPermission") Location location = locationManager.getLastKnownLocation(bestProvider);
+        if (location != null) {
+            onLocationChanged(location);
+        }
     }
 
     // function to find Routes.
-    public void Findroutes(LatLng Start, LatLng End)
+    public void findRoutes(LatLng Start, LatLng End)
     {
         if(Start==null || End==null) {
             Toast.makeText(MapsActivity.this,"Unable to get location",Toast.LENGTH_LONG).show();
@@ -119,8 +127,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     //If Route finding success..
     @Override
     public void onRoutingSuccess(ArrayList<com.directions.route.Route> arrayList, int shortestRouteIndex){
-        CameraUpdate center = CameraUpdateFactory.newLatLng(start);
-        CameraUpdate zoom = CameraUpdateFactory.zoomTo(16);
+        CameraUpdateFactory.newLatLng(start);
+        CameraUpdateFactory.zoomTo(16);
         if(polylines!=null) {
             polylines.clear();
         }
@@ -171,16 +179,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onRoutingStart() {
-        Toast.makeText(MapsActivity.this,"Finding Route...",Toast.LENGTH_LONG).show();
+        Toast.makeText(MapsActivity.this,"Finding Route...",Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onRoutingCancelled() {
-        Findroutes(start,end);
+        findRoutes(start,end);
     }
 
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Findroutes(start,end);
-    }
 }
