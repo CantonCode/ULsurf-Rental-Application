@@ -19,6 +19,7 @@ public class SupportActivity extends AppCompatActivity implements View.OnClickLi
 
         findViewById(R.id.goBack).setOnClickListener(this);
         findViewById(R.id.goMaps).setOnClickListener(this);
+        findViewById(R.id.goMaps2).setOnClickListener(this);
     }
 
     private void goBack(){
@@ -28,6 +29,13 @@ public class SupportActivity extends AppCompatActivity implements View.OnClickLi
 
     private void goToMaps() {
         Intent intent = new Intent(this, MapsActivity.class);
+        intent.putExtra("Map code", "boathouse");
+        startActivity(intent);
+    }
+
+    private void goToMaps2() {
+        Intent intent = new Intent(this, MapsActivity.class);
+        intent.putExtra("Map code", "pool");
         startActivity(intent);
     }
 
@@ -39,6 +47,10 @@ public class SupportActivity extends AppCompatActivity implements View.OnClickLi
 
         if (i == R.id.goMaps) {
             goToMaps();
+        }
+
+        if(i == R.id.goMaps2) {
+            goToMaps2();
         }
     }
 }
