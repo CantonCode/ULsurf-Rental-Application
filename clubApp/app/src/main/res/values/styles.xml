@@ -14,7 +14,6 @@
     <style name="AppTheme.NoActionBar" parent="Theme.MaterialComponents.Light">
         <item name="colorPrimary">#008ca1</item>
         <item name="colorPrimaryDark">#295185</item>
-        <item name="colorAccent">#ffde59</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="colorControlNormal">@color/white</item>
@@ -23,9 +22,6 @@
         <item name="android:textColorHint">@color/white_transparency</item>
     </style>
 
-    <style name="ButtonColor" parent="@android:style/Widget.Button">
-        <item name="android:textColor">#ffde59</item>
-    </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 

@@ -33,6 +33,8 @@
             android:hint="Email Address"
             android:layout_margin="5dp"
             android:textColor="@color/white"
+            android:padding="10dp"
+            android:background="@drawable/edit_text_with_boarder"
             />
 
         <EditText
@@ -43,7 +45,9 @@
             android:inputType="textPassword"
             android:hint="Password"
             android:layout_margin="5dp"
-            android:textColor="@color/white"/>
+            android:textColor="@color/white"
+            android:padding="10dp"
+            android:background="@drawable/edit_text_with_boarder"/>
 
         <EditText
             android:id="@+id/signUpStudentNumber"
@@ -53,7 +57,9 @@
             android:inputType="number"
             android:hint="Student Number"
             android:layout_margin="5dp"
-            android:textColor="@color/white"/>
+            android:textColor="@color/white"
+            android:padding="10dp"
+            android:background="@drawable/edit_text_with_boarder"/>
 
         <EditText
             android:id="@+id/signUpUserName"
@@ -63,17 +69,21 @@
             android:inputType="textPersonName"
             android:hint="Display Name"
             android:layout_margin="5dp"
-            android:textColor="@color/white"/>
+            android:textColor="@color/white"
+            android:padding="10dp"
+            android:background="@drawable/edit_text_with_boarder"/>
 
         <EditText
             android:id="@+id/adminCode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ems="10"
+            android:ems="11"
             android:layout_margin="5dp"
             android:inputType="numberPassword"
             android:hint="Admin Code(if applicable)"
-            android:textColor="@color/white"/>
+            android:textColor="@color/white"
+            android:padding="10dp"
+            android:background="@drawable/edit_text_with_boarder"/>
 
         <View
             android:layout_width="350dp"

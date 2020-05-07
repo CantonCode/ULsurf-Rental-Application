@@ -27,7 +27,7 @@
             android:layout_alignParentEnd="true"
             android:paddingTop="10dp"
             android:layout_marginEnd="0dp"
-            android:background="@drawable/equipment_card_style"
+            android:background="#e2ebf1"
             android:gravity="center_horizontal"
             android:orientation="vertical"
             >

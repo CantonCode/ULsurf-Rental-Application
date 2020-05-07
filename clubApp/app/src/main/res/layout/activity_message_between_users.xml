@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#e6e6e6"
+    android:background="#e2ebf1"
     tools:context="com.Chats.message_between_users"
-    android:layout_gravity="center_horizontal">
+    android:layout_gravity="center">
 
 
     <LinearLayout
@@ -33,9 +33,9 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/message_Recycler"
-            android:layout_width="400sp"
+            android:layout_width="match_parent"
+            android:layout_margin="5dp"
             android:layout_height="518sp"
-            android:layout_marginStart="5dp"
             android:layout_marginBottom="27dp" />
 
         <LinearLayout
@@ -50,7 +50,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
-                android:hint="Type a message..." />
+                android:hint="Type a message..."
+                android:inputType="text"/>
 
             <ImageButton
                 android:id="@+id/send_btn"

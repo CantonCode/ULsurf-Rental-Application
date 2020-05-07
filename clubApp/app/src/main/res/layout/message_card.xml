@@ -25,7 +25,6 @@
                 android:layout_marginStart="5dp"
                 android:id="@+id/show_message"
                 android:textSize="18sp"
-                android:text="hello"
                 android:padding="8dp"
                 android:background="@drawable/message_background"
                 />
@@ -44,9 +43,8 @@
                     android:layout_alignParentEnd="true"
                     android:background="@drawable/message_background_2"
                     android:padding="8dp"
-                    android:text="hello"
                     android:textColor="#fff"
-                    android:textSize="18dp" />
+                    android:textSize="18sp" />
             </RelativeLayout>
 
 
