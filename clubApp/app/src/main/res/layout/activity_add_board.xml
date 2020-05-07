@@ -96,12 +96,19 @@
                 app:srcCompat="@android:drawable/ic_input_add" />
         </LinearLayout>
 
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:scrollbars="none">
 
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/chipView"
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"/>
+            android:layout_width="350dp"
+            android:layout_height="100dp"
+            android:layout_margin="10dp"
+            />
+        </ScrollView>
 
         <View
             android:layout_width="350dp"
@@ -154,7 +161,7 @@ android:layout_margin="10dp">
                 android:id="@+id/boardPicture"
                 android:layout_weight="1"
                 android:layout_width="200dp"
-                android:layout_height="200dp"
+                android:layout_height="250dp"
                 android:layout_marginRight="10dp"
                 tools:srcCompat="@tools:sample/avatars" />
         </LinearLayout>

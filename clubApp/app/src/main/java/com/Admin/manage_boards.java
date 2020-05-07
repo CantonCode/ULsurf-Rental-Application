@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -61,10 +63,47 @@ public class manage_boards extends AppCompatActivity {
         equipmentAdapter.setOnItemClickListener(new adminBoardAdapter.OnItemClickListener() {
             @Override
             public void onDeleteClick(int position,String name) {
-                deleteBoard(name);
+                buildDialog(name);
+
                 Toast.makeText(manage_boards.this, name, Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    public void buildDialog(final String name){
+        AlertDialog.Builder builder = new AlertDialog.Builder(manage_boards.this);
+
+        // Set a title for alert dialog
+        builder.setTitle("Delete Board");
+
+        // Ask the final question
+        builder.setMessage("Are you sure to delete this board along with all its data and rentals?");
+
+
+        // Set the alert dialog yes button click listener
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Do something when user clicked the Yes button
+                // Set the TextView visibility GONE
+                deleteBoard(name);
+            }
+        });
+
+        // Set the alert dialog no button click listener
+        builder.setNeutralButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Do something when No button clicked
+                Toast.makeText(getApplicationContext(),
+                        "No Button Clicked",Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        // Display the alert dialog on interface
+        dialog.show();
+
     }
 
     public void setUpRecyclerView() {
