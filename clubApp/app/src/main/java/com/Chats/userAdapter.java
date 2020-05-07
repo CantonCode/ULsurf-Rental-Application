@@ -45,7 +45,6 @@ public class userAdapter extends FirestoreRecyclerAdapter<User,userAdapter.UserV
 
             holder.list_studentNumber.setText(model.getStudentNumber());
             holder.list_userName.setText(model.getUserName());
-            holder.list_admin.setText(String.valueOf(model.isAdmin()));
             Picasso.get().load(model.getPhotoUrl()).transform(new RoundedCornersTransformation(150, 5)).fit().centerCrop().into(holder.list_photo);
             Log.d("USERIDaaaaa", model.getUserName());
 
@@ -82,7 +81,7 @@ public class userAdapter extends FirestoreRecyclerAdapter<User,userAdapter.UserV
         public UserViewHolder(final View itemView) {
             super(itemView);
 
-            list_admin = itemView.findViewById(R.id.list_admin);
+
             list_photo = itemView.findViewById(R.id.list_photo);
             list_studentNumber = itemView.findViewById(R.id.list_studentNumber);
             list_userName = itemView.findViewById(R.id.list_userName);

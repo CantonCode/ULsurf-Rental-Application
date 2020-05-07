@@ -3,12 +3,14 @@ package com.Rental;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.animation.AnticipateInterpolator;
 import android.widget.TextView;
 
+import com.Login.userProfileActivity;
 import com.example.clubapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -537,5 +539,12 @@ public class TopRentalsActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.textActivity2)).setText("");
         ((TextView) findViewById(R.id.textActivity3)).setText("");
         ((TextView) findViewById(R.id.textPercentage)).setText("");
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, userProfileActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

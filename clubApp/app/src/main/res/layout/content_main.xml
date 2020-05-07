@@ -4,40 +4,45 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="@drawable/surf4"
     tools:context="com.Login.MainActivity"
-    android:layout_gravity="center">
+    android:layout_gravity="center"
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center_horizontal"
-        android:layout_marginTop="100dp">
+        android:layout_marginTop="50dp"
+        android:background="@android:color/transparent">
 
         <ImageView
             android:id="@+id/logo"
             android:layout_width="300dp"
-            android:layout_height="200dp"
+            android:layout_height="250dp"
             android:layout_margin="5dp"
-            tools:src="@drawable/ulsurfclub" />
+            android:background="@drawable/trans_surf"
+            />
 
         <TextView
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="UL Surf Club"
-            android:layout_margin="15sp"
+            android:layout_margin="10sp"
             android:textAlignment="center"
             android:textSize="30sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/cardview_light_background"
+
         android:gravity="center_horizontal"
         android:orientation="vertical"
         android:layout_alignParentBottom="true"

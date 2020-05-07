@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.loginButton).setOnClickListener(this);
         findViewById(R.id.signUp).setOnClickListener(this);
         ImageView logo = findViewById(R.id.logo);
-        Picasso.get().load("https://firebasestorage.googleapis.com/v0/b/clubapp-surf.appspot.com/o/stockPhotos%2Fulsurfclub.png?alt=media&token=922ce976-e572-43b1-aeac-42c4f99da6b9").transform(new RoundedCornersTransformation(50,0)).into(logo);
+//        Picasso.get().load("https://firebasestorage.googleapis.com/v0/b/clubapp-surf.appspot.com/o/stockPhotos%2Fulsurfclub.png?alt=media&token=922ce976-e572-43b1-aeac-42c4f99da6b9").transform(new RoundedCornersTransformation(50,0)).into(logo);
         isUserLoggedIn();
     }
 
