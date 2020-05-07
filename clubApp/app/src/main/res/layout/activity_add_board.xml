@@ -104,7 +104,7 @@
 
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/chipView"
-            android:layout_width="300dp"
+            android:layout_width="350dp"
             android:layout_height="100dp"
             android:layout_margin="10dp"
             />
@@ -153,7 +153,7 @@ android:layout_margin="10dp">
                 android:id="@+id/boardPicture"
                 android:layout_weight="1"
                 android:layout_width="200dp"
-                android:layout_height="200dp"
+                android:layout_height="300dp"
                 android:layout_marginRight="10dp"
                 tools:srcCompat="@tools:sample/avatars" />
         </LinearLayout>
