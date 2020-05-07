@@ -59,13 +59,14 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
     private TextView uploadText;
     private ImageView userPicture;
     private Button takePicture;
+    private Button signUp, validateButton;
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private final int PICK_IMAGE_REQUEST = 22;
     private final int REQUEST_IMAGE_CAPTURE = 1;
     private final int PERMISSION_CODE = 1000;
 
-    FirebaseStorage storage;
-    StorageReference storageReference;
+    FirebaseStorage storage = FirebaseStorage.getInstance();
+    StorageReference storageReference = storage.getReference();
     private Uri filePath;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -75,16 +76,22 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
         setContentView(R.layout.activity_sign_up);
         findViewById(R.id.signUpButton).setOnClickListener(this);
         findViewById(R.id.uploadPicture).setOnClickListener(this);
+        findViewById(R.id.validate).setOnClickListener(this);
         takePicture = findViewById(R.id.takePicture);
+        signUp = findViewById(R.id.signUpButton);
+        validateButton = findViewById(R.id.validate);
+
+        validateButton.setVisibility(View.GONE);
+
+
         takePicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 if (ContextCompat.checkSelfPermission(signUpActivity.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED ||
                         ContextCompat.checkSelfPermission(signUpActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
-                    ActivityCompat.requestPermissions(signUpActivity.this, new String[] { Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE }, PERMISSION_CODE);
-                }
-                else {
+                    ActivityCompat.requestPermissions(signUpActivity.this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_CODE);
+                } else {
                     takePicture(v);
                 }
             }
@@ -100,13 +107,30 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
         Picasso.get().load("http://s3.amazonaws.com/37assets/svn/765-default-avatar.png").fit().centerCrop().into(userPicture);
 
         storage = FirebaseStorage.getInstance();
-        storageReference = storage.getReference();
+
+
     }
 
-    private void createAccount(final String email, final String password,final String number, final String username, final String admin, Uri filePath) {
-        if (!validateForm(email, password, number, username,filePath)) {
+    private void validate(final String email, final String password, final String number, final String username, final String admin, Uri filePath) {
+        if (!validateForm(email, password, number, username, filePath)) {
+            validateButton.setVisibility(View.VISIBLE);
+            signUp.setEnabled(false);
             return;
+        }else{
+            signUp.setEnabled(true);
+            validateButton.setVisibility(View.GONE);
         }
+
+    }
+
+    private void createAccount(final String email, final String password, final String number, final String username, final String admin, Uri filePath) {
+        if (!validateForm(email, password, number, username, filePath)) {
+            validateButton.setVisibility(View.VISIBLE);
+            signUp.setEnabled(false);
+            return;
+            }
+
+
 
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -117,9 +141,9 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("USER", "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            createUserInDataBase(number,username,admin,user);
+                            createUserInDataBase(number, username, admin, user);
                             uploadPic(user);
-                            setProfileUserName(user,username);
+                            setProfileUserName(user, username);
                             Toast.makeText(signUpActivity.this, "Account Created Successfully", Toast.LENGTH_SHORT).show();
                         } else {
                             // If sign in fails, display a message to the user.
@@ -132,6 +156,8 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
                 });
 
     }
+
+
 
     private void success(){
         Intent intent = new Intent(this, Login.class);
@@ -184,7 +210,6 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
             final ProgressDialog progressDialog = new ProgressDialog(this);
             progressDialog.setTitle("Uploading...");
             progressDialog.show();
-
             StorageReference ref = storageReference.child("images/" + user.getUid());
             ref.putFile(filePath).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
@@ -283,6 +308,8 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
         if(filePath == null){
             valid = false;
             uploadText.setError("required");
+        }else{
+            uploadText.setError(null);
         }
         return valid;
     }
@@ -336,6 +363,12 @@ public class signUpActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onClick(View v) {
         int i = v.getId();
+
+        if(i==R.id.validate){
+
+            validate(emailField.getText().toString(),passwordField.getText().toString(),
+                    studentNumField.getText().toString(),userNameField.getText().toString(),adminCode.getText().toString(),filePath);
+        }
 
         if(i==R.id.signUpButton){
             createAccount(emailField.getText().toString(),passwordField.getText().toString(),
