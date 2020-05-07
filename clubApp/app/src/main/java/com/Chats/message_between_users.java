@@ -6,10 +6,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -93,8 +97,12 @@ public class message_between_users extends AppCompatActivity implements View.OnC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.show_messages);
         findViewById(R.id.sendMessage).setOnClickListener(this);
+        findViewById(R.id.newMessage).setOnClickListener(this);
+
         setValue(false);
         text_msg = findViewById(R.id.newMessage);
+
+
         selectedUserId = getIntent().getStringExtra("selected_user");
 
         db = FirebaseFirestore.getInstance();
@@ -340,6 +348,8 @@ public class message_between_users extends AppCompatActivity implements View.OnC
             }
             text_msg.setText("");
         }
+
+
     }
 
     public void setValue(boolean value) {

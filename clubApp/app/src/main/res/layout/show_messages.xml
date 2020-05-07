@@ -11,9 +11,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
+        android:layout_above="@+id/messageBottom"
 
         android:layout_marginTop="4dp"
-        android:layout_marginBottom="54dp"
         android:gravity="center"
         android:orientation="vertical">
 
@@ -62,23 +62,35 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:background="@color/border"
-        android:padding="5dp"
+        android:gravity="bottom"
+        android:background="@drawable/edit_text_boarder"
+
         android:layout_alignParentBottom="true"
         >
 
         <EditText
             android:id="@+id/newMessage"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ems="10"
             android:hint="Type a Message"
-            android:inputType="textPersonName"
+            android:padding="13dp"
+            android:background="@drawable/edit_text_with_boarder"
+            android:layout_gravity="bottom"
+            android:textColor="@color/white"
+            android:overScrollMode="always"
+            android:scrollbarStyle="insideInset"
+            android:scrollbars="vertical"
+            android:maxLines="7"
+            android:imeOptions="actionSend"
+            android:scrollHorizontally="false"
+            android:inputType="textMultiLine|text"
             />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/sendMessage"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
