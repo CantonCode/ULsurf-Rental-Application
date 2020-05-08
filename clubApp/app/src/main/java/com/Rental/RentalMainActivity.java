@@ -49,6 +49,7 @@ public class RentalMainActivity extends AppCompatActivity implements View.OnClic
 
         findViewById(R.id.goBack).setOnClickListener(this);
         findViewById(R.id.sortBy).setOnClickListener(this);
+        findViewById(R.id.floatingActionButton).setOnClickListener(this);
         SearchView searchView = findViewById(R.id.searchView); // inititate a search view
 
 
@@ -148,6 +149,19 @@ public class RentalMainActivity extends AppCompatActivity implements View.OnClic
 //        equipmentAdapter1.stopListening();
     }
 
+    private void resetView(){
+        Query query = notebookRef.orderBy("rented", Query.Direction.ASCENDING);
+        FirestoreRecyclerOptions<Equipment> options1 = new FirestoreRecyclerOptions.Builder<Equipment>()
+                .setQuery(query, Equipment.class)
+                .build();
+
+        equipmentAdapter1 = new EquipmentAdapter(options1);
+        recyclerView.setAdapter(equipmentAdapter1);
+        equipmentAdapter1.startListening();
+        sortByDialog.dismiss();
+//        equipmentAdapter1.stopListening();
+    }
+
     private void search(String s){
         Log.d("RENTAL", "search: " + s);
         String desc = s;
@@ -174,6 +188,11 @@ public class RentalMainActivity extends AppCompatActivity implements View.OnClic
         }
         if (i == R.id.sortBy) {
             popUp();
+        }
+
+        if (i == R.id.floatingActionButton) {
+            Toast.makeText(RentalMainActivity.this, "Resetting View", Toast.LENGTH_SHORT).show();
+            resetView();
         }
 
         if (i == R.id.availablitiy) {

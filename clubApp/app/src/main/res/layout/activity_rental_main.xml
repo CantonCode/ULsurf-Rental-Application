@@ -37,13 +37,28 @@
                 />
 
 
-
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center">
 
         <SearchView
             android:id="@+id/searchView"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:clickable="true"
+        android:focusable="true"
+        app:srcCompat="@android:drawable/ic_popup_sync"
+        android:layout_marginLeft="10dp"/>
+
+</LinearLayout>
 
         <androidx.cardview.widget.CardView
             android:id="@+id/sortBy"
