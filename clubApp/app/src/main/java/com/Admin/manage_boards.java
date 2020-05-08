@@ -7,8 +7,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.Rental.Equipment;
@@ -25,7 +27,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-public class manage_boards extends AppCompatActivity {
+public class manage_boards extends AppCompatActivity implements View.OnClickListener {
 
     private adminBoardAdapter equipmentAdapter;
     RecyclerView recyclerView;
@@ -38,6 +40,8 @@ public class manage_boards extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_boards);
         setUpRecyclerView();
+
+        findViewById(R.id.buttonBack).setOnClickListener(this);
     }
 
     @Override
@@ -194,5 +198,13 @@ public class manage_boards extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onClick(View v) {
+        int i = v.getId();
 
+        if (i == R.id.buttonBack){
+            Intent intent = new Intent(this,adminActivity.class);
+            startActivity(intent);
+        }
+    }
 }
