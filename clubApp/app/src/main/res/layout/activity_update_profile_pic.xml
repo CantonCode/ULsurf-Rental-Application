@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.Login.UpdateProfilePicActivity"
-    android:background="#e2ebf1">
+    android:background="#e2ebf1"
+    >
 
     <TextView
         android:id="@+id/currentUser"
@@ -19,43 +20,44 @@
         android:textSize="24sp"
         android:textStyle="bold" />
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true">
     <ImageView
         android:id="@+id/profilePicture"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:layout_centerInParent="true"
-        android:layout_marginRight="10dp"
-        android:layout_weight="1" />
+        android:layout_margin="15dp"
+
+        />
 
     <Button
         android:id="@+id/uploadPic"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/profilePicture"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="63dp"
-        android:layout_marginBottom="10dp"
-
-        android:text="Select Picture" />
+        android:text="Select Picture"
+        android:layout_margin="10dp"/>
 
     <Button
     android:id="@+id/takePic"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_below="@id/uploadPic"
-    android:layout_centerHorizontal="true"
     android:layout_margin="10dp"
-
     android:text="Take Picture" />
 
+
+
+    </LinearLayout>
     <Button
         android:id="@+id/changePic"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/takePic"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_margin="10dp"
-
-        android:text="Change Profile Picture" />
-
+        android:text="Change Profile Picture"
+        android:layout_margin="10dp"/>
 </RelativeLayout>
