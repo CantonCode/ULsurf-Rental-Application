@@ -19,7 +19,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="500dp">
+        android:layout_height="500dp"
+        android:id="@+id/layout">
 
         <TextView
             android:id="@+id/textPercentage"
@@ -63,35 +64,34 @@
         android:layout_height="450dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginTop="610dp"
-        android:layout_marginBottom="3dp">
+        android:layout_below="@id/layout">
 
         <TextView
             android:id="@+id/textActivity2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/textActivity1"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:layout_centerInParent="true"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/textActivity1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:layout_centerInParent="true"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/textActivity3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/textActivity2"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:layout_centerInParent="true"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textStyle="bold" />
     </RelativeLayout>
 
 </RelativeLayout>

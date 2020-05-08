@@ -37,13 +37,13 @@
                 />
 
 
-
-
         <SearchView
             android:id="@+id/searchView"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            />
+            android:background="@drawable/heading_text"
+            android:outlineAmbientShadowColor="@color/black"
+            android:outlineSpotShadowColor="@color/black" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/sortBy"
