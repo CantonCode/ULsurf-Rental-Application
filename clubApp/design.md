@@ -8,7 +8,8 @@ Our back end and database are all run using google firebase. We used Fireauth, F
 
 We used a NOSQL database implementation. The database tables can be seen below:
 
-
+//example of adding a picture to the md file
+![Database table](https://firebasestorage.googleapis.com/v0/b/clubapp-surf.appspot.com/o/md%20file%20pictures%2Fequipment-rentaldates.png?alt=media&token=6b4e62e6-533b-47cc-9f53-01149de4d2b6)
 
 
 While researching how to implement certain features we often came across old tutorials and deprecated ways of implementing things. We learned it was always essential to check that tutorials and implementations being viewed were using the latest and most up to date api’s and techniques..
