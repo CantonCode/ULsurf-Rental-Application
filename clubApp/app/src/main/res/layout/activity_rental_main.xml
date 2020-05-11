@@ -43,20 +43,15 @@
     android:gravity="center">
 
         <SearchView
+            android:gravity="center"
+
             android:id="@+id/searchView"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
+            android:background="@drawable/edit_text_with_boarder"
             />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:clickable="true"
-        android:focusable="true"
-        app:srcCompat="@android:drawable/ic_popup_sync"
-        android:layout_marginLeft="10dp"/>
+
 
 </LinearLayout>
 
@@ -93,6 +88,21 @@
 
 
     </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="10dp"
+
+        android:clickable="true"
+        android:focusable="true"
+
+        app:srcCompat="@android:drawable/ic_popup_sync"
+        tools:ignore="NotSibling" />
     <Button
         android:id="@+id/goBack"
         android:layout_width="wrap_content"
