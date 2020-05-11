@@ -12,6 +12,9 @@ This app was created to provide a central place for the UL Surf Club ( http://ww
 
 * The project uses Firebase for it's authentication and database. If you have been granted access to the console then you can view it here: https://console.firebase.google.com/u/0/project/clubapp-surf/overview
 
+//example of adding a picture to the md file
+![Database table](https://firebasestorage.googleapis.com/v0/b/clubapp-surf.appspot.com/o/md%20file%20pictures%2Fequipment-rentaldates.png?alt=media&token=6b4e62e6-533b-47cc-9f53-01149de4d2b6)
+
 ## More information
 
 * [Technical Design](design.md)
